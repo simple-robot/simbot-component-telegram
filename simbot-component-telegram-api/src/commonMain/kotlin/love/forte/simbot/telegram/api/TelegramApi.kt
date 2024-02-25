@@ -81,11 +81,11 @@ public interface TelegramApi<R : Any> : ApiDefinition<R> {
      * val url = getMeApi.url
      * // -> https://api.telegram.org/{bot.token}/getMe
      *
-     * val url1 = getMeApi.url(token = "bot.123456")
-     * // -> https://api.telegram.org/bot.123456/getMe
+     * val url1 = getMeApi.url(token = "bot123456")
+     * // -> https://api.telegram.org/bot123456/getMe
      *
-     * val url2 = getMeApi.url(server = "http://example.com", token = "bot.123456")
-     * // -> http://example.com/bot.123456/getMe
+     * val url2 = getMeApi.url(server = "http://example.com", token = "bot123456")
+     * // -> http://example.com/bot123456/getMe
      * ```
      *
      *
