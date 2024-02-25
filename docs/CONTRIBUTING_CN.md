@@ -16,8 +16,8 @@ _中文_ | [English](CONTRIBUTING.md)
 ## 我发现了 Bug
 ### Issues
 
-如果您在Discord组件库或官方维护的组件库中发现了一个 bug，那么首先您可以前往
-[Issues](https://github.com/simple-robot/simbot-component-discord/issues/)
+如果您在Telegram组件库或官方维护的组件库中发现了一个 bug，那么首先您可以前往
+[Issues](https://github.com/simple-robot/simbot-component-telegram/issues/)
 中选择合适的分类并提交与此 bug 相关的详细信息 (包括使用的库版本、错误日志等);
 
 在反馈时，我们建议您使用 Markdown 语法[^about write] 来提高反馈内容的可读性与观感，这也可以帮助参与者快速阅读与定位问题所在。
@@ -27,7 +27,7 @@ _中文_ | [English](CONTRIBUTING.md)
 ### Pull Request
 
 如果您有兴趣与能力为我们贡献此 bug 的修复，
-那么欢迎您通过 [Pull Request](https://github.com/simple-robot/simbot-component-discord/pulls) 提交您的变更。
+那么欢迎您通过 [Pull Request](https://github.com/simple-robot/simbot-component-telegram/pulls) 提交您的变更。
 当您提交代码变更时，需要了解如下几点：
 
 **代码贡献**
@@ -37,7 +37,7 @@ _中文_ | [English](CONTRIBUTING.md)
 **参与者**
 
 包括核心库与官方组件库在内，它们都会在项目中存在配置参与者的地方。
-本指南以Discord组件库为例，在 `buildSrc/src/main/kotlin/P.kt` 中的如下代码内添加有关您的信息:
+本指南以Telegram组件库为例，在 `buildSrc/src/main/kotlin/P.kt` 中的如下代码内添加有关您的信息:
 
 ```Kotlin
 override val developers: List<Developer> = developers {
@@ -58,7 +58,7 @@ override val developers: List<Developer> = developers {
 ## 代码贡献
 ### 注释风格
 
-Discord组件库对源代码的注释有着一些约定。
+Telegram组件库对源代码的注释有着一些约定。
 
 * 要对所有访问级别为 `public`、`protected` 的内容 (包括类/接口、函数、属性等)
   使用**中文**或**易懂的英文**编写较为细致的文档注释[^KDoc]。
@@ -76,7 +76,7 @@ Discord组件库对源代码的注释有着一些约定。
 
 ### 代码风格
 
-Discord组件库对整体的代码风格有着一些约定。
+Telegram组件库对整体的代码风格有着一些约定。
 
 这些代码风格的大部分规则被作为配置文件保存在了 `.editorconfig` 中，部分IDE (例如 IDEA) 应当可以自动识别加载、或手动加载它。
 这些风格与
@@ -104,7 +104,7 @@ Discord组件库对整体的代码风格有着一些约定。
 
 ### KMP
 
-Discord组件库绝大多数模块都是支持 [KMP](https://kotlinlang.org/docs/multiplatform.html) 的。
+Telegram组件库绝大多数模块都是支持 [KMP](https://kotlinlang.org/docs/multiplatform.html) 的。
 
 ### 二进制兼容
 
@@ -115,7 +115,7 @@ Discord组件库绝大多数模块都是支持 [KMP](https://kotlinlang.org/docs
 
 ### 友好 API
 
-Discord组件库对外提供的公开API中，都应该是 Java 友好、或有配套的 Java 友好 API，尤其指可挂起函数 `suspend fun`。
+Telegram组件库对外提供的公开API中，都应该是 Java 友好、或有配套的 Java 友好 API，尤其指可挂起函数 `suspend fun`。
 大部分挂起函数的 Java 友好 API 通过编译器插件
 [Kotlin Suspend Transform compiler plugin](https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin) 实现，
 可参阅手册中的
@@ -132,7 +132,7 @@ API文档是使用 [Dokka](https://github.com/Kotlin/dokka) 根据源码的文�
 
 ### 手册贡献
 
-Discord组件库手册使用 [Writerside](https://www.jetbrains.com/help/writerside) 编写，
+Telegram组件库手册使用 [Writerside](https://www.jetbrains.com/help/writerside) 编写，
 你可以在目录 `Writerside` 中找到它的内容。
 
 ## 社区贡献
