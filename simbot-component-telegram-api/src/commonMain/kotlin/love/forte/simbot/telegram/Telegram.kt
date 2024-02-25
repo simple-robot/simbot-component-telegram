@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2024. ForteScarlet.
+ *
+ * This file is part of simbot-component-telegram.
+ *
+ * simbot-component-telegram is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Lesser General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * simbot-component-telegram is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with simbot-component-telegram.
+ * If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package love.forte.simbot.telegram
+
+import io.ktor.http.*
+
+public object Telegram {
+    /**
+     * The `"{bot.token}"`.
+     */
+    public const val BOT_TOKEN_PLACEHOLDER_VALUE: String = "{bot.token}"
+
+    /**
+     * The Official server of Telegram Bot API:
+     * `"https://api.telegram.org"`
+     *
+     * See: [Telegram Bot API Doc](https://core.telegram.org/bots/api)
+     */
+    public const val BASE_SERVER_VALUE: String = "https://api.telegram.org"
+
+    /**
+     * The [Url] value of [BASE_SERVER_VALUE].
+     */
+    public val BaseServerUrl: Url = Url(BASE_SERVER_VALUE)
+
+}
