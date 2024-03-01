@@ -17,84 +17,51 @@
 
 package love.forte.simbot.telegram.api
 
-import io.ktor.http.*
+import io.ktor.client.request.forms.*
 import kotlinx.serialization.DeserializationStrategy
-import love.forte.simbot.common.apidefinition.ApiDefinition
-import love.forte.simbot.telegram.Telegram
 
 
 /**
- * An API definition of [Telegram Bot API](https://core.telegram.org/bots/api).
+ *
+ * A [Telegram Method](https://core.telegram.org/bots/api#available-methods).
+ *
+ * > All methods in the Bot API are case-insensitive.
+ * > We support GET and POST HTTP methods.
+ * > Use either URL query string or `application/json`
+ * > or `application/x-www-form-urlencoded`
+ * > or `multipart/form-data` for passing parameters in Bot API requests.
+ * > On successful call, a JSON-object containing the result will be returned.
+ *
+ * Use [requestRaw] to request an API with method.
+ *
+ * @see EmptyBodyTelegramApi
+ * @see JsonBodyTelegramApi
+ * @see FormBodyTelegramApi
  *
  * @author ForteScarlet
  */
-public interface TelegramApi<R : Any> : ApiDefinition<R> {
-    override val body: Any?
+public sealed class TelegramApi<T, R : Any> {
+    /**
+     * The method name.
+     */
+    public abstract val name: String
 
     /**
-     * The method of this API.
-     * The TG Bot API supports both `Get` and `Post`.
-     *
-     * See [Making requests](https://core.telegram.org/bots/api#making-requests).
+     * The request body (or null).
      */
-    override val method: HttpMethod
+    public abstract val body: T
 
     /**
-     * The result's [DeserializationStrategy] of this API.
+     * The result's [DeserializationStrategy] of this Method.
      */
-    override val resultDeserializationStrategy: DeserializationStrategy<R>
-
-    /**
-     * The `METHOD_NAME` of a Telegram Bot API query:
-     * `https://api.telegram.org/bot<token>/METHOD_NAME`.
-     *
-     * See: [Making requests](https://core.telegram.org/bots/api#making-requests).
-     *
-     */
-    public val apiMethod: String
-
-    /**
-     * The full query API url.
-     *
-     * In a Telegram Bot API query:
-     * `https://api.telegram.org/bot<token>/METHOD_NAME`
-     * there is a variable (`bot token`) in the path,
-     * so in the result via [url], [`bot<token>`][Telegram.BOT_TOKEN_PLACEHOLDER_VALUE]
-     * is replaced with `{bot.token}`,
-     * e.g. `https://api.telegram.org/{bot.token}/getUser`.
-     *
-     * If you want to provide an [Url] with a specific `bot.token` value, use [url(token = ...)] [url].
-     *
-     * See: [Making requests](https://core.telegram.org/bots/api#making-requests).
-     *
-     * @ese url
-     */
-    override val url: Url
-
-    /**
-     * The full query API url,
-     * with the specific [server] value and
-     * the specific [Bot token][token] value.
-     *
-     * e.g.
-     * ```kotlin
-     * val url = getMeApi.url
-     * // -> https://api.telegram.org/{bot.token}/getMe
-     *
-     * val url1 = getMeApi.url(token = "bot123456")
-     * // -> https://api.telegram.org/bot123456/getMe
-     *
-     * val url2 = getMeApi.url(server = "http://example.com", token = "bot123456")
-     * // -> http://example.com/bot123456/getMe
-     * ```
-     *
-     *
-     * @param server The query API server (e.g. `"https://example.com"`).
-     * Default is [Telegram.BASE_SERVER_VALUE].
-     * @param token The Bot token in the query API (should with the prefix `bot.`).
-     * e.g. `"bot<token>"` of `https://api.telegram.org/bot<token>/METHOD_NAME`.
-     * Default is [Telegram.BOT_TOKEN_PLACEHOLDER_VALUE].
-     */
-    public fun url(server: String? = null, token: String? = null): Url
+    public abstract val resultDeserializationStrategy: DeserializationStrategy<R>
 }
 
+public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<Unit?, R>() {
+    override val body: Unit?
+        get() = null
+}
+
+public abstract class JsonBodyTelegramApi<T, R : Any> : TelegramApi<T, R>()
+
+public abstract class FormBodyTelegramApi<R : Any> : TelegramApi<FormDataContent, R>()

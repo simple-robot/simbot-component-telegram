@@ -15,28 +15,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.method
+package love.forte.simbot.telegram.api
 
-import kotlinx.serialization.DeserializationStrategy
+public open class TelegramApiException(message: String? = null, cause: Throwable? = null) :
+    RuntimeException(message, cause)
 
-
-/**
- *
- * @author ForteScarlet
- */
-public sealed class TelegramMethod<T, R : Any> {
-    // TODO 独立出 method?
-    //  sealed
-    //    -> Empty (Get & Post)
-    //    -> JSON (Post Only)
-    //    -> FORM (Post Only)
-
-    public abstract val name: String
-
-    public abstract val body: T
-
-    /**
-     * The result's [DeserializationStrategy] of this Method.
-     */
-    public abstract val resultDeserializationStrategy: DeserializationStrategy<R>
-}
+@Suppress("MemberVisibilityCanBePrivate")
+public open class TelegramApiResultNotOkException(
+    public val result: TelegramApiResult<*>,
+    message: String? = "result: $result",
+    cause: Throwable? = null
+) : TelegramApiException(message, cause)
