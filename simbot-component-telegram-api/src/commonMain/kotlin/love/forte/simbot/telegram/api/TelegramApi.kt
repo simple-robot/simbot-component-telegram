@@ -40,7 +40,7 @@ import kotlinx.serialization.DeserializationStrategy
  *
  * @author ForteScarlet
  */
-public sealed class TelegramApi<T, R : Any> {
+public sealed class TelegramApi<R : Any> {
     /**
      * The method name.
      */
@@ -49,19 +49,30 @@ public sealed class TelegramApi<T, R : Any> {
     /**
      * The request body (or null).
      */
-    public abstract val body: T
+    public abstract val body: Any?
 
     /**
      * The result's [DeserializationStrategy] of this Method.
      */
-    public abstract val resultDeserializationStrategy: DeserializationStrategy<R>
+    public abstract val responseDeserializer: DeserializationStrategy<R>
+
+    /**
+     * The [TelegramApiResult]'s [DeserializationStrategy] of this Method.
+     */
+    public abstract val resultDeserializer: DeserializationStrategy<TelegramApiResult<R>>
+
+    public companion object {
+
+    }
 }
 
-public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<Unit?, R>() {
+public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<R>() {
     override val body: Unit?
         get() = null
 }
 
-public abstract class JsonBodyTelegramApi<T, R : Any> : TelegramApi<T, R>()
+public abstract class JsonBodyTelegramApi<R : Any> : TelegramApi<R>()
 
-public abstract class FormBodyTelegramApi<R : Any> : TelegramApi<FormDataContent, R>()
+public abstract class FormBodyTelegramApi<R : Any> : TelegramApi<R>() {
+    abstract override val body: FormDataContent
+}

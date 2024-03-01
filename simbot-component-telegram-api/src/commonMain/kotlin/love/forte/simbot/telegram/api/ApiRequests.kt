@@ -22,16 +22,17 @@ package love.forte.simbot.telegram.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.content.*
+import love.forte.simbot.common.serialization.guessSerializer
 import love.forte.simbot.telegram.Telegram
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Request the [Telegram Method][method] by [client] with [token].
+ * Request the [TelegramApi] by [client] with [token].
  *
  * @param client The [HttpClient]
  * @param token The bot token in the query API (should with the prefix `bot`).
@@ -40,7 +41,7 @@ import kotlin.jvm.JvmSynthetic
  * Default is [Telegram.BASE_SERVER_VALUE].
  */
 @JvmSynthetic
-public suspend inline fun <reified T, R : Any> TelegramApi<T, R>.requestRaw(
+public suspend fun TelegramApi<*>.requestRaw(
     client: HttpClient,
     token: String,
     server: String? = null,
@@ -65,7 +66,14 @@ public suspend inline fun <reified T, R : Any> TelegramApi<T, R>.requestRaw(
         is JsonBodyTelegramApi -> {
             builder.method = HttpMethod.Post
             builder.headers.append(HttpHeaders.ContentType, ContentType.Application.Json)
-            builder.setBody(method.body)
+            when (val b = method.body) {
+                null -> {}
+                is OutgoingContent -> builder.setBody(b)
+                else -> {
+                    val guessed = guessSerializer(b, Telegram.DefaultJson.serializersModule)
+                    builder.setBody(Telegram.DefaultJson.encodeToString(guessed, b))
+                }
+            }
         }
 
         is FormBodyTelegramApi -> {
@@ -78,3 +86,26 @@ public suspend inline fun <reified T, R : Any> TelegramApi<T, R>.requestRaw(
     return client.request(builder)
 }
 
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestResult(
+    client: HttpClient,
+    token: String,
+    server: String? = null,
+): TelegramApiResult<R> {
+    val rawResponse = requestRaw(client, token, server)
+    val raw = rawResponse.bodyAsText()
+    // decode as result
+    return Telegram.DefaultJson.decodeFromString(resultDeserializer, raw)
+}
+
+/**
+ * @throws TelegramApiResultNotOkException
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestData(
+    client: HttpClient,
+    token: String,
+    server: String? = null,
+): R {
+    return requestResult(client, token, server).resultOrThrow()
+}

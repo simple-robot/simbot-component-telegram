@@ -2,8 +2,6 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
-import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
-import util.isCi
 
 plugins {
     kotlin("multiplatform")
@@ -52,7 +50,7 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
 
             api(libs.simbot.logger)
-            api(libs.simbot.common.apidefinition)
+            // api(libs.simbot.common.apidefinition)
             api(libs.simbot.common.suspend)
             api(libs.simbot.common.core)
             compileOnly(libs.simbot.common.annotations)

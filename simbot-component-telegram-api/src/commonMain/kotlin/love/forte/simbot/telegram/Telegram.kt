@@ -18,6 +18,8 @@
 package love.forte.simbot.telegram
 
 import io.ktor.http.*
+import kotlinx.serialization.json.Json
+import kotlin.jvm.JvmField
 
 public object Telegram {
     /**
@@ -36,6 +38,17 @@ public object Telegram {
     /**
      * The [Url] value of [BASE_SERVER_VALUE].
      */
+    @JvmField
     public val BaseServerUrl: Url = Url(BASE_SERVER_VALUE)
 
+    /**
+     * A default [Json].
+     */
+    @JvmField
+    public val DefaultJson: Json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+        allowSpecialFloatingPointValues = true
+        prettyPrint = false
+    }
 }
