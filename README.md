@@ -34,7 +34,7 @@ This includes the implementation of the API,
 the implementation of events and the bots listening and interaction with events.
 
 The Telegram Component can be used as a low-level API dependency,
-The lightweight Telegram event scheduling framework uses,
+The lightweight Telegram event scheduling framework or SDK uses,
 It is also possible to quickly develop a powerful Telegram Bot based on the simbot core library!
 
 - Based on [`Kotlin`](https://kotlinlang.org/) and [KMP][KMP], and provide friendly Java API.
