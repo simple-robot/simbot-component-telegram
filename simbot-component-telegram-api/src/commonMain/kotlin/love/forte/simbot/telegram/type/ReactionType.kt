@@ -24,14 +24,15 @@ import kotlinx.serialization.Serializable
  * [ReactionType](https://core.telegram.org/bots/api#reactiontype)
  *
  * This object describes the type of a reaction. Currently, it can be one of
- * ReactionTypeEmoji ReactionTypeCustomEmoji
+ * - [ReactionTypeEmoji]
+ * - [ReactionTypeCustomEmoji]
  *
  * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
-public class ReactionType {
-    // TODO Empty class?
+public sealed class ReactionType {
+    // TODO 后续添加的 unknown type?
 
 }
 
@@ -44,13 +45,14 @@ public class ReactionType {
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ReactionTypeCustomEmoji.TYPE)
 public data class ReactionTypeCustomEmoji(
-    /**
-     * Type of the reaction, always “custom_emoji”
-     *
-     * type: `String`
-     */
-    public val type: String,
+    // /**
+    //  * Type of the reaction, always “custom_emoji”
+    //  *
+    //  * type: `String`
+    //  */
+    // public val type: String,
     /**
      * Custom emoji identifier
      *
@@ -58,7 +60,11 @@ public data class ReactionTypeCustomEmoji(
      */
     @SerialName("custom_emoji_id")
     public val customEmojiId: String,
-)
+) : ReactionType() {
+    public companion object {
+        public const val TYPE: String = "custom_emoji"
+    }
+}
 
 /**
  * [ReactionTypeEmoji](https://core.telegram.org/bots/api#reactiontypeemoji)
@@ -69,21 +75,28 @@ public data class ReactionTypeCustomEmoji(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ReactionTypeEmoji.TYPE)
 public data class ReactionTypeEmoji(
+    // /**
+    //  * Type of the reaction, always “emoji”
+    //  *
+    //  * type: `String`
+    //  */
+    // public val type: String,
     /**
-     * Type of the reaction, always “emoji”
-     *
-     * type: `String`
-     */
-    public val type: String,
-    /**
-     * Reaction emoji. 
-     * Currently, it can be one of "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-     * "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-     * "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-     * "", "", "", "", "", "", "", "", ""
+     * Reaction emoji.
+     * Currently, it can be one of "👍", "👎", "❤", "🔥", "🥰", "👏", "😁", "🤔", "🤯", "😱",
+     * "🤬", "😢", "🎉", "🤩", "🤮", "💩", "🙏", "👌", "🕊", "🤡", "🥱", "🥴", "😍", "🐳",
+     * "❤‍🔥", "🌚", "🌭", "💯", "🤣", "⚡", "🍌", "🏆", "💔", "🤨", "😐", "🍓", "🍾", "💋",
+     * "🖕", "😈", "😴", "😭", "🤓", "👻", "👨‍💻", "👀", "🎃", "🙈", "😇", "😨", "🤝", "✍", "🤗",
+     * "🫡", "🎅", "🎄", "☃", "💅", "🤪", "🗿", "🆒", "💘", "🙉", "🦄", "😘", "💊", "🙊", "😎",
+     * "👾", "🤷‍♂", "🤷", "🤷‍♀", "😡"
      *
      * type: `String`
      */
     public val emoji: String,
-)
+) : ReactionType() {
+    public companion object {
+        public const val TYPE: String = "emoji"
+    }
+}
