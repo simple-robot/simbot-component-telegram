@@ -25,40 +25,175 @@ import kotlinx.serialization.Serializable
  *
  * This object represents a Telegram user or bot.
  *
- * @property id Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
- * @property isBot True, if this user is a bot
- * @property firstName User's or bot's first name
- * @property lastName Optional. User's or bot's last name
- * @property username Optional. User's or bot's username
- * @property languageCode Optional. IETF language tag of the user's language
- * @property isPremium Optional. True, if this user is a Telegram Premium user
- * @property addedToAttachmentMenu Optional. True, if this user added the bot to the attachment menu
- * @property canJoinGroups Optional. True, if the bot can be invited to groups. Returned only in getMe.
- * @property canReadAllGroupMessages Optional. True, if privacy mode is disabled for the bot. Returned only in getMe.
- * @property supportsInlineQueries Optional. True, if the bot supports inline queries. Returned only in getMe.
- *
+ * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
 public data class User(
-    val id: Long,
+    /**
+     * Unique identifier for this user or bot. 
+     * This number may have more than 32 significant bits and some programming languages may have
+     * difficulty/silent defects in interpreting it. 
+     * But it has at most 52 significant bits, so a 64-bit integer or double-precision float type
+     * are safe for storing this identifier.
+     *
+     * type: `Integer`
+     */
+    public val id: Long,
+    /**
+     * True, if this user is a bot
+     *
+     * type: `Boolean`
+     */
     @SerialName("is_bot")
-    val isBot: Boolean,
+    public val isBot: Boolean,
+    /**
+     * User's or bot's first name
+     *
+     * type: `String`
+     */
     @SerialName("first_name")
-    val firstName: String,
+    public val firstName: String,
+    /**
+     * Optional. 
+     * User's or bot's last name
+     *
+     * type: `String`
+     */
     @SerialName("last_name")
-    val lastName: String? = null,
-    val username: String? = null,
+    public val lastName: String? = null,
+    /**
+     * Optional. 
+     * User's or bot's username
+     *
+     * type: `String`
+     */
+    public val username: String? = null,
+    /**
+     * Optional. 
+     * IETF language tag of the user's language
+     *
+     * type: `String`
+     */
     @SerialName("language_code")
-    val languageCode: String? = null,
+    public val languageCode: String? = null,
+    /**
+     * Optional. 
+     * True, if this user is a Telegram Premium user
+     *
+     * type: `True`
+     */
     @SerialName("is_premium")
-    val isPremium: Boolean? = true,
+    public val isPremium: Boolean? = true,
+    /**
+     * Optional. 
+     * True, if this user added the bot to the attachment menu
+     *
+     * type: `True`
+     */
     @SerialName("added_to_attachment_menu")
-    val addedToAttachmentMenu: Boolean? = true,
+    public val addedToAttachmentMenu: Boolean? = true,
+    /**
+     * Optional. 
+     * True, if the bot can be invited to groups. 
+     * Returned only in getMe.
+     *
+     * type: `Boolean`
+     */
     @SerialName("can_join_groups")
-    val canJoinGroups: Boolean? = null,
+    public val canJoinGroups: Boolean? = null,
+    /**
+     * Optional. 
+     * True, if privacy mode is disabled for the bot. 
+     * Returned only in getMe.
+     *
+     * type: `Boolean`
+     */
     @SerialName("can_read_all_group_messages")
-    val canReadAllGroupMessages: Boolean? = null,
+    public val canReadAllGroupMessages: Boolean? = null,
+    /**
+     * Optional. 
+     * True, if the bot supports inline queries. 
+     * Returned only in getMe.
+     *
+     * type: `Boolean`
+     */
     @SerialName("supports_inline_queries")
-    val supportsInlineQueries: Boolean? = null,
+    public val supportsInlineQueries: Boolean? = null,
+)
+
+/**
+ * [UserChatBoosts](https://core.telegram.org/bots/api#userchatboosts)
+ *
+ * This object represents a list of boosts added to a chat by a user.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class UserChatBoosts(
+    /**
+     * The list of boosts added to the chat by the user
+     *
+     * type: `Array of ChatBoost`
+     */
+    public val boosts: List<ChatBoost> = emptyList(),
+)
+
+/**
+ * [UserProfilePhotos](https://core.telegram.org/bots/api#userprofilephotos)
+ *
+ * This object represent a user's profile pictures.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class UserProfilePhotos(
+    /**
+     * Total number of profile pictures the target user has
+     *
+     * type: `Integer`
+     */
+    @SerialName("total_count")
+    public val totalCount: Int,
+    /**
+     * Requested profile pictures (in up to 4 sizes each)
+     *
+     * type: `Array of Array of PhotoSize`
+     */
+    public val photos: List<List<PhotoSize>> = emptyList(),
+)
+
+/**
+ * [UsersShared](https://core.telegram.org/bots/api#usersshared)
+ *
+ * This object contains information about the users whose identifiers were shared with the bot using
+ * a KeyboardButtonRequestUsers button.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class UsersShared(
+    /**
+     * Identifier of the request
+     *
+     * type: `Integer`
+     */
+    @SerialName("request_id")
+    public val requestId: Int,
+    /**
+     * Identifiers of the shared users. 
+     * These numbers may have more than 32 significant bits and some programming languages may have
+     * difficulty/silent defects in interpreting them. 
+     * But they have at most 52 significant bits, so 64-bit integers or double-precision float types
+     * are safe for storing these identifiers. 
+     * The bot may not have access to the users and could be unable to use these identifiers, unless
+     * the users are already known to the bot by some other means.
+     *
+     * type: `Array of Integer`
+     */
+    @SerialName("user_ids")
+    public val userIds: List<Long> = emptyList(),
 )

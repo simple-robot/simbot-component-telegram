@@ -20,7 +20,7 @@ package love.forte.simbot.telegram.api.bot
 import kotlinx.serialization.DeserializationStrategy
 import love.forte.simbot.telegram.api.EmptyBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
-import love.forte.simbot.telegram.model.User
+import love.forte.simbot.telegram.type.User
 import kotlin.jvm.JvmStatic
 
 
