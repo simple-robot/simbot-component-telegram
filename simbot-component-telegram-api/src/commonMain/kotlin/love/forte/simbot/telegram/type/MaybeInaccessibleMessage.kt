@@ -30,7 +30,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public class MaybeInaccessibleMessage {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }

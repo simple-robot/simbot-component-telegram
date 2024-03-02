@@ -15,21 +15,46 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.type
+package love.forte.simbot.telegram.payment
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * [GeneralForumTopicHidden](https://core.telegram.org/bots/api#generalforumtopichidden)
+ * [ShippingAddress](https://core.telegram.org/bots/api#shippingaddress)
  *
- * This object represents a service message about General forum topic hidden in the chat. Currently
- * holds no information.
+ * This object represents a shipping address.
  *
- * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
-public class GeneralForumTopicHidden {
-    // TODO Empty class?
-
-}
+public data class ShippingAddress(
+    /**
+     * Two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code
+     */
+    @SerialName("country_code")
+    val countryCode: String,
+    /**
+     * State, if applicable
+     */
+    val state: String,
+    /**
+     * City
+     */
+    val city: String,
+    /**
+     * First line for the address
+     */
+    @SerialName("street_line1")
+    val streetLine1: String,
+    /**
+     * Second line for the address
+     */
+    @SerialName("street_line2")
+    val streetLine2: String,
+    /**
+     * Address post code
+     */
+    @SerialName("post_code")
+    val postCode: String,
+)

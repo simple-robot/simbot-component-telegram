@@ -34,9 +34,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public class MenuButton {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

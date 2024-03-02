@@ -71,9 +71,8 @@ public data class ForumTopic(
  */
 @Serializable
 public class ForumTopicClosed {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**
@@ -148,7 +147,6 @@ public data class ForumTopicEdited(
  */
 @Serializable
 public class ForumTopicReopened {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }

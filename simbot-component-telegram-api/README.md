@@ -3,6 +3,8 @@
 > TODO
 
 
+**API**
+
 ```Kotlin
 val client: HttpClient = ...
 val api = GetMeApi.create()
@@ -10,10 +12,24 @@ val api = GetMeApi.create()
 val result = api.requestData(client, "botTOKEN")
 ```
 
-# Package love.forte.simbot.telegram.api
+**getUpdates as flow (Long polling)**
 
-The Telegram API and [Telegram methods](https://core.telegram.org/bots/api#available-methods).
+```Kotlin
+val client: HttpClient = ...
+// Don't forget to set `request timeout` to a larger value to support client's long polling,
+// e.g. requestTimeoutMillis = 60_000
 
-# Package love.forte.simbot.telegram.type
+val flow = client.getUpdateFlow(
+    token = TOKEN, // Bot token. e.g. "bot123123.aaabbbccc"
+    timeout = 60,  // Optional, but recommended configuration. Suggested `timeout` (to millis) <= `requestTimeout` millis
+    limit = 100,   // Optional. parameter: limit, default: 100
+    onEachResult = { // Optional. callback on eack result responsed. Default is `{ it }`
+        println("On Each: $it")
+        it
+    }
+)
 
-The [Telegram types'](https://core.telegram.org/bots/api#available-types) class definitions.
+flow.collect { update ->
+    // ...
+}
+```

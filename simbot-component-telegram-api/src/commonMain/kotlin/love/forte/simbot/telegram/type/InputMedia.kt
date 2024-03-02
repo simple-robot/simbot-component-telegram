@@ -31,9 +31,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public class InputMedia {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

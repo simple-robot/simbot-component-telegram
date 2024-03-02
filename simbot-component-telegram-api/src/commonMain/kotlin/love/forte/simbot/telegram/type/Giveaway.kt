@@ -143,9 +143,8 @@ public data class GiveawayCompleted(
  */
 @Serializable
 public class GiveawayCreated {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

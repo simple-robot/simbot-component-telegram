@@ -790,9 +790,8 @@ public data class MessageId(
  */
 @Serializable
 public class MessageOrigin {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

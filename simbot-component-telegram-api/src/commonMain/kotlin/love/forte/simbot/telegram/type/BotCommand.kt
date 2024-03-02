@@ -74,9 +74,8 @@ public data class BotCommand(
  */
 @Serializable
 public class BotCommandScope {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

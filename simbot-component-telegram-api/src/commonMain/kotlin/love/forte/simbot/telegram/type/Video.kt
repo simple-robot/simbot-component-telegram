@@ -168,9 +168,8 @@ public data class VideoChatScheduled(
  */
 @Serializable
 public class VideoChatStarted {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

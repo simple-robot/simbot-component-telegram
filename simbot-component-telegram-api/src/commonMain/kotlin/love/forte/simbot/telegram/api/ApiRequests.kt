@@ -86,6 +86,12 @@ public suspend fun TelegramApi<*>.requestRaw(
     return client.request(builder)
 }
 
+/**
+ * @param client see `client` in [requestRaw]
+ * @param token see `token` in [requestRaw]
+ * @param server see `server` in [requestRaw]
+ * @throws TelegramApiResultNotOkException
+ */
 @JvmSynthetic
 public suspend fun <R : Any> TelegramApi<R>.requestResult(
     client: HttpClient,
@@ -99,6 +105,9 @@ public suspend fun <R : Any> TelegramApi<R>.requestResult(
 }
 
 /**
+ * @param client see `client` in [requestRaw]
+ * @param token see `token` in [requestRaw]
+ * @param server see `server` in [requestRaw]
  * @throws TelegramApiResultNotOkException
  */
 @JvmSynthetic

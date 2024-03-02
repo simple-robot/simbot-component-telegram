@@ -612,9 +612,8 @@ public data class ChatBoostRemoved(
  */
 @Serializable
 public class ChatBoostSource {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**
@@ -910,9 +909,8 @@ public data class ChatLocation(
  */
 @Serializable
 public class ChatMember {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }
 
 /**

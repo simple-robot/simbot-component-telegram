@@ -30,7 +30,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public class GeneralForumTopicUnhidden {
-    init {
-        TODO("Empty class?")
-    }
+    // TODO Empty class?
+
 }

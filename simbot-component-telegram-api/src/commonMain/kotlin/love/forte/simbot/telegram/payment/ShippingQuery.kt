@@ -15,21 +15,37 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.type
+package love.forte.simbot.telegram.payment
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.telegram.type.User
 
 /**
- * [GeneralForumTopicHidden](https://core.telegram.org/bots/api#generalforumtopichidden)
+ * [ShippingQuery](https://core.telegram.org/bots/api#shippingquery)
  *
- * This object represents a service message about General forum topic hidden in the chat. Currently
- * holds no information.
+ * This object contains information about an incoming shipping query.
  *
- * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
-public class GeneralForumTopicHidden {
-    // TODO Empty class?
-
-}
+public data class ShippingQuery(
+    /**
+     * Unique query identifier
+     */
+    val id: String,
+    /**
+     * User who sent the query
+     */
+    val from:  User,
+    /**
+     * Bot specified invoice payload
+     */
+    @SerialName("invoice_payload")
+    val invoicePayload: String,
+    /**
+     * User specified shipping address
+     */
+    @SerialName("shipping_address")
+    val shippingAddress: ShippingAddress,
+)
