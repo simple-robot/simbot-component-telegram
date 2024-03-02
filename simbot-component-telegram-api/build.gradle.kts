@@ -24,7 +24,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     `simbot-telegram-dokka-partial-configure`
-    // alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp)
 }
 
 setup(P.ComponentTelegram)
@@ -95,7 +95,7 @@ kotlin {
             implementation("org.jsoup:jsoup:1.17.2")
             // poet
             // https://square.github.io/kotlinpoet/
-            implementation("com.squareup:kotlinpoet:1.16.0")
+            implementation(libs.kotlinPoet)
 
             implementation(libs.ktor.client.cio)
             implementation(libs.log4j.api)
@@ -121,9 +121,23 @@ kotlin {
 
 }
 
-// dependencies {
-//     add("kspJvm", project(":internal-processors:api-reader"))
+
+
+dependencies {
+    add("kspCommonMainMetadata", project(":internal-processors:update-events-processor"))
+}
+
+// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if(name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
 // }
+
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
 //
 // ksp {
 //     arg("qg.api.reader.enable", (!isCi).toString())

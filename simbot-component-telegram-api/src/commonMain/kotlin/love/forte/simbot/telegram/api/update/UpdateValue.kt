@@ -15,15 +15,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.withType
+@file:JvmName("Updates")
+@file:JvmMultifileClass
+
+package love.forte.simbot.telegram.api.update
+
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
+
+/**
+ * The name and value of 'at most one of the optional parameters' in the [Update].
+ *
+ * ```kotlin
+ * val (name, value) = update.updateValue()
+ * ```
+ *
+ * @see Update
+ */
+public data class UpdateValue<T>(val name: String, val value: T)
 
 
-fun Project.useK2(languageVersion: String = "2.0") {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            // TODO useK2
-            // this.languageVersion = languageVersion
-        }
-    }
-}

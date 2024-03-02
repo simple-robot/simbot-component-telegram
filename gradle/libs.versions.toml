@@ -100,6 +100,7 @@ openjdk-jmh-generator-annprocess = { group = "org.openjdk.jmh", name = "jmh-gene
 # ksp
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 # https://square.github.io/kotlinpoet/interop-ksp/
+kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
 kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
 
 # reactor
