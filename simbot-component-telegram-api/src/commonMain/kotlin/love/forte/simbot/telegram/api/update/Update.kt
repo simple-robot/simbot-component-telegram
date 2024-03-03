@@ -17,6 +17,7 @@
 
 @file:JvmName("Updates")
 @file:JvmMultifileClass
+
 package love.forte.simbot.telegram.api.update
 
 import kotlinx.serialization.SerialName
@@ -209,5 +210,4 @@ public data class Update(
     @SerialName("removed_chat_boost")
     val removedChatBoost: ChatBoostRemoved? = null,
 )
-
 

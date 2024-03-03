@@ -15,9 +15,8 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.stdlib
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
-include(":simbot-component-telegram-stdlib")
+public object STDLIB {
+    // 占位
+}

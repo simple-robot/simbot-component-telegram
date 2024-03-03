@@ -83,14 +83,19 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
         val updateValuesObjectBuilder = TypeSpec.objectBuilder(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME))
         updateValuesObjectBuilder.addNamesProperty(updateClass)
-
         updateValuesObjectBuilder.addGetUpdateTypeFunc(updateClass)
+        updateValuesObjectBuilder.addNameConstants(updateClass)
 
         val updateValuesFile = FileSpec.builder(UPDATE_PACKAGE, FILE_NAME)
             .jvmMultifileClass()
             .jvmName(FILE_JVM_NAME)
-            .addFileComment("\n此文件内容均为 **自动生成** 的\n")
+            .addFileComment("""
+                ****************************
+                此文件内容是 **自动生成** 的   *
+                ****************************
+            """.trimIndent())
             .addType(updateValuesObjectBuilder.build())
+            .indent("    ")
             .build()
 
         updateValuesFile.writeTo(
@@ -101,6 +106,10 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
         return emptyList()
     }
+
+    // TODO
+    //  考虑生成一种可以给 Bot.register 使用的类型，
+    //  包括 name 和 T
 
     private fun KSClassDeclaration.optionalPropertiesWithNames(): List<Pair<KSPropertyDeclaration, String>> {
         return getDeclaredProperties()
@@ -118,6 +127,26 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 it to name
             }
             .toList()
+    }
+
+    private fun TypeSpec.Builder.addNameConstants(updateClass: KSClassDeclaration) {
+        val names = updateClass
+            .optionalPropertiesWithNames()
+
+        // val typeName = updateClass.asStarProjectedType().toTypeName()
+
+        for ((property, name) in names) {
+            val member = MemberName(updateClass.toClassName(), property.simpleName.asString())
+
+            addProperty(
+                PropertySpec.builder(
+                    "${name.uppercase()}_NAME", STRING,
+                    KModifier.CONST
+                ).addKdoc("@see %M", member)
+                    .initializer("%S", name)
+                    .build()
+            )
+        }
     }
 
     private fun TypeSpec.Builder.addNamesProperty(updateClass: KSClassDeclaration) {

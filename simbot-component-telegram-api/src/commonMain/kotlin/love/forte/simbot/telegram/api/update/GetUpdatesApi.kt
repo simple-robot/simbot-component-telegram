@@ -114,12 +114,11 @@ public class GetUpdatesApi private constructor(body: Body) : JsonBodyTelegramApi
         val limit: Int? = null,
         val timeout: Int? = null,
         @SerialName("allowed_updates")
-        val allowedUpdates: List<String>? = null,
+        val allowedUpdates: Collection<String>? = null,
     )
 }
 
 /**
- *
  * Create a [Flow] based on Long Polling with [GetUpdatesApi].
  *
  * @receiver The [HttpClient] to call this **long polling**.
@@ -147,7 +146,7 @@ public inline fun HttpClient.getUpdateFlow(
     server: String? = null,
     timeout: Int? = null,
     limit: Int? = null,
-    allowedUpdates: List<String>? = null,
+    allowedUpdates: Collection<String>? = null,
     crossinline onEachResult: (List<Update>) -> List<Update> = { it },
     crossinline onError: (Throwable) -> List<Update> = { if (it is HttpRequestTimeoutException) emptyList() else throw it }
 ): Flow<Update> {
