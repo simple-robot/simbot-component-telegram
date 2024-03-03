@@ -15,8 +15,24 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type.payment
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.Serializable
+
+/**
+ * [SuccessfulPayment](https://core.telegram.org/bots/api#successfulpayment)
+ *
+ * This object contains basic information about a successful payment.
+ *
+ * TODO
+ *
+ * @author ForteScarlet
+ */
+@Serializable
+public data class SuccessfulPayment(
+    /**
+     * Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
+     */
+    val currency: String,
+)
+// TODO

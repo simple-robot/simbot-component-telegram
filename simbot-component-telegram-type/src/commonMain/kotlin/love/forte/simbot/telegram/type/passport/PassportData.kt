@@ -15,8 +15,26 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type.passport
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.Serializable
+
+/**
+ *
+ * [PassportData](https://core.telegram.org/bots/api#passportdata)
+ *
+ * Describes Telegram Passport data shared with the bot by the user.
+ *
+ * @author ForteScarlet
+ */
+@Serializable
+public data class PassportData(
+    /**
+     * Array with information about documents and other Telegram Passport elements that was shared with the bot
+     */
+    val data: List<love.forte.simbot.telegram.type.payment.EncryptedPassportElement> = emptyList(),
+    /**
+     * Encrypted credentials required to decrypt the data
+     */
+    val credentials: love.forte.simbot.telegram.type.payment.EncryptedCredentials
+)

@@ -15,8 +15,26 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * [InlineKeyboardMarkup](https://core.telegram.org/bots/api#inlinekeyboardmarkup)
+ *
+ * This object represents an inline keyboard that appears right next to the message it belongs to.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class InlineKeyboardMarkup(
+    /**
+     * Array of button rows, each represented by an Array of InlineKeyboardButton objects
+     *
+     * type: `Array of Array of InlineKeyboardButton`
+     */
+    @SerialName("inline_keyboard")
+    public val inlineKeyboard: List<List<love.forte.simbot.telegram.type.InlineKeyboardButton>> = emptyList(),
+)

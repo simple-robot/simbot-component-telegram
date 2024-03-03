@@ -23,14 +23,14 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    `simbot-telegram-dokka-partial-configure`
     alias(libs.plugins.ksp)
+    `simbot-telegram-dokka-partial-configure`
 }
 
 setup(P.ComponentTelegram)
 
 useK2()
-configJavaCompileWithModule("simbot.component.telegram.api")
+configJavaCompileWithModule("simbot.telegram.api")
 // apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
 //configJsTestTasks()
@@ -41,7 +41,6 @@ kotlin {
 
     sourceSets.configureEach {
         languageSettings {
-            optIn("love.forte.simbot.qguild.QGInternalApi")
         }
     }
 
@@ -64,10 +63,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(project(":simbot-component-telegram-type"))
             api(libs.kotlinx.coroutines.core)
-
             api(libs.simbot.logger)
-            // api(libs.simbot.common.apidefinition)
             api(libs.simbot.common.suspend)
             api(libs.simbot.common.core)
             compileOnly(libs.simbot.common.annotations)
@@ -128,11 +126,11 @@ dependencies {
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-//     if(name != "kspCommonMainKotlinMetadata") {
-//         dependsOn("kspCommonMainKotlinMetadata")
-//     }
-// }
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
 
 kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")

@@ -48,6 +48,13 @@ Telegram Component 可以作为底层API依赖使用、
 - **API文档**: [**文档引导站点**](https://docs.simbot.forte.love) 中 Telegram 的 [**KDoc站点**](https://docs.simbot.forte.love/components/telegram)
 
 ## 模块引导
+### Type模块
+
+提供 Telegram 中的绝大多数类型定义，并基于
+[Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization)
+实现可序列化。
+
+👉 [前往模块](simbot-component-telegram-type/README_CN.md) 了解更多。
 
 ### API模块
 
@@ -57,7 +64,7 @@ Telegram Component 可以作为底层API依赖使用、
 
 此模块基本不会提供什么多余的实现，其目标为在提供封装的情况下尽可能地保留原始API的使用手感，不做过多的封装。
 
-👉 [前往模块](simbot-component-telegram-api) 了解更多。
+👉 [前往模块](simbot-component-telegram-api/README_CN.md) 了解更多。
 
 ### 标准库模块
 

@@ -68,10 +68,6 @@ public sealed class TelegramApi<R : Any> {
      */
     public open val headers: Headers
         get() = Headers.Empty
-
-    public companion object {
-
-    }
 }
 
 public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<R>() {

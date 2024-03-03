@@ -15,8 +15,30 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.Serializable
+
+/**
+ * [Story](https://core.telegram.org/bots/api#story)
+ *
+ * This object represents a story.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class Story(
+    /**
+     * Chat that posted the story
+     *
+     * type: `Chat`
+     */
+    public val chat: love.forte.simbot.telegram.type.Chat,
+    /**
+     * Unique identifier for the story in the chat
+     *
+     * type: `Integer`
+     */
+    public val id: Int,
+)

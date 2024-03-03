@@ -15,8 +15,32 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * [ReactionCount](https://core.telegram.org/bots/api#reactioncount)
+ *
+ * Represents a reaction added to a message along with the number of times it was added.
+ *
+ * (auto-generated)
+ * @author ForteScarlet
+ */
+@Serializable
+public data class ReactionCount(
+    /**
+     * Type of the reaction
+     *
+     * type: `ReactionType`
+     */
+    public val type: love.forte.simbot.telegram.type.ReactionType,
+    /**
+     * Number of times the reaction was added
+     *
+     * type: `Integer`
+     */
+    @SerialName("total_count")
+    public val totalCount: Int,
+)

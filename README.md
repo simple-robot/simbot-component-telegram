@@ -46,9 +46,18 @@ It is also possible to quickly develop a powerful Telegram Bot based on the simb
 - **API Documentation**: [**The KDoc of Telegram Component**](https://docs.simbot.forte.love/components/telegram) in the [**document guide site**](https://docs.simbot.forte.love). 
 
 ## Modules
+### Type module
+
+Provides definitions for most types in Telegram and supports serialization based on
+[Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization).
+
+👉 [Go to Modules](simbot-component-telegram-type) to learn more.
+
 ### API module
 
-Based on `Ktor`'s [KMP][KMP] implementation for [Telegram API][telegram bot doc],
+Based on [Type module](simbot-component-telegram-type) 
+and [Ktor](https://ktor.io/)'s 
+[KMP][KMP] implementation for [Telegram Bot API][telegram bot doc],
 is a simple, efficient and lightweight API implementation module.
 
 This module provides very little extra implementation.

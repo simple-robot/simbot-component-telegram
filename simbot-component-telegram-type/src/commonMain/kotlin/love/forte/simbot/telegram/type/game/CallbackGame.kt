@@ -15,8 +15,17 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.telegram.type.game
 
-include(":internal-processors:update-events-processor")
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
+import kotlinx.serialization.Serializable
+
+
+/**
+ * [CallbackGame](https://core.telegram.org/bots/api#callbackgame)
+ *
+ * A placeholder, currently holds no information. Use BotFather to set up your game.
+ *
+ * @author ForteScarlet
+ */
+@Serializable
+public class CallbackGame

@@ -21,11 +21,11 @@ package love.forte.simbot.telegram.api.update
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.telegram.inline.ChosenInlineResult
-import love.forte.simbot.telegram.inline.InlineQuery
-import love.forte.simbot.telegram.payment.PreCheckoutQuery
-import love.forte.simbot.telegram.payment.ShippingQuery
 import love.forte.simbot.telegram.type.*
+import love.forte.simbot.telegram.type.inline.ChosenInlineResult
+import love.forte.simbot.telegram.type.inline.InlineQuery
+import love.forte.simbot.telegram.type.payment.PreCheckoutQuery
+import love.forte.simbot.telegram.type.payment.ShippingQuery
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 

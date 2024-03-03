@@ -20,6 +20,7 @@ package love.forte.simbot.telegram.api.update
 import kotlinx.serialization.DeserializationStrategy
 import love.forte.simbot.telegram.api.EmptyBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
+import love.forte.simbot.telegram.type.update.WebhookInfo
 import kotlin.jvm.JvmStatic
 
 
