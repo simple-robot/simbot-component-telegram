@@ -18,4 +18,5 @@
 rootProject.name = "simbot-component-telegram"
 
 include(":internal-processors:update-events-processor")
+include(":internal-processors:api-deserialization-strategy-processor")
 include(":simbot-component-telegram-api")

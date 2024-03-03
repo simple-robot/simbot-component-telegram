@@ -56,6 +56,10 @@ public suspend fun TelegramApi<*>.requestRaw(
     // Header Accept
     builder.headers {
         append(HttpHeaders.Accept, ContentType.Application.Json)
+        val headers = headers
+        if (!headers.isEmpty()) {
+            appendAll(headers)
+        }
     }
     when (val method = this) {
         is EmptyBodyTelegramApi -> {
@@ -87,6 +91,8 @@ public suspend fun TelegramApi<*>.requestRaw(
 }
 
 /**
+ * Request the [TelegramApi] by [client] with [token].
+ *
  * @param client see `client` in [requestRaw]
  * @param token see `token` in [requestRaw]
  * @param server see `server` in [requestRaw]
@@ -105,6 +111,8 @@ public suspend fun <R : Any> TelegramApi<R>.requestResult(
 }
 
 /**
+ * Request the [TelegramApi] by [client] with [token].
+ *
  * @param client see `client` in [requestRaw]
  * @param token see `token` in [requestRaw]
  * @param server see `server` in [requestRaw]

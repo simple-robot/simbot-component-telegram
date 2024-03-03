@@ -18,6 +18,7 @@
 package love.forte.simbot.telegram.api
 
 import io.ktor.client.request.forms.*
+import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 
 
@@ -61,6 +62,13 @@ public sealed class TelegramApi<R : Any> {
      */
     public abstract val resultDeserializer: DeserializationStrategy<TelegramApiResult<R>>
 
+    /**
+     * Headers for request.
+     * Default is [Headers.Empty].
+     */
+    public open val headers: Headers
+        get() = Headers.Empty
+
     public companion object {
 
     }
@@ -74,5 +82,5 @@ public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<R>() {
 public abstract class JsonBodyTelegramApi<R : Any> : TelegramApi<R>()
 
 public abstract class FormBodyTelegramApi<R : Any> : TelegramApi<R>() {
-    abstract override val body: FormDataContent
+    abstract override val body: MultiPartFormDataContent
 }

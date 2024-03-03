@@ -15,14 +15,34 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-
-fun Project.useK2(languageVersion: String = "2.0") {
-    logger.warn("暂时关闭 K2，等待 Kotlin 2.0 正式版发布。languageVersion = {}", languageVersion)
-    // tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    //     kotlinOptions {
-    //         this.languageVersion = languageVersion
-    //     }
-    // }
+plugins {
+    kotlin("jvm")
 }
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(11)
+    compilerOptions {
+        javaParameters = true
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
+}
+
+configJavaCompileWithModule()
+
+dependencies {
+//    implementation(project(":annotations"))
+    api(libs.ksp)
+    api(libs.kotlinPoet.ksp)
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+
