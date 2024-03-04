@@ -15,7 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("EventHandlers")
+@file:JvmName("EventProcessors")
 @file:JvmMultifileClass
 
 package love.forte.simbot.telegram.stdlib.bot
@@ -27,12 +27,10 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 
-// TODO JVM
-
 /**
  * An event ([Update]) processor.
  *
- * Tip: It can be created under the JVM platform using a factory function in `EventHandlers`.
+ * Tip: It can be created under the JVM platform using a factory function in `EventProcessors`.
  *
  * @author ForteScarlet
  */
@@ -54,7 +52,5 @@ public fun interface EventProcessor {
     public suspend fun process(update: Update, name: String, value: Any)
 }
 
+// TODO use Event type?
 
-public interface ProcessorHandle {
-    public fun disposed()
-}

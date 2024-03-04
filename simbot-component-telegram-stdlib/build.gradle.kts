@@ -78,6 +78,8 @@ kotlin {
 
         jvmMain.dependencies {
 //            compileOnly(libs.simbot.api) // use @Api4J annotation
+            compileOnly(libs.reactor.core)
+            compileOnly(libs.kotlinx.coroutines.reactive)
         }
 
         jvmTest.dependencies {

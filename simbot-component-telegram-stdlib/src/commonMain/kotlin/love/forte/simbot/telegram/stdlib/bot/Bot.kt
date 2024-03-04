@@ -91,9 +91,11 @@ public interface Bot : CoroutineScope {
      * when modified to a non-null value,
      * the internal long polling task will be enabled or reconfigured.
      *
-     * If [isStarted] = false,
+     * If [isStarted] == `false`,
      * the modified value will be retained,
      * but the long-polling task is not started.
+     *
+     * If [isActive] == `false`, the change is invalid.
      *
      * The first long-polling task appears either
      * when start is used (the initial [longPolling] is not null)
@@ -107,6 +109,10 @@ public interface Bot : CoroutineScope {
      *
      * Modifications and reads are thread-safe
      * and are implemented internally on top of [StateFlow].
+     *
+     * However, the changes do not take effect in real time.
+     * If you make multiple changes before the last modified task completes,
+     * only the most recent value will be detected afterward.
      */
     public var longPolling: LongPolling?
 
@@ -198,8 +204,8 @@ public class BotConfiguration {
 
     public companion object {
         /**
-         * Default value for long polling timeout
-         * (includes [LongPolling] and internal long polling [HttpClient])。
+         * Default value for long polling timeout: 30 minutes.
+         * (includes [LongPolling] and internal long polling [HttpClient])
          */
         @InternalSimbotAPI
         public val DefaultLongPollingTimeout: Duration = 30.minutes
@@ -223,6 +229,11 @@ public data class LongPolling(
 )
 
 /**
+ * [Bot.registerEventProcessor] simplified extension.
+ * Matches events based on type (and optional name).
+ *
+ * Note: If the matched type does not match the name, the result may never be matched.
+ *
  * ```kotlin
  * bot.process<Message> { update, name, event: Message ->
  *      // ...
@@ -260,6 +271,29 @@ public inline fun <reified T> Bot.process(
     }
 }
 
+/**
+ * [Bot.registerPreEventProcessor] simplified extension.
+ * Matches events based on type (and optional name).
+ *
+ * Note: If the matched type does not match the name, the result may never be matched.
+ *
+ * ```kotlin
+ * bot.preProcess<Message> { update, name, event: Message ->
+ *      // ...
+ * }
+ *
+ * bot.preProcess<Message>("edited_message") { update, name, event: Message ->
+ *      // ...
+ * }
+ *
+ * bot.preProcess<Message>(UpdateValues.EDITED_MESSAGE_NAME) { update, name, event: Message ->
+ *      // ...
+ * }
+ * ```
+ *
+ * @see Bot.registerPreEventProcessor
+ * @see EventProcessor.process
+ */
 @JvmSynthetic
 public inline fun <reified T : Any> Bot.preProcess(
     name: String? = null,
