@@ -15,8 +15,33 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.stdlib
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-public object STDLIB {
-    // 占位
+plugins {
+    kotlin("jvm")
 }
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(11)
+    compilerOptions {
+        javaParameters = true
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
+}
+
+configJavaCompileWithModule()
+
+dependencies {
+    api(libs.ksp)
+    api(libs.kotlinPoet.ksp)
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+

@@ -19,6 +19,7 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("multiplatform")
@@ -119,8 +120,6 @@ kotlin {
 
 }
 
-
-
 dependencies {
     add("kspCommonMainMetadata", project(":internal-processors:update-events-processor"))
 }
@@ -136,6 +135,11 @@ kotlin.sourceSets.commonMain {
     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }
 
+tasks.withType<DokkaTaskPartial>().configureEach {
+    dokkaSourceSets.configureEach {
+        suppressGeneratedFiles.set(false)
+    }
+}
 //
 // ksp {
 //     arg("qg.api.reader.enable", (!isCi).toString())

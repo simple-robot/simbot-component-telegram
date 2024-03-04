@@ -34,7 +34,6 @@ import love.forte.simbot.telegram.stdlib.event.Event
 import love.forte.simbot.telegram.stdlib.event.EventProcessor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.jvm.JvmSynthetic
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -310,7 +309,6 @@ public data class LongPolling(
  * @see Bot.registerEventProcessor
  * @see EventProcessor.process
  */
-@JvmSynthetic
 public inline fun <reified T> Bot.process(
     name: String? = null,
     crossinline processor: suspend (Event, T) -> Unit
@@ -357,7 +355,6 @@ public inline fun <reified T> Bot.process(
  * @see Bot.registerPreEventProcessor
  * @see EventProcessor.process
  */
-@JvmSynthetic
 public inline fun <reified T : Any> Bot.preProcess(
     name: String? = null,
     crossinline processor: suspend (Event, T) -> Unit

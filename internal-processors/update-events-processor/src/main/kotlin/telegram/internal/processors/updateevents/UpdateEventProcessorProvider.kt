@@ -17,9 +17,8 @@
 
 package telegram.internal.processors.updateevents
 
-import com.google.devtools.ksp.KspExperimental
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.getDeclaredProperties
-import com.google.devtools.ksp.getKotlinClassByName
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -99,17 +98,17 @@ private const val RESOLVE_FUN_NAME = "resolveTo"
 private class UpdateEventProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     private val generated = AtomicBoolean(false)
 
-    @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         if (!generated.compareAndSet(false, true)) {
             environment.logger.warn("Processor was used.")
             return emptyList()
         }
 
-        val updateClass = resolver.getKotlinClassByName(UPDATE_CLASS_NAME)
+        val updateClass = resolver.getClassDeclarationByName(UPDATE_CLASS_NAME)
             ?: throw NoSuchElementException("Class: $UPDATE_CLASS_NAME")
 
         val updateValuesObjectBuilder = TypeSpec.objectBuilder(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME))
+        updateValuesObjectBuilder.addKdoc("Some generated constants and helper methods related to [%T]\n\n", UpdateClassName)
         updateValuesObjectBuilder.addKdoc("(Automatically generated at %L)", Instant.now().toString())
 
         val optionalPropertiesWithNames = updateClass.optionalPropertiesWithNames()
@@ -192,14 +191,25 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addParameter("block", lambda)
 
             for ((property, name) in optionalPropertiesWithNames) {
-                addStatement("update.%N?.also { return block(%N, it) }", property.simpleName.asString(), constantName(name))
+                addStatement(
+                    "update.%N?.also { return block(%N, it) }",
+                    property.simpleName.asString(),
+                    constantName(name)
+                )
             }
 
             addStatement("throw %T()", UnknownUpdateFieldExceptionClassName)
 
             returns(tv)
 
-            addKdoc("@throws %T If no optional properties that are not null are found in [%T]", UnknownUpdateFieldExceptionClassName, UpdateClassName)
+            addKdoc("Find the first optional property that is not null based on [%T], " +
+                    "and use [block] to process the serialized name and value of this property." +
+                    "\n\n", UpdateClassName)
+            addKdoc(
+                "@throws %T If no optional properties that are not null are found in [%T]",
+                UnknownUpdateFieldExceptionClassName,
+                UpdateClassName
+            )
         }
 
         addFunction(func.build())
@@ -219,7 +229,9 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 PropertySpec.builder(
                     constantName(name), STRING,
                     KModifier.CONST
-                ).addKdoc("@see %M", member)
+                )
+                    .addKdoc("The serialized name constant of [%M]\n\n", member)
+                    .addKdoc("@see %M", member)
                     .initializer("%S", name)
                     .build()
                     .also {
@@ -255,8 +267,11 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
     private fun TypeSpec.Builder.addGetUpdateTypeFun(
         optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>
     ) {
+        val (fp, fn) = optionalPropertiesWithNames.first()
         val getUpdateTypeFun = FunSpec.builder(GET_UPDATE_TYPE_FUNC_NAME).apply {
             jvmStatic()
+            addKdoc("Gets the type of the [%T] property based on its serialized name.\n", UpdateClassName)
+            addKdoc("For example: `%L` -> [%T]\n\n", fn, fp.type.toTypeName())
             addKdoc("@throws %T If name not in [Names]", IllegalArgumentExceptionClassName)
 
             val nameParam = ParameterSpec.builder("name", STRING).build()

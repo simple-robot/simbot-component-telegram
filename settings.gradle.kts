@@ -18,6 +18,8 @@
 rootProject.name = "simbot-component-telegram"
 
 include(":internal-processors:update-events-processor")
+include(":internal-processors:stdlib-processor-extensions-processor")
+
 include(":simbot-component-telegram-type")
 include(":simbot-component-telegram-api")
 include(":simbot-component-telegram-stdlib")

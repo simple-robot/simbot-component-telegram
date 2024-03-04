@@ -66,7 +66,6 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             suppress.set(true)
         }
 
-
         fun externalDocumentation(docUri: URI) {
             externalDocumentationLink {
                 url.set(docUri.toURL())
