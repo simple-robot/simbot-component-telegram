@@ -36,6 +36,7 @@ import com.squareup.kotlinpoet.jvm.jvmStatic
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
+import java.time.Instant
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KClass
 
@@ -56,17 +57,44 @@ class UpdateEventProcessorProvider : SymbolProcessorProvider {
         UpdateEventProcessor(environment)
 }
 
-private val ILL_ARG_EX = ClassName("kotlin", "IllegalArgumentException")
+private val IllegalArgumentExceptionClassName = ClassName("kotlin", "IllegalArgumentException")
+private val UnknownUpdateFieldExceptionClassName =
+    ClassName("love.forte.simbot.telegram.api", "UnknownUpdatedFieldException")
 
 private const val SERIAL_NAME_ANNOTATION_TYPE = "kotlinx.serialization.SerialName"
 private const val UPDATE_PACKAGE = "love.forte.simbot.telegram.api.update"
-private const val UPDATE_CLASS_NAME = "love.forte.simbot.telegram.api.update.Update"
+
+private const val UPDATE_CLASS_NAME = "$UPDATE_PACKAGE.Update"
+private val UpdateClassName = ClassName(UPDATE_PACKAGE, "Update")
+
 private const val UPDATE_VALUES_CLASS_NAME = "UpdateValues"
 private const val FILE_NAME = "Updates.Generated"
 private const val FILE_JVM_NAME = "Updates"
 
 private const val NAME_PROPERTY_NAME = "Names"
+
+/**
+ * 生成一个函数，
+ * 根据 `name` 返回对应
+ * `Update` 中字段的类型。
+ *
+ * ```kotlin
+ * // throws kotlin.IllegalArgumentException
+ * fun getUpdateType(name: String): KClass<*>
+ * ```
+ *
+ */
 private const val GET_UPDATE_TYPE_FUNC_NAME = "getUpdateType"
+
+/**
+ * 生成一个 inline 函数:
+ *
+ * ```kotlin
+ * @JvmName("resolveTo")
+ * inline fun <T> resolveTo(update, block: (name, content) -> T): T // or throw UnknownUpdatedFieldException
+ * ```
+ */
+private const val RESOLVE_FUN_NAME = "resolveTo"
 
 private class UpdateEventProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     private val generated = AtomicBoolean(false)
@@ -82,18 +110,25 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             ?: throw NoSuchElementException("Class: $UPDATE_CLASS_NAME")
 
         val updateValuesObjectBuilder = TypeSpec.objectBuilder(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME))
-        updateValuesObjectBuilder.addNamesProperty(updateClass)
-        updateValuesObjectBuilder.addGetUpdateTypeFunc(updateClass)
-        updateValuesObjectBuilder.addNameConstants(updateClass)
+        updateValuesObjectBuilder.addKdoc("(Automatically generated at %L)", Instant.now().toString())
+
+        val optionalPropertiesWithNames = updateClass.optionalPropertiesWithNames()
+
+        val nameConstants = updateValuesObjectBuilder.addNameConstants(optionalPropertiesWithNames, updateClass)
+        updateValuesObjectBuilder.addNamesProperty(updateClass, nameConstants)
+        updateValuesObjectBuilder.addGetUpdateTypeFun(optionalPropertiesWithNames)
+        updateValuesObjectBuilder.addResolveToFun(optionalPropertiesWithNames)
 
         val updateValuesFile = FileSpec.builder(UPDATE_PACKAGE, FILE_NAME)
             .jvmMultifileClass()
             .jvmName(FILE_JVM_NAME)
-            .addFileComment("""
+            .addFileComment(
+                """
                 ****************************
-                此文件内容是 **自动生成** 的   *
+                此文件内容是 **自动生成** 的
                 ****************************
-            """.trimIndent())
+            """.trimIndent()
+            )
             .addType(updateValuesObjectBuilder.build())
             .indent("    ")
             .build()
@@ -106,10 +141,6 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
         return emptyList()
     }
-
-    // TODO
-    //  考虑生成一种可以给 Bot.register 使用的类型，
-    //  包括 name 和 T
 
     private fun KSClassDeclaration.optionalPropertiesWithNames(): List<Pair<KSPropertyDeclaration, String>> {
         return getDeclaredProperties()
@@ -129,36 +160,86 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             .toList()
     }
 
-    private fun TypeSpec.Builder.addNameConstants(updateClass: KSClassDeclaration) {
-        val names = updateClass
-            .optionalPropertiesWithNames()
+    private fun TypeSpec.Builder.addResolveToFun(
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>
+    ) {
+        /*
+         *  inline fun <T> resolveTo(update, block: (name, content) -> T): T {
+         *     update.a?.also { return block('*_NAME', it) }
+         *     ...
+         *     throw UnknownUpdatedFieldException()
+         *  }
+         */
 
-        // val typeName = updateClass.asStarProjectedType().toTypeName()
+        val tv = TypeVariableName("T")
 
-        for ((property, name) in names) {
+        val func = FunSpec.builder(RESOLVE_FUN_NAME).apply {
+            jvmName(RESOLVE_FUN_NAME)
+            jvmStatic()
+            addModifiers(KModifier.INLINE)
+            addTypeVariable(tv)
+
+            addParameter("update", UpdateClassName)
+            val lambda = LambdaTypeName.get(
+                receiver = null,
+                parameters = listOf(
+                    ParameterSpec.unnamed(STRING),
+                    ParameterSpec.unnamed(ANY)
+                ),
+                returnType = tv
+            )
+
+            addParameter("block", lambda)
+
+            for ((property, name) in optionalPropertiesWithNames) {
+                addStatement("update.%N?.also { return block(%N, it) }", property.simpleName.asString(), constantName(name))
+            }
+
+            addStatement("throw %T()", UnknownUpdateFieldExceptionClassName)
+
+            returns(tv)
+
+            addKdoc("@throws %T If no optional properties that are not null are found in [%T]", UnknownUpdateFieldExceptionClassName, UpdateClassName)
+        }
+
+        addFunction(func.build())
+
+    }
+
+    private fun TypeSpec.Builder.addNameConstants(
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>,
+        updateClass: KSClassDeclaration
+    ): List<PropertySpec> {
+        val nameConstants = mutableListOf<PropertySpec>()
+
+        for ((property, name) in optionalPropertiesWithNames) {
             val member = MemberName(updateClass.toClassName(), property.simpleName.asString())
 
             addProperty(
                 PropertySpec.builder(
-                    "${name.uppercase()}_NAME", STRING,
+                    constantName(name), STRING,
                     KModifier.CONST
                 ).addKdoc("@see %M", member)
                     .initializer("%S", name)
                     .build()
+                    .also {
+                        nameConstants.add(it)
+                    }
             )
         }
+
+        return nameConstants
     }
 
-    private fun TypeSpec.Builder.addNamesProperty(updateClass: KSClassDeclaration) {
-        val names = updateClass
-            .optionalPropertiesWithNames()
-            .mapTo(mutableSetOf()) { it.second }
-
+    private fun TypeSpec.Builder.addNamesProperty(
+        updateClass: KSClassDeclaration,
+        nameConstants: List<PropertySpec>
+    ) {
         val typeName = updateClass.asStarProjectedType().toTypeName()
 
         addProperty(
             PropertySpec.builder(NAME_PROPERTY_NAME, SET.parameterizedBy(STRING))
-                .initializer("setOf(${names.joinToString(", ") { "%S" }})", *names.toTypedArray())
+                .initializer("setOf(${nameConstants.joinToString(", ") { it.name }})")
                 .addKdoc(
                     """
                     All optional parameters' name in [%T]
@@ -171,13 +252,12 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
         )
     }
 
-    private fun TypeSpec.Builder.addGetUpdateTypeFunc(updateClass: KSClassDeclaration) {
-        val optionalPropertiesWithNames =
-            updateClass.optionalPropertiesWithNames()
-
+    private fun TypeSpec.Builder.addGetUpdateTypeFun(
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>
+    ) {
         val getUpdateTypeFun = FunSpec.builder(GET_UPDATE_TYPE_FUNC_NAME).apply {
             jvmStatic()
-            addKdoc("@throws %T If name not in [Names]", ILL_ARG_EX)
+            addKdoc("@throws %T If name not in [Names]", IllegalArgumentExceptionClassName)
 
             val nameParam = ParameterSpec.builder("name", STRING).build()
             addParameter(nameParam)
@@ -187,13 +267,17 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 beginControlFlow("return when(${nameParam.name})")
 
                 for ((parameter, name) in optionalPropertiesWithNames) {
-                    addStatement("%S -> %T::class", name, parameter.type.toTypeName().copy(nullable = false))
+                    addStatement(
+                        "%N -> %T::class",
+                        constantName(name),
+                        parameter.type.toTypeName().copy(nullable = false)
+                    )
 
                 }
 
                 addStatement(
                     "else -> throw %T(%P)",
-                    ILL_ARG_EX,
+                    IllegalArgumentExceptionClassName,
                     "Unknown name: \$${nameParam.name}"
                 )
                 endControlFlow()
@@ -203,5 +287,7 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
         addFunction(getUpdateTypeFun)
     }
 
+
+    private fun constantName(name: String) = "${name.uppercase()}_NAME"
 
 }

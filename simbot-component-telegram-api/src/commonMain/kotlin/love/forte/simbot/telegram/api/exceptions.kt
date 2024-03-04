@@ -26,3 +26,6 @@ public open class TelegramApiResultNotOkException(
     message: String? = "result: $result",
     cause: Throwable? = null
 ) : TelegramApiException(message, cause)
+
+
+public class UnknownUpdatedFieldException(message: String? = "Unknown updated field") : IllegalArgumentException(message)

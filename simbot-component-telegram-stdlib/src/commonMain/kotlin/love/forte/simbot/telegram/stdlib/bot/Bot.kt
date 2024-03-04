@@ -18,6 +18,8 @@
 package love.forte.simbot.telegram.stdlib.bot
 
 import io.ktor.client.*
+import io.ktor.client.engine.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +30,8 @@ import love.forte.simbot.telegram.api.requestRaw
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.api.update.getUpdateFlow
 import love.forte.simbot.telegram.stdlib.bot.BotConfiguration.Companion.DefaultLongPollingTimeout
+import love.forte.simbot.telegram.stdlib.event.Event
+import love.forte.simbot.telegram.stdlib.event.EventProcessor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.jvm.JvmSynthetic
@@ -42,6 +46,11 @@ import kotlin.time.Duration.Companion.minutes
  */
 public interface Bot : CoroutineScope {
     override val coroutineContext: CoroutineContext
+
+    /**
+     * Ticket.
+     */
+    public val ticket: Ticket
 
     /**
      * Whether the launch [start] was successfully executed once.
@@ -70,13 +79,11 @@ public interface Bot : CoroutineScope {
     public val apiClient: HttpClient
 
     /**
-     * Takes precedence over all normal [EventProcessor] ([registerEventProcessor])
-     * and is executed during [pushUpdate] suspension.
+     * Takes precedence over all normal [EventProcessor] ([registerEventProcessor]).
      * It is suitable for some pre-processing behavior,
      * and it needs to ensure that the number of concurrent transactions is only one.
      *
-     * The action should be done quickly,
-     * and the resulting exception will be thrown directly in [pushUpdate].
+     * The action should be done quickly.
      */
     public fun registerPreEventProcessor(processor: EventProcessor)
 
@@ -120,23 +127,24 @@ public interface Bot : CoroutineScope {
      * Proactively pushes an Update and triggers internal event handling.
      *
      * ```
-     * push
-     *  |  (suspend)
-     *  |-------------+
-     *  |             |
-     *  |             v
-     *  |  [ pre event processors ] (sequentially)
-     *  |             |
-     * push <---------+---| (launch)
-     *       (resume)     |
-     *                    v
-     *         [ event processors ] (asynchronously)
+     *        [ Update ]
+     *            |
+     *            v
+     * [ pre event processors ] (sequentially)
+     *            |
+     *            | (launch)
+     *            v
+     * [ event processors ] (asynchronously)
      * ```
      *
      * Long polling also uses [pushUpdate] to push events.
      *
+     * @see Update
+     * @see Update.decodeFromRawJson
+     *
+     * @throws IllegalStateException if [isStarted] == false
+     * @throws CancellationException if [isActive] == false
      */
-    @ST
     public suspend fun pushUpdate(update: Update)
 
     /**
@@ -146,6 +154,8 @@ public interface Bot : CoroutineScope {
      *
      * [start] is mainly related to [longPolling].
      * Refer to the [longPolling] for more information.
+     *
+     * @throws CancellationException if [isActive] == `false`
      */
     @ST
     public suspend fun start()
@@ -155,11 +165,33 @@ public interface Bot : CoroutineScope {
      * A closed Bot cannot be [started][start] again,
      * nor can it push or process events.
      *
-     * If the [apiClient] is generated internally,
-     * it is closed with [cancel],
-     * otherwise it needs to be done manually.
+     * Also closes [apiClient] and the internal long polling client.
      */
-    public fun cancel()
+    public fun cancel(cause: Throwable?)
+
+    /**
+     * Close the Bot.
+     * A closed Bot cannot be [started][start] again,
+     * nor can it push or process events.
+     *
+     * Also closes [apiClient] and the internal long polling client.
+     */
+    public fun cancel() {
+        cancel(null)
+    }
+
+    /**
+     * Suspend until bot is canceled
+     */
+    @ST(asyncBaseName = "asFuture", asyncSuffix = "")
+    public suspend fun join()
+
+    /**
+     * Bot ticket.
+     *
+     * @property token Bot full token. e.g.: `bot123456.aaabbbccc`
+     */
+    public data class Ticket(val token: String)
 }
 
 
@@ -178,11 +210,38 @@ public class BotConfiguration {
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
     /**
-     * Bot for API requests [HttpClient].
+     * A [HttpClientEngine] of [Bot] for API requests [HttpClient].
      * If `null` then an attempt will be made to create one using [`HttpClient()`][HttpClient].
      *
+     * [apiClientEngine] and [apiClientEngineFactory] can only select one, setting one will set the other to null.
+     * And in the verification link will also be detected, if they exist at the same time will throw an exception.
      */
-    public var apiClient: HttpClient? = null
+    public var apiClientEngine: HttpClientEngine? = null
+        set(value) {
+            if (value != null) {
+                field = value
+                apiClientEngineFactory = null
+            } else {
+                field = null
+            }
+        }
+
+    /**
+     * A [HttpClientEngineFactory] of [Bot] for API requests [HttpClient].
+     * If `null` then an attempt will be made to create one using [`HttpClient()`][HttpClient].
+     *
+     * [apiClientEngine] and [apiClientEngineFactory] can only select one, setting one will set the other to null.
+     * And in the verification link will also be detected, if they exist at the same time will throw an exception.
+     */
+    public var apiClientEngineFactory: HttpClientEngineFactory<*>? = null
+        set(value) {
+            if (value != null) {
+                field = value
+                apiClientEngine = null
+            } else {
+                field = null
+            }
+        }
 
     /**
      * Used for the `server` parameter in API requests.
@@ -230,20 +289,20 @@ public data class LongPolling(
 
 /**
  * [Bot.registerEventProcessor] simplified extension.
- * Matches events based on type (and optional name).
+ * Matches events based on type [T] (and optional name).
  *
  * Note: If the matched type does not match the name, the result may never be matched.
  *
  * ```kotlin
- * bot.process<Message> { update, name, event: Message ->
+ * bot.process<Message> { event: Event, content: Message ->
  *      // ...
  * }
  *
- * bot.process<Message>("edited_message") { update, name, event: Message ->
+ * bot.process<Message>("edited_message") { event: Event, event: Message ->
  *      // ...
  * }
  *
- * bot.process<Message>(UpdateValues.EDITED_MESSAGE_NAME) { update, name, event: Message ->
+ * bot.process<Message>(UpdateValues.EDITED_MESSAGE_NAME) { event: Event, event: Message ->
  *      // ...
  * }
  * ```
@@ -254,18 +313,22 @@ public data class LongPolling(
 @JvmSynthetic
 public inline fun <reified T> Bot.process(
     name: String? = null,
-    crossinline processor: suspend (Update, String, T) -> Unit
+    crossinline processor: suspend (Event, T) -> Unit
 ) {
     if (name != null) {
-        registerEventProcessor { update, eventName, value ->
-            if (name == eventName && value is T) {
-                processor(update, eventName, value)
+        registerEventProcessor { event ->
+            event.content.also { content ->
+                if (name == event.name && content is T) {
+                    processor(event, content)
+                }
             }
         }
     } else {
-        registerEventProcessor { update, eventName, value ->
-            if (value is T) {
-                processor(update, eventName, value)
+        registerEventProcessor { event ->
+            event.content.also { content ->
+                if (content is T) {
+                    processor(event, content)
+                }
             }
         }
     }
@@ -273,20 +336,20 @@ public inline fun <reified T> Bot.process(
 
 /**
  * [Bot.registerPreEventProcessor] simplified extension.
- * Matches events based on type (and optional name).
+ * Matches events based on type [T] (and optional name).
  *
  * Note: If the matched type does not match the name, the result may never be matched.
  *
  * ```kotlin
- * bot.preProcess<Message> { update, name, event: Message ->
+ * bot.preProcess<Message> { event: Event, event: Message ->
  *      // ...
  * }
  *
- * bot.preProcess<Message>("edited_message") { update, name, event: Message ->
+ * bot.preProcess<Message>("edited_message") { event: Event, event: Message ->
  *      // ...
  * }
  *
- * bot.preProcess<Message>(UpdateValues.EDITED_MESSAGE_NAME) { update, name, event: Message ->
+ * bot.preProcess<Message>(UpdateValues.EDITED_MESSAGE_NAME) { event: Event, event: Message ->
  *      // ...
  * }
  * ```
@@ -297,18 +360,22 @@ public inline fun <reified T> Bot.process(
 @JvmSynthetic
 public inline fun <reified T : Any> Bot.preProcess(
     name: String? = null,
-    crossinline processor: suspend (Update, String, T) -> Unit
+    crossinline processor: suspend (Event, T) -> Unit
 ) {
     if (name != null) {
-        registerPreEventProcessor { update, eventName, value ->
-            if (name == eventName && value is T) {
-                processor(update, eventName, value)
+        registerPreEventProcessor { event ->
+            event.content.also { content ->
+                if (name == event.name && content is T) {
+                    processor(event, content)
+                }
             }
         }
     } else {
-        registerPreEventProcessor { update, eventName, value ->
-            if (value is T) {
-                processor(update, eventName, value)
+        registerPreEventProcessor { event ->
+            event.content.also { content ->
+                if (content is T) {
+                    processor(event, content)
+                }
             }
         }
     }

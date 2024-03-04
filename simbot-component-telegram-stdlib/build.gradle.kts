@@ -60,6 +60,7 @@ kotlin {
             api(libs.kotlinx.coroutines.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
+            api(libs.simbot.common.atomic)
             api(libs.simbot.common.core)
             compileOnly(libs.simbot.common.annotations)
 
@@ -84,9 +85,10 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.ktor.client.cio)
-            implementation(libs.log4j.api)
-            implementation(libs.log4j.core)
-            implementation(libs.log4j.slf4j2)
+            // implementation(libs.log4j.api)
+            // implementation(libs.log4j.core)
+            // implementation(libs.log4j.slf4j2)
+            implementation(libs.simbot.logger.slf4jimpl)
             implementation(libs.kotlinx.coroutines.reactor)
             implementation(libs.reactor.core)
         }

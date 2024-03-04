@@ -18,39 +18,23 @@
 @file:JvmName("EventProcessors")
 @file:JvmMultifileClass
 
-package love.forte.simbot.telegram.stdlib.bot
+package love.forte.simbot.telegram.stdlib.event
 
-import love.forte.simbot.telegram.api.update.Update
-import love.forte.simbot.telegram.type.Message
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
-
 /**
- * An event ([Update]) processor.
+ * An [Event] processor.
  *
  * Tip: It can be created under the JVM platform using a factory function in `EventProcessors`.
  *
  * @author ForteScarlet
  */
 public fun interface EventProcessor {
-
     /**
-     * Process the event.
-     *
-     * @param update The source [Update] instance.
-     * @param name Name of the event.
-     * Is the name of the field corresponding to the event,
-     * such as `edited_message`.
-     * @param value The content object of the event.
-     * The type is one of the possible optional fields in [Update],
-     * such as [Message] ([Update.message]).
-     *
+     * Process the [Event].
      */
     @JvmSynthetic
-    public suspend fun process(update: Update, name: String, value: Any)
+    public suspend fun process(event: Event)
 }
-
-// TODO use Event type?
-

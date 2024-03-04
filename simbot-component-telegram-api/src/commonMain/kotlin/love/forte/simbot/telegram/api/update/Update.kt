@@ -32,6 +32,7 @@ import love.forte.simbot.telegram.type.payment.PreCheckoutQuery
 import love.forte.simbot.telegram.type.payment.ShippingQuery
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 
 
 /**
@@ -40,6 +41,7 @@ import kotlin.jvm.JvmName
  * This object represents an incoming update.
  * At most one of the optional parameters can be present in any given update.
  *
+ * @see UpdateValues
  *
  * @author ForteScarlet
  */
@@ -212,13 +214,18 @@ public data class Update(
      */
     @SerialName("removed_chat_boost")
     val removedChatBoost: ChatBoostRemoved? = null,
-)
+) {
+    public companion object {
+        /**
+         * Decode a JSON string to [Update].
+         *
+         * @throws SerializationException see [Json.decodeFromString]
+         * @throws IllegalArgumentException see [Json.decodeFromString]
+         */
+        @JvmStatic
+        public fun decodeFromRawJson(content: String): Update =
+            Telegram.DefaultJson.decodeFromString(serializer(), content)
+    }
+}
 
-/**
- * Decode a JSON string to [Update].
- *
- * @throws SerializationException see [Json.decodeFromString]
- * @throws IllegalArgumentException see [Json.decodeFromString]
- */
-public fun decodeFromRawJson(content: String): Update =
-    Telegram.DefaultJson.decodeFromString(Update.serializer(), content)
+
