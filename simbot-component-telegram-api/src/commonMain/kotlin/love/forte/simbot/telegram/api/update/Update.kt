@@ -22,6 +22,9 @@ package love.forte.simbot.telegram.api.update
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import love.forte.simbot.telegram.Telegram
 import love.forte.simbot.telegram.type.*
 import love.forte.simbot.telegram.type.inline.ChosenInlineResult
 import love.forte.simbot.telegram.type.inline.InlineQuery
@@ -211,3 +214,11 @@ public data class Update(
     val removedChatBoost: ChatBoostRemoved? = null,
 )
 
+/**
+ * Decode a JSON string to [Update].
+ *
+ * @throws SerializationException see [Json.decodeFromString]
+ * @throws IllegalArgumentException see [Json.decodeFromString]
+ */
+public fun decodeFromRawJson(content: String): Update =
+    Telegram.DefaultJson.decodeFromString(Update.serializer(), content)
