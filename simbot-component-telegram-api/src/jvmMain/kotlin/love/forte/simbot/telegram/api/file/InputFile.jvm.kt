@@ -24,6 +24,8 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.nio.*
+import love.forte.simbot.telegram.file.InputFile
+import love.forte.simbot.telegram.file.plus
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path

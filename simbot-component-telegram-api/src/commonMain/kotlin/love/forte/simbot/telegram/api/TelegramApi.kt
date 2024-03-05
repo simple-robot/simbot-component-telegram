@@ -35,6 +35,7 @@ import kotlinx.serialization.DeserializationStrategy
  *
  * Use [requestRaw] to request an API with method.
  *
+ * @see [Making requests](https://core.telegram.org/bots/api#making-requests)
  * @see EmptyBodyTelegramApi
  * @see JsonBodyTelegramApi
  * @see FormBodyTelegramApi

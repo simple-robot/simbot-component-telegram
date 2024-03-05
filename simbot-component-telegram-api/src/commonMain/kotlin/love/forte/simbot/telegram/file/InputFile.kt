@@ -18,7 +18,7 @@
 @file:JvmName("InputFiles")
 @file:JvmMultifileClass
 
-package love.forte.simbot.telegram.api.file
+package love.forte.simbot.telegram.file
 
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -27,6 +27,7 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
+// TODO use simbot-common
 /**
  * An [InputFile](https://core.telegram.org/bots/api#inputfile).
  *
@@ -73,7 +74,8 @@ private class ByteArrayInputFile(private val bytes: ByteArray, private val defau
 public fun InputFile(input: InputProvider, defaultHeaders: Headers = Headers.Empty): InputFile =
     InputProviderInputFile(input, defaultHeaders)
 
-private class InputProviderInputFile(private val input: InputProvider, private val defaultHeaders: Headers) : InputFile {
+private class InputProviderInputFile(private val input: InputProvider, private val defaultHeaders: Headers) :
+    InputFile {
     override fun includeTo(key: String, headers: Headers, formBuilder: FormBuilder) {
         formBuilder.append(key, input, defaultHeaders + headers)
     }
@@ -90,7 +92,8 @@ private class InputProviderInputFile(private val input: InputProvider, private v
 public fun InputFile(channel: ChannelProvider, defaultHeaders: Headers = Headers.Empty): InputFile =
     ChannelProviderInputFile(channel, defaultHeaders)
 
-private class ChannelProviderInputFile(private val channel: ChannelProvider, private val defaultHeaders: Headers) : InputFile {
+private class ChannelProviderInputFile(private val channel: ChannelProvider, private val defaultHeaders: Headers) :
+    InputFile {
     override fun includeTo(key: String, headers: Headers, formBuilder: FormBuilder) {
         formBuilder.append(key, channel, defaultHeaders + headers)
     }
@@ -107,7 +110,8 @@ private class ChannelProviderInputFile(private val channel: ChannelProvider, pri
 public fun InputFile(byteReadPacket: ByteReadPacket, defaultHeaders: Headers = Headers.Empty): InputFile =
     ByteReadPacketInputFile(byteReadPacket, defaultHeaders)
 
-private class ByteReadPacketInputFile(private val byteReadPacket: ByteReadPacket, private val defaultHeaders: Headers) : InputFile {
+private class ByteReadPacketInputFile(private val byteReadPacket: ByteReadPacket, private val defaultHeaders: Headers) :
+    InputFile {
     override fun includeTo(key: String, headers: Headers, formBuilder: FormBuilder) {
         formBuilder.append(key, byteReadPacket, defaultHeaders + headers)
     }
