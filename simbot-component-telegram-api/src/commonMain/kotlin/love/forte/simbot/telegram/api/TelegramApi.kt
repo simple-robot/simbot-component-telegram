@@ -19,7 +19,9 @@ package love.forte.simbot.telegram.api
 
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.http.content.*
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
 
 
 /**
@@ -37,7 +39,7 @@ import kotlinx.serialization.DeserializationStrategy
  *
  * @see [Making requests](https://core.telegram.org/bots/api#making-requests)
  * @see EmptyBodyTelegramApi
- * @see JsonBodyTelegramApi
+ * @see SimpleBodyTelegramApi
  * @see FormBodyTelegramApi
  *
  * @author ForteScarlet
@@ -52,6 +54,17 @@ public sealed class TelegramApi<R : Any> {
      * The request body (or null).
      */
     public abstract val body: Any?
+
+    /**
+     * A special deserialization for [body].
+     * If it is `null`, then try to 'guess' the body serializer.
+     * This is usually overridden when the body is not `null` and you need to customize its serializer.
+     *
+     * Default is `null`.
+     */
+    public open val bodySerializationStrategy: SerializationStrategy<Any>?
+        get() = null
+
 
     /**
      * The result's [DeserializationStrategy] of this Method.
@@ -71,13 +84,35 @@ public sealed class TelegramApi<R : Any> {
         get() = Headers.Empty
 }
 
+/**
+ * [body] is always `null` [TelegramApi].
+ * Will use a `GET` request directly.
+ */
 public abstract class EmptyBodyTelegramApi<R : Any> : TelegramApi<R>() {
-    override val body: Unit?
+    final override val body: Unit?
         get() = null
 }
 
-public abstract class JsonBodyTelegramApi<R : Any> : TelegramApi<R>()
+/**
+ * An ordinary extensible [TelegramApi].
+ * `Post` is used if [body] is not null,
+ * `application/json` is used if [body] is not [MultiPartFormDataContent],
+ * and `application/x-www-form-urlencoded` is used otherwise.
+ *
+ * If [body] is [OutgoingContent] other than [MultiPartFormDataContent],
+ * remember to override [headers] to provide the necessary information as needed.
+ */
+public abstract class SimpleBodyTelegramApi<R : Any> : TelegramApi<R>()
 
-public abstract class FormBodyTelegramApi<R : Any> : TelegramApi<R>() {
+/**
+ * A [SimpleBodyTelegramApi] whose [body] is explicitly [MultiPartFormDataContent].
+ */
+public abstract class FormBodyTelegramApi<R : Any> : SimpleBodyTelegramApi<R>() {
     abstract override val body: MultiPartFormDataContent
+
+    /**
+     * [MultiPartFormDataContent] does not require a serializer. Always get `null`.
+     */
+    final override val bodySerializationStrategy: SerializationStrategy<Any>?
+        get() = null
 }

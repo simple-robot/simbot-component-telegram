@@ -15,26 +15,11 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.type
-
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+package love.forte.simbot.telegram.api.utils
 
 /**
- * [InlineKeyboardMarkup](https://core.telegram.org/bots/api#inlinekeyboardmarkup)
- *
- * This object represents an inline keyboard that appears right next to the message it belongs to.
- *
- * (auto-generated)
- * @author ForteScarlet
+ * [requireNotNull] with a special name.
  */
-@Serializable
-public data class InlineKeyboardMarkup(
-    /**
-     * Array of button rows, each represented by an Array of InlineKeyboardButton objects
-     *
-     * type: `Array of Array of InlineKeyboardButton`
-     */
-    @SerialName("inline_keyboard")
-    public val inlineKeyboard: List<List<InlineKeyboardButton>> = emptyList(),
-)
+public inline fun <T> requireNotNullNamed(value: T?, name: () -> String = { "value" }): T {
+    return requireNotNull(value) { "Required `${name()}` was null." }
+}

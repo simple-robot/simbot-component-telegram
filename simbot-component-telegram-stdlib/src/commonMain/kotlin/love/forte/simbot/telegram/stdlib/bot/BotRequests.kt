@@ -15,26 +15,16 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram.type
+@file:JvmName("BotRequests")
+@file:JvmMultifileClass
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+package love.forte.simbot.telegram.stdlib.bot
 
-/**
- * [InlineKeyboardMarkup](https://core.telegram.org/bots/api#inlinekeyboardmarkup)
- *
- * This object represents an inline keyboard that appears right next to the message it belongs to.
- *
- * (auto-generated)
- * @author ForteScarlet
- */
-@Serializable
-public data class InlineKeyboardMarkup(
-    /**
-     * Array of button rows, each represented by an Array of InlineKeyboardButton objects
-     *
-     * type: `Array of Array of InlineKeyboardButton`
-     */
-    @SerialName("inline_keyboard")
-    public val inlineKeyboard: List<List<InlineKeyboardButton>> = emptyList(),
-)
+import love.forte.simbot.telegram.api.TelegramApi
+import love.forte.simbot.telegram.api.requestData
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
+
+public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: Bot): R {
+    return requestData(bot.apiClient, bot.ticket.token) // TODO bot.server
+}

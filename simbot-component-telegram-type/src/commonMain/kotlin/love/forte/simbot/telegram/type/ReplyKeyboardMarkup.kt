@@ -36,7 +36,7 @@ public data class ReplyKeyboardMarkup(
      *
      * type: `Array of Array of KeyboardButton`
      */
-    public val keyboard: List<List<love.forte.simbot.telegram.type.KeyboardButton>> = emptyList(),
+    public val keyboard: List<List<KeyboardButton>> = emptyList(),
     /**
      * Optional. 
      * Requests clients to always show the keyboard when the regular keyboard is hidden. 

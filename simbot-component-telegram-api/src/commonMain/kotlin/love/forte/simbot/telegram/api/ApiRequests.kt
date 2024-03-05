@@ -22,6 +22,7 @@ package love.forte.simbot.telegram.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -61,29 +62,57 @@ public suspend fun TelegramApi<*>.requestRaw(
             appendAll(headers)
         }
     }
-    when (val method = this) {
+
+    val body = body
+    if (body == null) {
+        builder.method = HttpMethod.Get
+    } else {
+        builder.method = HttpMethod.Post
+        when (body) {
+            is OutgoingContent -> {
+
+            }
+            else -> {
+                // JSON body.
+                if (HttpHeaders.ContentType !in builder.headers) {
+                    builder.headers.append(HttpHeaders.ContentType, ContentType.Application.Json)
+                }
+
+
+            }
+        }
+    }
+
+    when (val api = this) {
         is EmptyBodyTelegramApi -> {
-            // Just do get
+            // Do get
             builder.method = HttpMethod.Get
         }
 
-        is JsonBodyTelegramApi -> {
-            builder.method = HttpMethod.Post
-            builder.headers.append(HttpHeaders.ContentType, ContentType.Application.Json)
-            when (val b = method.body) {
-                null -> {}
-                is OutgoingContent -> builder.setBody(b)
+        is SimpleBodyTelegramApi -> {
+            when (val b = api.body) {
+                null -> {
+                    builder.method = HttpMethod.Get
+                }
+
+                is OutgoingContent -> {
+                    builder.method = HttpMethod.Post
+                    if (b is MultiPartFormDataContent && HttpHeaders.ContentType !in builder.headers) {
+                        builder.headers.append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
+                    }
+
+                    builder.setBody(b)
+                }
+
                 else -> {
-                    val guessed = guessSerializer(b, Telegram.DefaultJson.serializersModule)
-                    builder.setBody(Telegram.DefaultJson.encodeToString(guessed, b))
+                    builder.method = HttpMethod.Post
+                    if (HttpHeaders.ContentType !in builder.headers) {
+                        builder.headers.append(HttpHeaders.ContentType, ContentType.Application.Json)
+                    }
+                    val serializer = bodySerializationStrategy ?: guessSerializer(b, Telegram.DefaultJson.serializersModule)
+                    builder.setBody(Telegram.DefaultJson.encodeToString(serializer, b))
                 }
             }
-        }
-
-        is FormBodyTelegramApi -> {
-            builder.method = HttpMethod.Post
-            builder.headers.append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
-            builder.setBody(method.body)
         }
     }
 

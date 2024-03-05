@@ -57,7 +57,7 @@ public data class Giveaway(
      * type: `True`
      */
     @SerialName("only_new_members")
-    public val onlyNewMembers: Boolean? = true,
+    public val onlyNewMembers: Boolean? = null,
     /**
      * Optional. 
      * True, if the list of giveaway winners will be visible to everyone
@@ -65,7 +65,7 @@ public data class Giveaway(
      * type: `True`
      */
     @SerialName("has_public_winners")
-    public val hasPublicWinners: Boolean? = true,
+    public val hasPublicWinners: Boolean? = null,
     /**
      * Optional. 
      * Description of additional giveaway prize
@@ -222,7 +222,7 @@ public data class GiveawayWinners(
      * type: `True`
      */
     @SerialName("only_new_members")
-    public val onlyNewMembers: Boolean? = true,
+    public val onlyNewMembers: Boolean? = null,
     /**
      * Optional. 
      * True, if the giveaway was canceled because the payment for it was refunded
@@ -230,7 +230,7 @@ public data class GiveawayWinners(
      * type: `True`
      */
     @SerialName("was_refunded")
-    public val wasRefunded: Boolean? = true,
+    public val wasRefunded: Boolean? = null,
     /**
      * Optional. 
      * Description of additional giveaway prize

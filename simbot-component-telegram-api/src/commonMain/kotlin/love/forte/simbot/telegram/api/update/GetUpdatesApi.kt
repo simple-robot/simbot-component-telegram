@@ -25,7 +25,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import love.forte.simbot.telegram.api.JsonBodyTelegramApi
+import love.forte.simbot.telegram.api.SimpleBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.api.requestData
 import kotlin.jvm.JvmStatic
@@ -49,7 +49,7 @@ import kotlin.math.max
  *
  * @author ForteScarlet
  */
-public class GetUpdatesApi private constructor(body: Body) : JsonBodyTelegramApi<List<Update>>() {
+public class GetUpdatesApi private constructor(body: Body) : SimpleBodyTelegramApi<List<Update>>() {
     public companion object Factory {
         private const val NAME = "getUpdates"
         private val L_SER = ListSerializer(Update.serializer())

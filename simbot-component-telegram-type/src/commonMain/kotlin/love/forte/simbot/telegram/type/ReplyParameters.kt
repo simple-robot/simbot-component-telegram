@@ -83,7 +83,7 @@ public data class ReplyParameters(
      * type: `Array of MessageEntity`
      */
     @SerialName("quote_entities")
-    public val quoteEntities: List<love.forte.simbot.telegram.type.MessageEntity>? = null,
+    public val quoteEntities: List<MessageEntity>? = null,
     /**
      * Optional. 
      * Position of the quote in the original message in UTF-16 code units

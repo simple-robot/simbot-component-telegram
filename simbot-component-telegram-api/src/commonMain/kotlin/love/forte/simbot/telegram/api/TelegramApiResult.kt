@@ -17,8 +17,12 @@
 
 package love.forte.simbot.telegram.api
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
+import love.forte.simbot.telegram.type.ResponseParameters
+import kotlin.jvm.JvmField
 
 
 /**
@@ -54,7 +58,16 @@ public data class TelegramApiResult<T : Any>(
      * which can help to automatically handle the error.
      */
     val parameters: ResponseParameters? = null
-)
+) {
+    public companion object {
+        /**
+         * A [TelegramApiResult]'s serializer with [Boolean].
+         */
+        @JvmField
+        public val BooleanSerializer: KSerializer<TelegramApiResult<Boolean>> = serializer(Boolean.serializer())
+
+    }
+}
 
 /**
  * Get [TelegramApiResult.result], or throw [TelegramApiResultNotOkException]

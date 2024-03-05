@@ -83,7 +83,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("is_forum")
-    public val isForum: Boolean? = true,
+    public val isForum: Boolean? = null,
     /**
      * Optional. 
      * Chat photo. 
@@ -190,7 +190,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_private_forwards")
-    public val hasPrivateForwards: Boolean? = true,
+    public val hasPrivateForwards: Boolean? = null,
     /**
      * Optional. 
      * True, if the privacy settings of the other party restrict sending voice and video note
@@ -200,7 +200,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_restricted_voice_and_video_messages")
-    public val hasRestrictedVoiceAndVideoMessages: Boolean? = true,
+    public val hasRestrictedVoiceAndVideoMessages: Boolean? = null,
     /**
      * Optional. 
      * True, if users need to join the supergroup before they can send messages. 
@@ -209,7 +209,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("join_to_send_messages")
-    public val joinToSendMessages: Boolean? = true,
+    public val joinToSendMessages: Boolean? = null,
     /**
      * Optional. 
      * True, if all users directly joining the supergroup need to be approved by supergroup
@@ -219,7 +219,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("join_by_request")
-    public val joinByRequest: Boolean? = true,
+    public val joinByRequest: Boolean? = null,
     /**
      * Optional. 
      * Description, for groups, supergroups and channel chats. 
@@ -293,7 +293,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_aggressive_anti_spam_enabled")
-    public val hasAggressiveAntiSpamEnabled: Boolean? = true,
+    public val hasAggressiveAntiSpamEnabled: Boolean? = null,
     /**
      * Optional. 
      * True, if non-administrators can only get the list of bots and administrators in the chat. 
@@ -302,7 +302,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_hidden_members")
-    public val hasHiddenMembers: Boolean? = true,
+    public val hasHiddenMembers: Boolean? = null,
     /**
      * Optional. 
      * True, if messages from the chat can't be forwarded to other chats. 
@@ -311,7 +311,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_protected_content")
-    public val hasProtectedContent: Boolean? = true,
+    public val hasProtectedContent: Boolean? = null,
     /**
      * Optional. 
      * True, if new chat members will have access to old messages; available only to chat
@@ -321,7 +321,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("has_visible_history")
-    public val hasVisibleHistory: Boolean? = true,
+    public val hasVisibleHistory: Boolean? = null,
     /**
      * Optional. 
      * For supergroups, name of group sticker set. 
@@ -339,7 +339,7 @@ public data class Chat(
      * type: `True`
      */
     @SerialName("can_set_sticker_set")
-    public val canSetStickerSet: Boolean? = true,
+    public val canSetStickerSet: Boolean? = null,
     /**
      * Optional. 
      * For supergroups, the name of the group's custom emoji sticker set. 
@@ -681,7 +681,7 @@ public data class ChatBoostSourceGiveaway(
      * type: `True`
      */
     @SerialName("is_unclaimed")
-    public val isUnclaimed: Boolean? = true,
+    public val isUnclaimed: Boolean? = null,
 )
 
 /**

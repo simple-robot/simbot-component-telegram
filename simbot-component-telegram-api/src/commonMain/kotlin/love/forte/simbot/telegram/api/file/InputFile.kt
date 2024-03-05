@@ -18,7 +18,7 @@
 @file:JvmName("InputFiles")
 @file:JvmMultifileClass
 
-package love.forte.simbot.telegram.file
+package love.forte.simbot.telegram.api.file
 
 import io.ktor.client.request.forms.*
 import io.ktor.http.*

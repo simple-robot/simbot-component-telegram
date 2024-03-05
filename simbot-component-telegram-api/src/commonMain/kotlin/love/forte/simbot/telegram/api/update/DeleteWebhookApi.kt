@@ -19,7 +19,7 @@ package love.forte.simbot.telegram.api.update
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.serializer
-import love.forte.simbot.telegram.api.JsonBodyTelegramApi
+import love.forte.simbot.telegram.api.SimpleBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -32,10 +32,9 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
-public class DeleteWebhookApi private constructor(dropPendingUpdates: Boolean?) : JsonBodyTelegramApi<Boolean>() {
+public class DeleteWebhookApi private constructor(dropPendingUpdates: Boolean?) : SimpleBodyTelegramApi<Boolean>() {
     public companion object Factory {
         private const val NAME = "deleteWebhook"
-        private val SER = TelegramApiResult.serializer(Boolean.serializer())
         private val NULL_INSTANCE = DeleteWebhookApi(null)
         private val TRUE_INSTANCE = DeleteWebhookApi(true)
         private val FALSE_INSTANCE = DeleteWebhookApi(false)
@@ -67,5 +66,5 @@ public class DeleteWebhookApi private constructor(dropPendingUpdates: Boolean?) 
         get() = Boolean.serializer()
 
     override val resultDeserializer: DeserializationStrategy<TelegramApiResult<Boolean>>
-        get() = SER
+        get() = TelegramApiResult.BooleanSerializer
 }

@@ -84,7 +84,7 @@ public data class User(
      * type: `True`
      */
     @SerialName("is_premium")
-    public val isPremium: Boolean? = true,
+    public val isPremium: Boolean? = null,
     /**
      * Optional. 
      * True, if this user added the bot to the attachment menu
@@ -92,7 +92,7 @@ public data class User(
      * type: `True`
      */
     @SerialName("added_to_attachment_menu")
-    public val addedToAttachmentMenu: Boolean? = true,
+    public val addedToAttachmentMenu: Boolean? = null,
     /**
      * Optional. 
      * True, if the bot can be invited to groups. 

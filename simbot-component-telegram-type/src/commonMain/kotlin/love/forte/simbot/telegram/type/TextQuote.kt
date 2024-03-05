@@ -61,5 +61,5 @@ public data class TextQuote(
      * type: `True`
      */
     @SerialName("is_manual")
-    public val isManual: Boolean? = true,
+    public val isManual: Boolean? = null,
 )

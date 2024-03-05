@@ -23,7 +23,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.telegram.api.FormBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
-import love.forte.simbot.telegram.file.InputFile
+import love.forte.simbot.telegram.api.file.InputFile
 
 
 /**
@@ -55,7 +55,6 @@ import love.forte.simbot.telegram.file.InputFile
 public class SetWebhookApi private constructor(params: Params) : FormBodyTelegramApi<Boolean>() {
     public companion object Factory {
         private const val NAME = "setWebhook"
-        private val SER = TelegramApiResult.serializer(Boolean.serializer())
         private fun Params.toForm(): MultiPartFormDataContent {
             return MultiPartFormDataContent(formData {
                 append("url", url)
@@ -84,7 +83,7 @@ public class SetWebhookApi private constructor(params: Params) : FormBodyTelegra
         get() = Boolean.serializer()
 
     override val resultDeserializer: DeserializationStrategy<TelegramApiResult<Boolean>>
-        get() = SER
+        get() = TelegramApiResult.BooleanSerializer
 
     /**
      * Request body of [SetWebhookApi].

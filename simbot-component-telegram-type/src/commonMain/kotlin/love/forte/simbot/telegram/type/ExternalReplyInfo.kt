@@ -133,7 +133,7 @@ public data class ExternalReplyInfo(
      * type: `True`
      */
     @SerialName("has_media_spoiler")
-    public val hasMediaSpoiler: Boolean? = true,
+    public val hasMediaSpoiler: Boolean? = null,
     /**
      * Optional. 
      * Message is a shared contact, information about the contact

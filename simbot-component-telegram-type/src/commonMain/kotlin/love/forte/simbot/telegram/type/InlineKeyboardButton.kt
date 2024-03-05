@@ -64,7 +64,7 @@ public data class InlineKeyboardButton(
      * type: `WebAppInfo`
      */
     @SerialName("web_app")
-    public val webApp: love.forte.simbot.telegram.type.WebAppInfo? = null,
+    public val webApp: WebAppInfo? = null,
     /**
      * Optional. 
      * An HTTPS URL used to automatically authorize the user. 
@@ -73,7 +73,7 @@ public data class InlineKeyboardButton(
      * type: `LoginUrl`
      */
     @SerialName("login_url")
-    public val loginUrl: love.forte.simbot.telegram.type.LoginUrl? = null,
+    public val loginUrl: LoginUrl? = null,
     /**
      * Optional. 
      * If set, pressing the button will prompt the user to select one of their chats, open that chat
@@ -105,7 +105,7 @@ public data class InlineKeyboardButton(
      * type: `SwitchInlineQueryChosenChat`
      */
     @SerialName("switch_inline_query_chosen_chat")
-    public val switchInlineQueryChosenChat: love.forte.simbot.telegram.type.SwitchInlineQueryChosenChat? = null,
+    public val switchInlineQueryChosenChat: SwitchInlineQueryChosenChat? = null,
     /**
      * Optional. 
      * Description of the game that will be launched when the user presses the button. 

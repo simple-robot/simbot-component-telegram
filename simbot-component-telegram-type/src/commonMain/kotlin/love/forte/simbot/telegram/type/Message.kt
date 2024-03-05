@@ -108,7 +108,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("is_topic_message")
-    public val isTopicMessage: Boolean? = true,
+    public val isTopicMessage: Boolean? = null,
     /**
      * Optional.
      * True, if the message is a channel post that was automatically forwarded to the connected
@@ -117,7 +117,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("is_automatic_forward")
-    public val isAutomaticForward: Boolean? = true,
+    public val isAutomaticForward: Boolean? = null,
     /**
      * Optional.
      * For replies in the same chat and message thread, the original message.
@@ -175,7 +175,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("has_protected_content")
-    public val hasProtectedContent: Boolean? = true,
+    public val hasProtectedContent: Boolean? = null,
     /**
      * Optional.
      * The unique identifier of a media message group this message belongs to
@@ -305,7 +305,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("has_media_spoiler")
-    public val hasMediaSpoiler: Boolean? = true,
+    public val hasMediaSpoiler: Boolean? = null,
     /**
      * Optional.
      * Message is a shared contact, information about the contact
@@ -391,7 +391,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("delete_chat_photo")
-    public val deleteChatPhoto: Boolean? = true,
+    public val deleteChatPhoto: Boolean? = null,
     /**
      * Optional.
      * Service message: the group has been created
@@ -399,7 +399,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("group_chat_created")
-    public val groupChatCreated: Boolean? = true,
+    public val groupChatCreated: Boolean? = null,
     /**
      * Optional.
      * Service message: the supergroup has been created.
@@ -411,7 +411,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("supergroup_chat_created")
-    public val supergroupChatCreated: Boolean? = true,
+    public val supergroupChatCreated: Boolean? = null,
     /**
      * Optional.
      * Service message: the channel has been created.
@@ -423,7 +423,7 @@ public data class Message(
      * type: `True`
      */
     @SerialName("channel_chat_created")
-    public val channelChatCreated: Boolean? = true,
+    public val channelChatCreated: Boolean? = null,
     /**
      * Optional.
      * Service message: auto-delete timer settings changed in the chat

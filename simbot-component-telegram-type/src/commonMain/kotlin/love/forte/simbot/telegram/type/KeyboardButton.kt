@@ -49,7 +49,7 @@ public data class KeyboardButton(
      * type: `KeyboardButtonRequestUsers`
      */
     @SerialName("request_users")
-    public val requestUsers: love.forte.simbot.telegram.type.KeyboardButtonRequestUsers? = null,
+    public val requestUsers: KeyboardButtonRequestUsers? = null,
     /**
      * Optional. 
      * If specified, pressing the button will open a list of suitable chats. 
@@ -59,7 +59,7 @@ public data class KeyboardButton(
      * type: `KeyboardButtonRequestChat`
      */
     @SerialName("request_chat")
-    public val requestChat: love.forte.simbot.telegram.type.KeyboardButtonRequestChat? = null,
+    public val requestChat: KeyboardButtonRequestChat? = null,
     /**
      * Optional. 
      * If True, the user's phone number will be sent as a contact when the button is pressed. 
@@ -87,7 +87,7 @@ public data class KeyboardButton(
      * type: `KeyboardButtonPollType`
      */
     @SerialName("request_poll")
-    public val requestPoll: love.forte.simbot.telegram.type.KeyboardButtonPollType? = null,
+    public val requestPoll: KeyboardButtonPollType? = null,
     /**
      * Optional. 
      * If specified, the described Web App will be launched when the button is pressed. 
@@ -97,7 +97,7 @@ public data class KeyboardButton(
      * type: `WebAppInfo`
      */
     @SerialName("web_app")
-    public val webApp: love.forte.simbot.telegram.type.WebAppInfo? = null,
+    public val webApp: WebAppInfo? = null,
 )
 
 /**
@@ -187,7 +187,7 @@ public data class KeyboardButtonRequestChat(
      * type: `ChatAdministratorRights`
      */
     @SerialName("user_administrator_rights")
-    public val userAdministratorRights: love.forte.simbot.telegram.type.ChatAdministratorRights? = null,
+    public val userAdministratorRights: ChatAdministratorRights? = null,
     /**
      * Optional. 
      * A JSON-serialized object listing the required administrator rights of the bot in the chat. 
@@ -197,7 +197,7 @@ public data class KeyboardButtonRequestChat(
      * type: `ChatAdministratorRights`
      */
     @SerialName("bot_administrator_rights")
-    public val botAdministratorRights: love.forte.simbot.telegram.type.ChatAdministratorRights? = null,
+    public val botAdministratorRights: ChatAdministratorRights? = null,
     /**
      * Optional. 
      * Pass True to request a chat with the bot as a member. 

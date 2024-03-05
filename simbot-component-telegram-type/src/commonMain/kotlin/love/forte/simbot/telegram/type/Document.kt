@@ -52,7 +52,7 @@ public data class Document(
      *
      * type: `PhotoSize`
      */
-    public val thumbnail: love.forte.simbot.telegram.type.PhotoSize? = null,
+    public val thumbnail: PhotoSize? = null,
     /**
      * Optional. 
      * Original filename as defined by sender
