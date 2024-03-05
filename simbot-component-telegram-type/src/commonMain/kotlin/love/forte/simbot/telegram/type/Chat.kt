@@ -19,6 +19,7 @@ package love.forte.simbot.telegram.type
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmStatic
 
 /**
  * [Chat](https://core.telegram.org/bots/api#chat)
@@ -31,9 +32,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class Chat(
     /**
-     * Unique identifier for this chat. 
+     * Unique identifier for this chat.
      * This number may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float
      * type are safe for storing this identifier.
      *
@@ -47,21 +48,21 @@ public data class Chat(
      */
     public val type: String,
     /**
-     * Optional. 
+     * Optional.
      * Title, for supergroups, channels and group chats
      *
      * type: `String`
      */
     public val title: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Username, for private chats, supergroups and channels if available
      *
      * type: `String`
      */
     public val username: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * First name of the other party in a private chat
      *
      * type: `String`
@@ -69,7 +70,7 @@ public data class Chat(
     @SerialName("first_name")
     public val firstName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Last name of the other party in a private chat
      *
      * type: `String`
@@ -77,7 +78,7 @@ public data class Chat(
     @SerialName("last_name")
     public val lastName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the supergroup chat is a forum (has topics enabled)
      *
      * type: `True`
@@ -85,17 +86,17 @@ public data class Chat(
     @SerialName("is_forum")
     public val isForum: Boolean? = null,
     /**
-     * Optional. 
-     * Chat photo. 
+     * Optional.
+     * Chat photo.
      * Returned only in getChat.
      *
      * type: `ChatPhoto`
      */
-    public val photo: love.forte.simbot.telegram.type.ChatPhoto? = null,
+    public val photo: ChatPhoto? = null,
     /**
-     * Optional. 
+     * Optional.
      * If non-empty, the list of all active chat usernames; for private chats, supergroups and
-     * channels. 
+     * channels.
      * Returned only in getChat.
      *
      * type: `Array of String`
@@ -103,21 +104,21 @@ public data class Chat(
     @SerialName("active_usernames")
     public val activeUsernames: List<String>? = null,
     /**
-     * Optional. 
-     * List of available reactions allowed in the chat. 
-     * If omitted, then all emoji reactions are allowed. 
+     * Optional.
+     * List of available reactions allowed in the chat.
+     * If omitted, then all emoji reactions are allowed.
      * Returned only in getChat.
      *
      * type: `Array of ReactionType`
      */
     @SerialName("available_reactions")
-    public val availableReactions: List<love.forte.simbot.telegram.type.ReactionType>? = null,
+    public val availableReactions: List<ReactionType>? = null,
     /**
-     * Optional. 
+     * Optional.
      * Identifier of the accent color for the chat name and backgrounds of the chat photo, reply
-     * header, and link preview. 
-     * See accent colors for more details. 
-     * Returned only in getChat. 
+     * header, and link preview.
+     * See accent colors for more details.
+     * Returned only in getChat.
      * Always returned in getChat.
      *
      * type: `Integer`
@@ -125,9 +126,9 @@ public data class Chat(
     @SerialName("accent_color_id")
     public val accentColorId: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Custom emoji identifier of emoji chosen by the chat for the reply header and link preview
-     * background. 
+     * background.
      * Returned only in getChat.
      *
      * type: `String`
@@ -135,9 +136,9 @@ public data class Chat(
     @SerialName("background_custom_emoji_id")
     public val backgroundCustomEmojiId: String? = null,
     /**
-     * Optional. 
-     * Identifier of the accent color for the chat's profile background. 
-     * See profile accent colors for more details. 
+     * Optional.
+     * Identifier of the accent color for the chat's profile background.
+     * See profile accent colors for more details.
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -145,8 +146,8 @@ public data class Chat(
     @SerialName("profile_accent_color_id")
     public val profileAccentColorId: Int? = null,
     /**
-     * Optional. 
-     * Custom emoji identifier of the emoji chosen by the chat for its profile background. 
+     * Optional.
+     * Custom emoji identifier of the emoji chosen by the chat for its profile background.
      * Returned only in getChat.
      *
      * type: `String`
@@ -154,9 +155,9 @@ public data class Chat(
     @SerialName("profile_background_custom_emoji_id")
     public val profileBackgroundCustomEmojiId: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Custom emoji identifier of the emoji status of the chat or the other party in a private chat.
-     * 
+     *
      * Returned only in getChat.
      *
      * type: `String`
@@ -164,9 +165,9 @@ public data class Chat(
     @SerialName("emoji_status_custom_emoji_id")
     public val emojiStatusCustomEmojiId: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Expiration date of the emoji status of the chat or the other party in a private chat, in Unix
-     * time, if any. 
+     * time, if any.
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -174,17 +175,17 @@ public data class Chat(
     @SerialName("emoji_status_expiration_date")
     public val emojiStatusExpirationDate: Int? = null,
     /**
-     * Optional. 
-     * Bio of the other party in a private chat. 
+     * Optional.
+     * Bio of the other party in a private chat.
      * Returned only in getChat.
      *
      * type: `String`
      */
     public val bio: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if privacy settings of the other party in the private chat allows to use
-     * tg://user?id=<user_id> links only in chats with the user. 
+     * tg://user?id=<user_id> links only in chats with the user.
      * Returned only in getChat.
      *
      * type: `True`
@@ -192,9 +193,9 @@ public data class Chat(
     @SerialName("has_private_forwards")
     public val hasPrivateForwards: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the privacy settings of the other party restrict sending voice and video note
-     * messages in the private chat. 
+     * messages in the private chat.
      * Returned only in getChat.
      *
      * type: `True`
@@ -202,8 +203,8 @@ public data class Chat(
     @SerialName("has_restricted_voice_and_video_messages")
     public val hasRestrictedVoiceAndVideoMessages: Boolean? = null,
     /**
-     * Optional. 
-     * True, if users need to join the supergroup before they can send messages. 
+     * Optional.
+     * True, if users need to join the supergroup before they can send messages.
      * Returned only in getChat.
      *
      * type: `True`
@@ -211,9 +212,9 @@ public data class Chat(
     @SerialName("join_to_send_messages")
     public val joinToSendMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if all users directly joining the supergroup need to be approved by supergroup
-     * administrators. 
+     * administrators.
      * Returned only in getChat.
      *
      * type: `True`
@@ -221,16 +222,16 @@ public data class Chat(
     @SerialName("join_by_request")
     public val joinByRequest: Boolean? = null,
     /**
-     * Optional. 
-     * Description, for groups, supergroups and channel chats. 
+     * Optional.
+     * Description, for groups, supergroups and channel chats.
      * Returned only in getChat.
      *
      * type: `String`
      */
     public val description: String? = null,
     /**
-     * Optional. 
-     * Primary invite link, for groups, supergroups and channel chats. 
+     * Optional.
+     * Primary invite link, for groups, supergroups and channel chats.
      * Returned only in getChat.
      *
      * type: `String`
@@ -238,26 +239,26 @@ public data class Chat(
     @SerialName("invite_link")
     public val inviteLink: String? = null,
     /**
-     * Optional. 
-     * The most recent pinned message (by sending date). 
+     * Optional.
+     * The most recent pinned message (by sending date).
      * Returned only in getChat.
      *
      * type: `Message`
      */
     @SerialName("pinned_message")
-    public val pinnedMessage: love.forte.simbot.telegram.type.Message? = null,
+    public val pinnedMessage: Message? = null,
     /**
-     * Optional. 
-     * Default chat member permissions, for groups and supergroups. 
+     * Optional.
+     * Default chat member permissions, for groups and supergroups.
      * Returned only in getChat.
      *
      * type: `ChatPermissions`
      */
-    public val permissions: love.forte.simbot.telegram.type.ChatPermissions? = null,
+    public val permissions: ChatPermissions? = null,
     /**
-     * Optional. 
+     * Optional.
      * For supergroups, the minimum allowed delay between consecutive messages sent by each
-     * unprivileged user; in seconds. 
+     * unprivileged user; in seconds.
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -265,9 +266,9 @@ public data class Chat(
     @SerialName("slow_mode_delay")
     public val slowModeDelay: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * For supergroups, the minimum number of boosts that a non-administrator user needs to add in
-     * order to ignore slow mode and chat permissions. 
+     * order to ignore slow mode and chat permissions.
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -275,9 +276,9 @@ public data class Chat(
     @SerialName("unrestrict_boost_count")
     public val unrestrictBoostCount: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * The time after which all messages sent to the chat will be automatically deleted; in seconds.
-     * 
+     *
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -285,9 +286,9 @@ public data class Chat(
     @SerialName("message_auto_delete_time")
     public val messageAutoDeleteTime: Int? = null,
     /**
-     * Optional. 
-     * True, if aggressive anti-spam checks are enabled in the supergroup. 
-     * The field is only available to chat administrators. 
+     * Optional.
+     * True, if aggressive anti-spam checks are enabled in the supergroup.
+     * The field is only available to chat administrators.
      * Returned only in getChat.
      *
      * type: `True`
@@ -295,8 +296,8 @@ public data class Chat(
     @SerialName("has_aggressive_anti_spam_enabled")
     public val hasAggressiveAntiSpamEnabled: Boolean? = null,
     /**
-     * Optional. 
-     * True, if non-administrators can only get the list of bots and administrators in the chat. 
+     * Optional.
+     * True, if non-administrators can only get the list of bots and administrators in the chat.
      * Returned only in getChat.
      *
      * type: `True`
@@ -304,8 +305,8 @@ public data class Chat(
     @SerialName("has_hidden_members")
     public val hasHiddenMembers: Boolean? = null,
     /**
-     * Optional. 
-     * True, if messages from the chat can't be forwarded to other chats. 
+     * Optional.
+     * True, if messages from the chat can't be forwarded to other chats.
      * Returned only in getChat.
      *
      * type: `True`
@@ -313,9 +314,9 @@ public data class Chat(
     @SerialName("has_protected_content")
     public val hasProtectedContent: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if new chat members will have access to old messages; available only to chat
-     * administrators. 
+     * administrators.
      * Returned only in getChat.
      *
      * type: `True`
@@ -323,8 +324,8 @@ public data class Chat(
     @SerialName("has_visible_history")
     public val hasVisibleHistory: Boolean? = null,
     /**
-     * Optional. 
-     * For supergroups, name of group sticker set. 
+     * Optional.
+     * For supergroups, name of group sticker set.
      * Returned only in getChat.
      *
      * type: `String`
@@ -332,8 +333,8 @@ public data class Chat(
     @SerialName("sticker_set_name")
     public val stickerSetName: String? = null,
     /**
-     * Optional. 
-     * True, if the bot can change the group sticker set. 
+     * Optional.
+     * True, if the bot can change the group sticker set.
      * Returned only in getChat.
      *
      * type: `True`
@@ -341,9 +342,9 @@ public data class Chat(
     @SerialName("can_set_sticker_set")
     public val canSetStickerSet: Boolean? = null,
     /**
-     * Optional. 
-     * For supergroups, the name of the group's custom emoji sticker set. 
-     * Custom emoji from this set can be used by all users and bots in the group. 
+     * Optional.
+     * For supergroups, the name of the group's custom emoji sticker set.
+     * Custom emoji from this set can be used by all users and bots in the group.
      * Returned only in getChat.
      *
      * type: `String`
@@ -351,14 +352,14 @@ public data class Chat(
     @SerialName("custom_emoji_sticker_set_name")
     public val customEmojiStickerSetName: String? = null,
     /**
-     * Optional. 
-     * Unique identifier for the linked chat, i.e. 
+     * Optional.
+     * Unique identifier for the linked chat, i.e.
      * the discussion group identifier for a channel and vice versa; for supergroups and channel
-     * chats. 
+     * chats.
      * This identifier may be greater than 32 bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are
-     * safe for storing this identifier. 
+     * safe for storing this identifier.
      * Returned only in getChat.
      *
      * type: `Integer`
@@ -366,14 +367,55 @@ public data class Chat(
     @SerialName("linked_chat_id")
     public val linkedChatId: Int? = null,
     /**
-     * Optional. 
-     * For supergroups, the location to which the supergroup is connected. 
+     * Optional.
+     * For supergroups, the location to which the supergroup is connected.
      * Returned only in getChat.
      *
      * type: `ChatLocation`
      */
-    public val location: love.forte.simbot.telegram.type.ChatLocation? = null,
+    public val location: ChatLocation? = null,
 )
+
+/**
+ * Type of chat,
+ * can be either `private`, `group`, `supergroup` or `channel`
+ *
+ * @see Chat.type
+ * @author ForteScarlet
+ */
+public enum class ChatType(public val value: String) {
+    PRIVATE("private"),
+    GROUP("group"),
+    SUPERGROUP("supergroup"),
+    CHANNEL("channel");
+
+    public companion object {
+        /**
+         * Get from [Chat.type].
+         *
+         * @throws NoSuchElementException if is unknown value
+         */
+        @JvmStatic
+        public fun ofChatTypeValue(value: String): ChatType =
+            ofChatTypeValueOrNull(value) ?: throw NoSuchElementException(value)
+
+        /**
+         * Get from [Chat.type].
+         *
+         * @throws NoSuchElementException if is unknown value
+         */
+        @JvmStatic
+        public fun ofChatTypeValueOrNull(value: String): ChatType? =
+            when (value) {
+                "private" -> PRIVATE
+                "group" -> GROUP
+                "supergroup" -> SUPERGROUP
+                "channel" -> CHANNEL
+                else -> null
+            }
+
+    }
+}
 
 /**
  * [ChatAdministratorRights](https://core.telegram.org/bots/api#chatadministratorrights)
@@ -394,7 +436,7 @@ public data class ChatAdministratorRights(
     public val isAnonymous: Boolean,
     /**
      * True, if the administrator can access the chat event log, get boost list, see hidden
-     * supergroup and channel members, report spam messages and ignore slow mode. 
+     * supergroup and channel members, report spam messages and ignore slow mode.
      * Implied by any other administrator privilege.
      *
      * type: `Boolean`
@@ -468,7 +510,7 @@ public data class ChatAdministratorRights(
     @SerialName("can_delete_stories")
     public val canDeleteStories: Boolean,
     /**
-     * Optional. 
+     * Optional.
      * True, if the administrator can post messages in the channel, or access channel statistics;
      * for channels only
      *
@@ -477,7 +519,7 @@ public data class ChatAdministratorRights(
     @SerialName("can_post_messages")
     public val canPostMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the administrator can edit messages of other users and can pin messages; for
      * channels only
      *
@@ -486,7 +528,7 @@ public data class ChatAdministratorRights(
     @SerialName("can_edit_messages")
     public val canEditMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to pin messages; for groups and supergroups only
      *
      * type: `Boolean`
@@ -494,7 +536,7 @@ public data class ChatAdministratorRights(
     @SerialName("can_pin_messages")
     public val canPinMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to create, rename, close, and reopen forum topics; for
      * supergroups only
      *
@@ -541,7 +583,7 @@ public data class ChatBoost(
      *
      * type: `ChatBoostSource`
      */
-    public val source: love.forte.simbot.telegram.type.ChatBoostSource,
+    public val source: ChatBoostSource,
 )
 
 /**
@@ -578,7 +620,7 @@ public data class ChatBoostRemoved(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Unique identifier of the boost
      *
@@ -598,7 +640,7 @@ public data class ChatBoostRemoved(
      *
      * type: `ChatBoostSource`
      */
-    public val source: love.forte.simbot.telegram.type.ChatBoostSource,
+    public val source: ChatBoostSource,
 )
 
 /**
@@ -638,7 +680,7 @@ public data class ChatBoostSourceGiftCode(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
 )
 
 /**
@@ -660,7 +702,7 @@ public data class ChatBoostSourceGiveaway(
     public val source: String,
     /**
      * Identifier of a message in the chat with the giveaway; the message could have been deleted
-     * already. 
+     * already.
      * May be 0 if the message isn't sent yet.
      *
      * type: `Integer`
@@ -668,14 +710,14 @@ public data class ChatBoostSourceGiveaway(
     @SerialName("giveaway_message_id")
     public val giveawayMessageId: Int,
     /**
-     * Optional. 
+     * Optional.
      * User that won the prize in the giveaway if any
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User? = null,
+    public val user: User? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the giveaway was completed, but there was no user to win the prize
      *
      * type: `True`
@@ -706,7 +748,7 @@ public data class ChatBoostSourcePremium(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
 )
 
 /**
@@ -724,13 +766,13 @@ public data class ChatBoostUpdated(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Information about the chat boost
      *
      * type: `ChatBoost`
      */
-    public val boost: love.forte.simbot.telegram.type.ChatBoost,
+    public val boost: ChatBoost,
 )
 
 /**
@@ -744,7 +786,7 @@ public data class ChatBoostUpdated(
 @Serializable
 public data class ChatInviteLink(
     /**
-     * The invite link. 
+     * The invite link.
      * If the link was created by another chat administrator, then the second part of the link will
      * be replaced with “…”.
      *
@@ -757,7 +799,7 @@ public data class ChatInviteLink(
      *
      * type: `User`
      */
-    public val creator: love.forte.simbot.telegram.type.User,
+    public val creator: User,
     /**
      * True, if users joining the chat via the link need to be approved by chat administrators
      *
@@ -780,14 +822,14 @@ public data class ChatInviteLink(
     @SerialName("is_revoked")
     public val isRevoked: Boolean,
     /**
-     * Optional. 
+     * Optional.
      * Invite link name
      *
      * type: `String`
      */
     public val name: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Point in time (Unix timestamp) when the link will expire or has been expired
      *
      * type: `Integer`
@@ -795,7 +837,7 @@ public data class ChatInviteLink(
     @SerialName("expire_date")
     public val expireDate: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * The maximum number of users that can be members of the chat simultaneously after joining the
      * chat via this invite link; 1-99999
      *
@@ -804,7 +846,7 @@ public data class ChatInviteLink(
     @SerialName("member_limit")
     public val memberLimit: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Number of pending join requests created using this link
      *
      * type: `Integer`
@@ -828,19 +870,19 @@ public data class ChatJoinRequest(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * User that sent the join request
      *
      * type: `User`
      */
-    public val from: love.forte.simbot.telegram.type.User,
+    public val from: User,
     /**
-     * Identifier of a private chat with the user who sent the join request. 
+     * Identifier of a private chat with the user who sent the join request.
      * This number may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it has at most 52 significant bits, so a 64-bit integer or double-precision float type
-     * are safe for storing this identifier. 
+     * are safe for storing this identifier.
      * The bot can use this identifier for 5 minutes to send messages until the join request is
      * processed, assuming no other administrator contacted the user.
      *
@@ -855,20 +897,20 @@ public data class ChatJoinRequest(
      */
     public val date: Int,
     /**
-     * Optional. 
+     * Optional.
      * Bio of the user.
      *
      * type: `String`
      */
     public val bio: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Chat invite link that was used by the user to send the join request
      *
      * type: `ChatInviteLink`
      */
     @SerialName("invite_link")
-    public val inviteLink: love.forte.simbot.telegram.type.ChatInviteLink? = null,
+    public val inviteLink: ChatInviteLink? = null,
 )
 
 /**
@@ -882,12 +924,12 @@ public data class ChatJoinRequest(
 @Serializable
 public data class ChatLocation(
     /**
-     * The location to which the supergroup is connected. 
+     * The location to which the supergroup is connected.
      * Can't be a live location.
      *
      * type: `Location`
      */
-    public val location: love.forte.simbot.telegram.type.Location,
+    public val location: Location,
     /**
      * Location address; 1-64 characters, as defined by the chat owner
      *
@@ -934,7 +976,7 @@ public data class ChatMemberAdministrator(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
     /**
      * True, if the bot is allowed to edit administrator privileges of that user
      *
@@ -951,7 +993,7 @@ public data class ChatMemberAdministrator(
     public val isAnonymous: Boolean,
     /**
      * True, if the administrator can access the chat event log, get boost list, see hidden
-     * supergroup and channel members, report spam messages and ignore slow mode. 
+     * supergroup and channel members, report spam messages and ignore slow mode.
      * Implied by any other administrator privilege.
      *
      * type: `Boolean`
@@ -1025,7 +1067,7 @@ public data class ChatMemberAdministrator(
     @SerialName("can_delete_stories")
     public val canDeleteStories: Boolean,
     /**
-     * Optional. 
+     * Optional.
      * True, if the administrator can post messages in the channel, or access channel statistics;
      * for channels only
      *
@@ -1034,7 +1076,7 @@ public data class ChatMemberAdministrator(
     @SerialName("can_post_messages")
     public val canPostMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the administrator can edit messages of other users and can pin messages; for
      * channels only
      *
@@ -1043,7 +1085,7 @@ public data class ChatMemberAdministrator(
     @SerialName("can_edit_messages")
     public val canEditMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to pin messages; for groups and supergroups only
      *
      * type: `Boolean`
@@ -1051,7 +1093,7 @@ public data class ChatMemberAdministrator(
     @SerialName("can_pin_messages")
     public val canPinMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to create, rename, close, and reopen forum topics; for
      * supergroups only
      *
@@ -1060,7 +1102,7 @@ public data class ChatMemberAdministrator(
     @SerialName("can_manage_topics")
     public val canManageTopics: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Custom title for this user
      *
      * type: `String`
@@ -1091,9 +1133,9 @@ public data class ChatMemberBanned(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
     /**
-     * Date when restrictions will be lifted for this user; Unix time. 
+     * Date when restrictions will be lifted for this user; Unix time.
      * If 0, then the user is banned forever
      *
      * type: `Integer`
@@ -1123,7 +1165,7 @@ public data class ChatMemberLeft(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
 )
 
 /**
@@ -1147,7 +1189,7 @@ public data class ChatMemberMember(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
 )
 
 /**
@@ -1171,7 +1213,7 @@ public data class ChatMemberOwner(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
     /**
      * True, if the user's presence in the chat is hidden
      *
@@ -1180,7 +1222,7 @@ public data class ChatMemberOwner(
     @SerialName("is_anonymous")
     public val isAnonymous: Boolean,
     /**
-     * Optional. 
+     * Optional.
      * Custom title for this user
      *
      * type: `String`
@@ -1210,7 +1252,7 @@ public data class ChatMemberRestricted(
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User,
+    public val user: User,
     /**
      * True, if the user is a member of the chat at the moment of the request
      *
@@ -1318,7 +1360,7 @@ public data class ChatMemberRestricted(
     @SerialName("can_manage_topics")
     public val canManageTopics: Boolean,
     /**
-     * Date when restrictions will be lifted for this user; Unix time. 
+     * Date when restrictions will be lifted for this user; Unix time.
      * If 0, then the user is restricted forever
      *
      * type: `Integer`
@@ -1342,13 +1384,13 @@ public data class ChatMemberUpdated(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Performer of the action, which resulted in the change
      *
      * type: `User`
      */
-    public val from: love.forte.simbot.telegram.type.User,
+    public val from: User,
     /**
      * Date the change was done in Unix time
      *
@@ -1361,25 +1403,25 @@ public data class ChatMemberUpdated(
      * type: `ChatMember`
      */
     @SerialName("old_chat_member")
-    public val oldChatMember: love.forte.simbot.telegram.type.ChatMember,
+    public val oldChatMember: ChatMember,
     /**
      * New information about the chat member
      *
      * type: `ChatMember`
      */
     @SerialName("new_chat_member")
-    public val newChatMember: love.forte.simbot.telegram.type.ChatMember,
+    public val newChatMember: ChatMember,
     /**
-     * Optional. 
+     * Optional.
      * Chat invite link, which was used by the user to join the chat; for joining by invite link
      * events only.
      *
      * type: `ChatInviteLink`
      */
     @SerialName("invite_link")
-    public val inviteLink: love.forte.simbot.telegram.type.ChatInviteLink? = null,
+    public val inviteLink: ChatInviteLink? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user joined the chat via a chat folder invite link
      *
      * type: `Boolean`
@@ -1399,7 +1441,7 @@ public data class ChatMemberUpdated(
 @Serializable
 public data class ChatPermissions(
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners,
      * invoices, locations and venues
      *
@@ -1408,7 +1450,7 @@ public data class ChatPermissions(
     @SerialName("can_send_messages")
     public val canSendMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send audios
      *
      * type: `Boolean`
@@ -1416,7 +1458,7 @@ public data class ChatPermissions(
     @SerialName("can_send_audios")
     public val canSendAudios: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send documents
      *
      * type: `Boolean`
@@ -1424,7 +1466,7 @@ public data class ChatPermissions(
     @SerialName("can_send_documents")
     public val canSendDocuments: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send photos
      *
      * type: `Boolean`
@@ -1432,7 +1474,7 @@ public data class ChatPermissions(
     @SerialName("can_send_photos")
     public val canSendPhotos: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send videos
      *
      * type: `Boolean`
@@ -1440,7 +1482,7 @@ public data class ChatPermissions(
     @SerialName("can_send_videos")
     public val canSendVideos: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send video notes
      *
      * type: `Boolean`
@@ -1448,7 +1490,7 @@ public data class ChatPermissions(
     @SerialName("can_send_video_notes")
     public val canSendVideoNotes: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send voice notes
      *
      * type: `Boolean`
@@ -1456,7 +1498,7 @@ public data class ChatPermissions(
     @SerialName("can_send_voice_notes")
     public val canSendVoiceNotes: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send polls
      *
      * type: `Boolean`
@@ -1464,7 +1506,7 @@ public data class ChatPermissions(
     @SerialName("can_send_polls")
     public val canSendPolls: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to send animations, games, stickers and use inline bots
      *
      * type: `Boolean`
@@ -1472,7 +1514,7 @@ public data class ChatPermissions(
     @SerialName("can_send_other_messages")
     public val canSendOtherMessages: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to add web page previews to their messages
      *
      * type: `Boolean`
@@ -1480,8 +1522,8 @@ public data class ChatPermissions(
     @SerialName("can_add_web_page_previews")
     public val canAddWebPagePreviews: Boolean? = null,
     /**
-     * Optional. 
-     * True, if the user is allowed to change the chat title, photo and other settings. 
+     * Optional.
+     * True, if the user is allowed to change the chat title, photo and other settings.
      * Ignored in public supergroups
      *
      * type: `Boolean`
@@ -1489,7 +1531,7 @@ public data class ChatPermissions(
     @SerialName("can_change_info")
     public val canChangeInfo: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the user is allowed to invite new users to the chat
      *
      * type: `Boolean`
@@ -1497,8 +1539,8 @@ public data class ChatPermissions(
     @SerialName("can_invite_users")
     public val canInviteUsers: Boolean? = null,
     /**
-     * Optional. 
-     * True, if the user is allowed to pin messages. 
+     * Optional.
+     * True, if the user is allowed to pin messages.
      * Ignored in public supergroups
      *
      * type: `Boolean`
@@ -1506,8 +1548,8 @@ public data class ChatPermissions(
     @SerialName("can_pin_messages")
     public val canPinMessages: Boolean? = null,
     /**
-     * Optional. 
-     * True, if the user is allowed to create forum topics. 
+     * Optional.
+     * True, if the user is allowed to create forum topics.
      * If omitted defaults to the value of can_pin_messages
      *
      * type: `Boolean`
@@ -1527,7 +1569,7 @@ public data class ChatPermissions(
 @Serializable
 public data class ChatPhoto(
     /**
-     * File identifier of small (160x160) chat photo. 
+     * File identifier of small (160x160) chat photo.
      * This file_id can be used only for photo download and only for as long as the photo is not
      * changed.
      *
@@ -1537,7 +1579,7 @@ public data class ChatPhoto(
     public val smallFileId: String,
     /**
      * Unique file identifier of small (160x160) chat photo, which is supposed to be the same over
-     * time and for different bots. 
+     * time and for different bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -1545,7 +1587,7 @@ public data class ChatPhoto(
     @SerialName("small_file_unique_id")
     public val smallFileUniqueId: String,
     /**
-     * File identifier of big (640x640) chat photo. 
+     * File identifier of big (640x640) chat photo.
      * This file_id can be used only for photo download and only for as long as the photo is not
      * changed.
      *
@@ -1555,7 +1597,7 @@ public data class ChatPhoto(
     public val bigFileId: String,
     /**
      * Unique file identifier of big (640x640) chat photo, which is supposed to be the same over
-     * time and for different bots. 
+     * time and for different bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -1583,11 +1625,11 @@ public data class ChatShared(
     @SerialName("request_id")
     public val requestId: Int,
     /**
-     * Identifier of the shared chat. 
+     * Identifier of the shared chat.
      * This number may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it has at most 52 significant bits, so a 64-bit integer or double-precision float type
-     * are safe for storing this identifier. 
+     * are safe for storing this identifier.
      * The bot may not have access to the chat and could be unable to use this identifier, unless
      * the chat is already known to the bot by some other means.
      *
