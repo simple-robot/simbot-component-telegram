@@ -31,7 +31,7 @@ plugins {
 setup(P.ComponentTelegram)
 
 useK2()
-configJavaCompileWithModule("simbot.telegram.api")
+configJavaCompileWithModule("simbot.component.telegram.api")
 // apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
 //configJsTestTasks()

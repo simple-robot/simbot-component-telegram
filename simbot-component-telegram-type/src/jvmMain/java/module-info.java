@@ -1,4 +1,4 @@
-module simbot.telegram.type {
+module simbot.component.telegram.type {
     requires kotlin.stdlib;
     requires kotlinx.serialization.core;
 

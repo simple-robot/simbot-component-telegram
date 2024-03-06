@@ -19,19 +19,18 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    alias(libs.plugins.ksp)
+    // alias(libs.plugins.ksp)
     `simbot-telegram-dokka-partial-configure`
 }
 
 setup(P.ComponentTelegram)
 
 useK2()
-configJavaCompileWithModule("simbot.component.telegram.stdlib")
+configJavaCompileWithModule("simbot.component.telegram.core")
 // apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
 //configJsTestTasks()
@@ -58,6 +57,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":simbot-component-telegram-api"))
+            api(project(":simbot-component-telegram-stdlib"))
             api(libs.kotlinx.coroutines.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
@@ -112,23 +112,23 @@ kotlin {
 
 
 
-dependencies {
-    add("kspCommonMainMetadata", project(":internal-processors:stdlib-processor-extensions-processor"))
-}
-
-// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
-kotlin.sourceSets.commonMain {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
-    dokkaSourceSets.configureEach {
-        suppressGeneratedFiles.set(false)
-    }
-}
+// dependencies {
+//     add("kspCommonMainMetadata", project(":internal-processors:stdlib-processor-extensions-processor"))
+// }
+//
+// // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if(name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
+// }
+//
+// kotlin.sourceSets.commonMain {
+//     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+// }
+//
+// tasks.withType<DokkaTaskPartial>().configureEach {
+//     dokkaSourceSets.configureEach {
+//         suppressGeneratedFiles.set(false)
+//     }
+// }
