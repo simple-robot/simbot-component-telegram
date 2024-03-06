@@ -33,7 +33,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class KeyboardButton(
     /**
-     * Text of the button. 
+     * Text of the button.
      * If none of the optional fields are used, it will be sent as a message when the button is
      * pressed
      *
@@ -41,9 +41,9 @@ public data class KeyboardButton(
      */
     public val text: String,
     /**
-     * Optional. 
-     * If specified, pressing the button will open a list of suitable users. 
-     * Identifiers of selected users will be sent to the bot in a “users_shared” service message. 
+     * Optional.
+     * If specified, pressing the button will open a list of suitable users.
+     * Identifiers of selected users will be sent to the bot in a “users_shared” service message.
      * Available in private chats only.
      *
      * type: `KeyboardButtonRequestUsers`
@@ -51,9 +51,9 @@ public data class KeyboardButton(
     @SerialName("request_users")
     public val requestUsers: KeyboardButtonRequestUsers? = null,
     /**
-     * Optional. 
-     * If specified, pressing the button will open a list of suitable chats. 
-     * Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. 
+     * Optional.
+     * If specified, pressing the button will open a list of suitable chats.
+     * Tapping on a chat will send its identifier to the bot in a “chat_shared” service message.
      * Available in private chats only.
      *
      * type: `KeyboardButtonRequestChat`
@@ -61,8 +61,8 @@ public data class KeyboardButton(
     @SerialName("request_chat")
     public val requestChat: KeyboardButtonRequestChat? = null,
     /**
-     * Optional. 
-     * If True, the user's phone number will be sent as a contact when the button is pressed. 
+     * Optional.
+     * If True, the user's phone number will be sent as a contact when the button is pressed.
      * Available in private chats only.
      *
      * type: `Boolean`
@@ -70,8 +70,8 @@ public data class KeyboardButton(
     @SerialName("request_contact")
     public val requestContact: Boolean? = null,
     /**
-     * Optional. 
-     * If True, the user's current location will be sent when the button is pressed. 
+     * Optional.
+     * If True, the user's current location will be sent when the button is pressed.
      * Available in private chats only.
      *
      * type: `Boolean`
@@ -79,9 +79,9 @@ public data class KeyboardButton(
     @SerialName("request_location")
     public val requestLocation: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * If specified, the user will be asked to create a poll and send it to the bot when the button
-     * is pressed. 
+     * is pressed.
      * Available in private chats only.
      *
      * type: `KeyboardButtonPollType`
@@ -89,9 +89,9 @@ public data class KeyboardButton(
     @SerialName("request_poll")
     public val requestPoll: KeyboardButtonPollType? = null,
     /**
-     * Optional. 
-     * If specified, the described Web App will be launched when the button is pressed. 
-     * The Web App will be able to send a “web_app_data” service message. 
+     * Optional.
+     * If specified, the described Web App will be launched when the button is pressed.
+     * The Web App will be able to send a “web_app_data” service message.
      * Available in private chats only.
      *
      * type: `WebAppInfo`
@@ -112,9 +112,9 @@ public data class KeyboardButton(
 @Serializable
 public data class KeyboardButtonPollType(
     /**
-     * Optional. 
-     * If quiz is passed, the user will be allowed to create only polls in the quiz mode. 
-     * If regular is passed, only regular polls will be allowed. 
+     * Optional.
+     * If quiz is passed, the user will be allowed to create only polls in the quiz mode.
+     * If regular is passed, only regular polls will be allowed.
      * Otherwise, the user will be allowed to create a poll of any type.
      *
      * type: `String`
@@ -136,7 +136,7 @@ public data class KeyboardButtonPollType(
 public data class KeyboardButtonRequestChat(
     /**
      * Signed 32-bit identifier of the request, which will be received back in the ChatShared
-     * object. 
+     * object.
      * Must be unique within the message
      *
      * type: `Integer`
@@ -151,8 +151,8 @@ public data class KeyboardButtonRequestChat(
     @SerialName("chat_is_channel")
     public val chatIsChannel: Boolean,
     /**
-     * Optional. 
-     * Pass True to request a forum supergroup, pass False to request a non-forum chat. 
+     * Optional.
+     * Pass True to request a forum supergroup, pass False to request a non-forum chat.
      * If not specified, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -160,9 +160,9 @@ public data class KeyboardButtonRequestChat(
     @SerialName("chat_is_forum")
     public val chatIsForum: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Pass True to request a supergroup or a channel with a username, pass False to request a chat
-     * without a username. 
+     * without a username.
      * If not specified, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -170,8 +170,8 @@ public data class KeyboardButtonRequestChat(
     @SerialName("chat_has_username")
     public val chatHasUsername: Boolean? = null,
     /**
-     * Optional. 
-     * Pass True to request a chat owned by the user. 
+     * Optional.
+     * Pass True to request a chat owned by the user.
      * Otherwise, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -179,9 +179,9 @@ public data class KeyboardButtonRequestChat(
     @SerialName("chat_is_created")
     public val chatIsCreated: Boolean? = null,
     /**
-     * Optional. 
-     * A JSON-serialized object listing the required administrator rights of the user in the chat. 
-     * The rights must be a superset of bot_administrator_rights. 
+     * Optional.
+     * A JSON-serialized object listing the required administrator rights of the user in the chat.
+     * The rights must be a superset of bot_administrator_rights.
      * If not specified, no additional restrictions are applied.
      *
      * type: `ChatAdministratorRights`
@@ -189,9 +189,9 @@ public data class KeyboardButtonRequestChat(
     @SerialName("user_administrator_rights")
     public val userAdministratorRights: ChatAdministratorRights? = null,
     /**
-     * Optional. 
-     * A JSON-serialized object listing the required administrator rights of the bot in the chat. 
-     * The rights must be a subset of user_administrator_rights. 
+     * Optional.
+     * A JSON-serialized object listing the required administrator rights of the bot in the chat.
+     * The rights must be a subset of user_administrator_rights.
      * If not specified, no additional restrictions are applied.
      *
      * type: `ChatAdministratorRights`
@@ -199,8 +199,8 @@ public data class KeyboardButtonRequestChat(
     @SerialName("bot_administrator_rights")
     public val botAdministratorRights: ChatAdministratorRights? = null,
     /**
-     * Optional. 
-     * Pass True to request a chat with the bot as a member. 
+     * Optional.
+     * Pass True to request a chat with the bot as a member.
      * Otherwise, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -223,7 +223,7 @@ public data class KeyboardButtonRequestChat(
 public data class KeyboardButtonRequestUsers(
     /**
      * Signed 32-bit identifier of the request that will be received back in the UsersShared object.
-     * 
+     *
      * Must be unique within the message
      *
      * type: `Integer`
@@ -231,8 +231,8 @@ public data class KeyboardButtonRequestUsers(
     @SerialName("request_id")
     public val requestId: Int,
     /**
-     * Optional. 
-     * Pass True to request bots, pass False to request regular users. 
+     * Optional.
+     * Pass True to request bots, pass False to request regular users.
      * If not specified, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -240,8 +240,8 @@ public data class KeyboardButtonRequestUsers(
     @SerialName("user_is_bot")
     public val userIsBot: Boolean? = null,
     /**
-     * Optional. 
-     * Pass True to request premium users, pass False to request non-premium users. 
+     * Optional.
+     * Pass True to request premium users, pass False to request non-premium users.
      * If not specified, no additional restrictions are applied.
      *
      * type: `Boolean`
@@ -249,8 +249,8 @@ public data class KeyboardButtonRequestUsers(
     @SerialName("user_is_premium")
     public val userIsPremium: Boolean? = null,
     /**
-     * Optional. 
-     * The maximum number of users to be selected; 1-10. 
+     * Optional.
+     * The maximum number of users to be selected; 1-10.
      * Defaults to 1.
      *
      * type: `Integer`

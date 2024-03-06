@@ -32,15 +32,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class SwitchInlineQueryChosenChat(
     /**
-     * Optional. 
-     * The default inline query to be inserted in the input field. 
+     * Optional.
+     * The default inline query to be inserted in the input field.
      * If left empty, only the bot's username will be inserted
      *
      * type: `String`
      */
     public val query: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if private chats with users can be chosen
      *
      * type: `Boolean`
@@ -48,7 +48,7 @@ public data class SwitchInlineQueryChosenChat(
     @SerialName("allow_user_chats")
     public val allowUserChats: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if private chats with bots can be chosen
      *
      * type: `Boolean`
@@ -56,7 +56,7 @@ public data class SwitchInlineQueryChosenChat(
     @SerialName("allow_bot_chats")
     public val allowBotChats: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if group and supergroup chats can be chosen
      *
      * type: `Boolean`
@@ -64,7 +64,7 @@ public data class SwitchInlineQueryChosenChat(
     @SerialName("allow_group_chats")
     public val allowGroupChats: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if channel chats can be chosen
      *
      * type: `Boolean`

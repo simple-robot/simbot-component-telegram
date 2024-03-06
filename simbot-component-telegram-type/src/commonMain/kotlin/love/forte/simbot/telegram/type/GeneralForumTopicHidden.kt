@@ -29,7 +29,4 @@ import kotlinx.serialization.Serializable
  * @author ForteScarlet
  */
 @Serializable
-public class GeneralForumTopicHidden {
-    // TODO Empty class?
-
-}
+public class GeneralForumTopicHidden

@@ -39,7 +39,7 @@ public data class Audio(
     public val fileId: String,
     /**
      * Unique identifier for this file, which is supposed to be the same over time and for different
-     * bots. 
+     * bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -53,21 +53,21 @@ public data class Audio(
      */
     public val duration: Int,
     /**
-     * Optional. 
+     * Optional.
      * Performer of the audio as defined by sender or by audio tags
      *
      * type: `String`
      */
     public val performer: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Title of the audio as defined by sender or by audio tags
      *
      * type: `String`
      */
     public val title: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Original filename as defined by sender
      *
      * type: `String`
@@ -75,7 +75,7 @@ public data class Audio(
     @SerialName("file_name")
     public val fileName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * MIME type of the file as defined by sender
      *
      * type: `String`
@@ -83,10 +83,10 @@ public data class Audio(
     @SerialName("mime_type")
     public val mimeType: String? = null,
     /**
-     * Optional. 
-     * File size in bytes. 
+     * Optional.
+     * File size in bytes.
      * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects
-     * in interpreting it. 
+     * in interpreting it.
      * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float
      * type are safe for storing this value.
      *
@@ -95,10 +95,10 @@ public data class Audio(
     @SerialName("file_size")
     public val fileSize: Long? = null,
     /**
-     * Optional. 
+     * Optional.
      * Thumbnail of the album cover to which the music file belongs
      *
      * type: `PhotoSize`
      */
-    public val thumbnail: love.forte.simbot.telegram.type.PhotoSize? = null,
+    public val thumbnail: PhotoSize? = null,
 )

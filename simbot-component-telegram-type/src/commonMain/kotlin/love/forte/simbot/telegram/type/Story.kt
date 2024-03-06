@@ -34,7 +34,7 @@ public data class Story(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Unique identifier for the story in the chat
      *

@@ -39,7 +39,7 @@ public data class ReplyParameters(
     @SerialName("message_id")
     public val messageId: Int,
     /**
-     * Optional. 
+     * Optional.
      * If the message to be replied to is from a different chat, unique identifier for the chat or
      * username of the channel (in the format @channelusername)
      *
@@ -48,7 +48,7 @@ public data class ReplyParameters(
     @SerialName("chat_id")
     public val chatId: ChatId? = null,
     /**
-     * Optional. 
+     * Optional.
      * Pass True if the message should be sent even if the specified message to be replied to is not
      * found; can be used only for replies in the same chat and forum topic.
      *
@@ -57,18 +57,18 @@ public data class ReplyParameters(
     @SerialName("allow_sending_without_reply")
     public val allowSendingWithoutReply: Boolean? = null,
     /**
-     * Optional. 
-     * Quoted part of the message to be replied to; 0-1024 characters after entities parsing. 
+     * Optional.
+     * Quoted part of the message to be replied to; 0-1024 characters after entities parsing.
      * The quote must be an exact substring of the message to be replied to, including bold, italic,
-     * underline, strikethrough, spoiler, and custom_emoji entities. 
+     * underline, strikethrough, spoiler, and custom_emoji entities.
      * The message will fail to send if the quote isn't found in the original message.
      *
      * type: `String`
      */
     public val quote: String? = null,
     /**
-     * Optional. 
-     * Mode for parsing entities in the quote. 
+     * Optional.
+     * Mode for parsing entities in the quote.
      * See formatting options for more details.
      *
      * type: `String`
@@ -76,8 +76,8 @@ public data class ReplyParameters(
     @SerialName("quote_parse_mode")
     public val quoteParseMode: String? = null,
     /**
-     * Optional. 
-     * A JSON-serialized list of special entities that appear in the quote. 
+     * Optional.
+     * A JSON-serialized list of special entities that appear in the quote.
      * It can be specified instead of quote_parse_mode.
      *
      * type: `Array of MessageEntity`
@@ -85,7 +85,7 @@ public data class ReplyParameters(
     @SerialName("quote_entities")
     public val quoteEntities: List<MessageEntity>? = null,
     /**
-     * Optional. 
+     * Optional.
      * Position of the quote in the original message in UTF-16 code units
      *
      * type: `Integer`

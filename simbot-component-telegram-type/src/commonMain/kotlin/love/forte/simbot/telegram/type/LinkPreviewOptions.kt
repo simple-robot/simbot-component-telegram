@@ -31,7 +31,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class LinkPreviewOptions(
     /**
-     * Optional. 
+     * Optional.
      * True, if the link preview is disabled
      *
      * type: `Boolean`
@@ -39,15 +39,15 @@ public data class LinkPreviewOptions(
     @SerialName("is_disabled")
     public val isDisabled: Boolean? = null,
     /**
-     * Optional. 
-     * URL to use for the link preview. 
+     * Optional.
+     * URL to use for the link preview.
      * If empty, then the first URL found in the message text will be used
      *
      * type: `String`
      */
     public val url: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't
      * explicitly specified or media size change isn't supported for the preview
      *
@@ -56,7 +56,7 @@ public data class LinkPreviewOptions(
     @SerialName("prefer_small_media")
     public val preferSmallMedia: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't
      * explicitly specified or media size change isn't supported for the preview
      *
@@ -65,7 +65,7 @@ public data class LinkPreviewOptions(
     @SerialName("prefer_large_media")
     public val preferLargeMedia: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the link preview must be shown above the message text; otherwise, the link preview
      * will be shown below the message text
      *

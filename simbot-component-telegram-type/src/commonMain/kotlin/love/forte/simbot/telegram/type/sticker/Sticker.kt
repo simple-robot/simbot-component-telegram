@@ -91,7 +91,7 @@ public data class Sticker(
      * For mask stickers, the position where the mask should be placed
      */
     @SerialName("mask_position")
-    val maskPosition: love.forte.simbot.telegram.type.sticker.MaskPosition? = null,
+    val maskPosition: MaskPosition? = null,
     /**
      * Optional.
      * For custom emoji stickers, unique identifier of the custom emoji

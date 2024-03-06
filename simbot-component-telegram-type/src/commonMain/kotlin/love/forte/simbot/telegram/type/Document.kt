@@ -39,7 +39,7 @@ public data class Document(
     public val fileId: String,
     /**
      * Unique identifier for this file, which is supposed to be the same over time and for different
-     * bots. 
+     * bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -47,14 +47,14 @@ public data class Document(
     @SerialName("file_unique_id")
     public val fileUniqueId: String,
     /**
-     * Optional. 
+     * Optional.
      * Document thumbnail as defined by sender
      *
      * type: `PhotoSize`
      */
     public val thumbnail: PhotoSize? = null,
     /**
-     * Optional. 
+     * Optional.
      * Original filename as defined by sender
      *
      * type: `String`
@@ -62,7 +62,7 @@ public data class Document(
     @SerialName("file_name")
     public val fileName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * MIME type of the file as defined by sender
      *
      * type: `String`
@@ -70,10 +70,10 @@ public data class Document(
     @SerialName("mime_type")
     public val mimeType: String? = null,
     /**
-     * Optional. 
-     * File size in bytes. 
+     * Optional.
+     * File size in bytes.
      * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects
-     * in interpreting it. 
+     * in interpreting it.
      * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float
      * type are safe for storing this value.
      *

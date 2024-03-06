@@ -31,12 +31,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class Venue(
     /**
-     * Venue location. 
+     * Venue location.
      * Can't be a live location
      *
      * type: `Location`
      */
-    public val location: love.forte.simbot.telegram.type.Location,
+    public val location: Location,
     /**
      * Name of the venue
      *
@@ -50,7 +50,7 @@ public data class Venue(
      */
     public val address: String,
     /**
-     * Optional. 
+     * Optional.
      * Foursquare identifier of the venue
      *
      * type: `String`
@@ -58,8 +58,8 @@ public data class Venue(
     @SerialName("foursquare_id")
     public val foursquareId: String? = null,
     /**
-     * Optional. 
-     * Foursquare type of the venue. 
+     * Optional.
+     * Foursquare type of the venue.
      * (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or
      * “food/icecream”.)
      *
@@ -68,7 +68,7 @@ public data class Venue(
     @SerialName("foursquare_type")
     public val foursquareType: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Google Places identifier of the venue
      *
      * type: `String`
@@ -76,8 +76,8 @@ public data class Venue(
     @SerialName("google_place_id")
     public val googlePlaceId: String? = null,
     /**
-     * Optional. 
-     * Google Places type of the venue. 
+     * Optional.
+     * Google Places type of the venue.
      * (See supported types.)
      *
      * type: `String`

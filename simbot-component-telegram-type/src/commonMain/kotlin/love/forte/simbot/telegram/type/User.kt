@@ -31,9 +31,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class User(
     /**
-     * Unique identifier for this user or bot. 
+     * Unique identifier for this user or bot.
      * This number may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it has at most 52 significant bits, so a 64-bit integer or double-precision float type
      * are safe for storing this identifier.
      *
@@ -55,7 +55,7 @@ public data class User(
     @SerialName("first_name")
     public val firstName: String,
     /**
-     * Optional. 
+     * Optional.
      * User's or bot's last name
      *
      * type: `String`
@@ -63,14 +63,14 @@ public data class User(
     @SerialName("last_name")
     public val lastName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * User's or bot's username
      *
      * type: `String`
      */
     public val username: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * IETF language tag of the user's language
      *
      * type: `String`
@@ -78,7 +78,7 @@ public data class User(
     @SerialName("language_code")
     public val languageCode: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if this user is a Telegram Premium user
      *
      * type: `True`
@@ -86,7 +86,7 @@ public data class User(
     @SerialName("is_premium")
     public val isPremium: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if this user added the bot to the attachment menu
      *
      * type: `True`
@@ -94,8 +94,8 @@ public data class User(
     @SerialName("added_to_attachment_menu")
     public val addedToAttachmentMenu: Boolean? = null,
     /**
-     * Optional. 
-     * True, if the bot can be invited to groups. 
+     * Optional.
+     * True, if the bot can be invited to groups.
      * Returned only in getMe.
      *
      * type: `Boolean`
@@ -103,8 +103,8 @@ public data class User(
     @SerialName("can_join_groups")
     public val canJoinGroups: Boolean? = null,
     /**
-     * Optional. 
-     * True, if privacy mode is disabled for the bot. 
+     * Optional.
+     * True, if privacy mode is disabled for the bot.
      * Returned only in getMe.
      *
      * type: `Boolean`
@@ -112,8 +112,8 @@ public data class User(
     @SerialName("can_read_all_group_messages")
     public val canReadAllGroupMessages: Boolean? = null,
     /**
-     * Optional. 
-     * True, if the bot supports inline queries. 
+     * Optional.
+     * True, if the bot supports inline queries.
      * Returned only in getMe.
      *
      * type: `Boolean`
@@ -184,11 +184,11 @@ public data class UsersShared(
     @SerialName("request_id")
     public val requestId: Int,
     /**
-     * Identifiers of the shared users. 
+     * Identifiers of the shared users.
      * These numbers may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting them. 
+     * difficulty/silent defects in interpreting them.
      * But they have at most 52 significant bits, so 64-bit integers or double-precision float types
-     * are safe for storing these identifiers. 
+     * are safe for storing these identifiers.
      * The bot may not have access to the users and could be unable to use these identifiers, unless
      * the users are already known to the bot by some other means.
      *

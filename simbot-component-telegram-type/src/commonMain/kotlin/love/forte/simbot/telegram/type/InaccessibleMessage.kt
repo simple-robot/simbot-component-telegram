@@ -35,7 +35,7 @@ public data class InaccessibleMessage(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Unique message identifier inside the chat
      *
@@ -44,7 +44,7 @@ public data class InaccessibleMessage(
     @SerialName("message_id")
     public val messageId: Int,
     /**
-     * Always 0. 
+     * Always 0.
      * The field can be used to differentiate regular and inaccessible messages.
      *
      * type: `Integer`

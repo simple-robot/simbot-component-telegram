@@ -39,7 +39,7 @@ public data class Voice(
     public val fileId: String,
     /**
      * Unique identifier for this file, which is supposed to be the same over time and for different
-     * bots. 
+     * bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -53,7 +53,7 @@ public data class Voice(
      */
     public val duration: Int,
     /**
-     * Optional. 
+     * Optional.
      * MIME type of the file as defined by sender
      *
      * type: `String`
@@ -61,10 +61,10 @@ public data class Voice(
     @SerialName("mime_type")
     public val mimeType: String? = null,
     /**
-     * Optional. 
-     * File size in bytes. 
+     * Optional.
+     * File size in bytes.
      * It can be bigger than 2^31 and some programming languages may have difficulty/silent defects
-     * in interpreting it. 
+     * in interpreting it.
      * But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float
      * type are safe for storing this value.
      *

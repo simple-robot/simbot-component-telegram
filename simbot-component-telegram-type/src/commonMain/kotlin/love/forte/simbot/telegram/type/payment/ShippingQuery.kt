@@ -37,7 +37,7 @@ public data class ShippingQuery(
     /**
      * User who sent the query
      */
-    val from:  User,
+    val from: User,
     /**
      * Bot specified invoice payload
      */
@@ -47,5 +47,5 @@ public data class ShippingQuery(
      * User specified shipping address
      */
     @SerialName("shipping_address")
-    val shippingAddress: love.forte.simbot.telegram.type.payment.ShippingAddress,
+    val shippingAddress: ShippingAddress,
 )

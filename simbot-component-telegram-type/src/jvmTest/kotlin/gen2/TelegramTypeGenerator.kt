@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.io.path.Path
 
 private const val PROJECT_SOURCE_DIR =
-    "src\\commonMain\\kotlin"
+    "src\\generated"
 
 private const val DEF_PACKAGE = "love.forte.simbot.telegram.type"
 
@@ -69,8 +69,6 @@ class TelegramTypeGenerator {
         val doc = TelegramTypeGenerator::class.java.classLoader.getResourceAsStream("models-html.txt")!!.use { inp ->
             Jsoup.parse(inp, "UTF-8", "localhost")
         }
-        // val doc =
-        //     Jsoup.parse(File("G:\\code\\javaProjects\\simbot-component-telegram\\simbot-component-telegram-api\\src\\jvmTest\\resources\\models-html.txt"))
 
         val body = doc.body()
 

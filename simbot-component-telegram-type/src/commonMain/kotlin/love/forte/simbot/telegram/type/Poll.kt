@@ -47,7 +47,7 @@ public data class Poll(
      *
      * type: `Array of PollOption`
      */
-    public val options: List<love.forte.simbot.telegram.type.PollOption> = emptyList(),
+    public val options: List<PollOption> = emptyList(),
     /**
      * Total number of users that voted in the poll
      *
@@ -83,8 +83,8 @@ public data class Poll(
     @SerialName("allows_multiple_answers")
     public val allowsMultipleAnswers: Boolean,
     /**
-     * Optional. 
-     * 0-based identifier of the correct answer option. 
+     * Optional.
+     * 0-based identifier of the correct answer option.
      * Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by
      * the bot or to the private chat with the bot.
      *
@@ -93,7 +93,7 @@ public data class Poll(
     @SerialName("correct_option_id")
     public val correctOptionId: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a
      * quiz-style poll, 0-200 characters
      *
@@ -101,16 +101,16 @@ public data class Poll(
      */
     public val explanation: String? = null,
     /**
-     * Optional. 
-     * Special entities like usernames, URLs, bot commands, etc. 
+     * Optional.
+     * Special entities like usernames, URLs, bot commands, etc.
      * that appear in the explanation
      *
      * type: `Array of MessageEntity`
      */
     @SerialName("explanation_entities")
-    public val explanationEntities: List<love.forte.simbot.telegram.type.MessageEntity>? = null,
+    public val explanationEntities: List<MessageEntity>? = null,
     /**
-     * Optional. 
+     * Optional.
      * Amount of time in seconds the poll will be active after creation
      *
      * type: `Integer`
@@ -118,7 +118,7 @@ public data class Poll(
     @SerialName("open_period")
     public val openPeriod: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Point in time (Unix timestamp) when the poll will be automatically closed
      *
      * type: `Integer`
@@ -145,22 +145,22 @@ public data class PollAnswer(
     @SerialName("poll_id")
     public val pollId: String,
     /**
-     * Optional. 
+     * Optional.
      * The chat that changed the answer to the poll, if the voter is anonymous
      *
      * type: `Chat`
      */
     @SerialName("voter_chat")
-    public val voterChat: love.forte.simbot.telegram.type.Chat? = null,
+    public val voterChat: Chat? = null,
     /**
-     * Optional. 
+     * Optional.
      * The user that changed the answer to the poll, if the voter isn't anonymous
      *
      * type: `User`
      */
-    public val user: love.forte.simbot.telegram.type.User? = null,
+    public val user: User? = null,
     /**
-     * 0-based identifiers of chosen answer options. 
+     * 0-based identifiers of chosen answer options.
      * May be empty if the vote was retracted.
      *
      * type: `Array of Integer`

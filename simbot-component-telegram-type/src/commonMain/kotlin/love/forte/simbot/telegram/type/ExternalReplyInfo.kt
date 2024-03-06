@@ -36,18 +36,18 @@ public data class ExternalReplyInfo(
      *
      * type: `MessageOrigin`
      */
-    public val origin: love.forte.simbot.telegram.type.MessageOrigin,
+    public val origin: MessageOrigin,
     /**
-     * Optional. 
-     * Chat the original message belongs to. 
+     * Optional.
+     * Chat the original message belongs to.
      * Available only if the chat is a supergroup or a channel.
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat? = null,
+    public val chat: Chat? = null,
     /**
-     * Optional. 
-     * Unique message identifier inside the original chat. 
+     * Optional.
+     * Unique message identifier inside the original chat.
      * Available only if the original chat is a supergroup or a channel.
      *
      * type: `Integer`
@@ -55,79 +55,79 @@ public data class ExternalReplyInfo(
     @SerialName("message_id")
     public val messageId: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Options used for link preview generation for the original message, if it is a text message
      *
      * type: `LinkPreviewOptions`
      */
     @SerialName("link_preview_options")
-    public val linkPreviewOptions: love.forte.simbot.telegram.type.LinkPreviewOptions? = null,
+    public val linkPreviewOptions: LinkPreviewOptions? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is an animation, information about the animation
      *
      * type: `Animation`
      */
-    public val animation: love.forte.simbot.telegram.type.Animation? = null,
+    public val animation: Animation? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is an audio file, information about the file
      *
      * type: `Audio`
      */
-    public val audio: love.forte.simbot.telegram.type.Audio? = null,
+    public val audio: Audio? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a general file, information about the file
      *
      * type: `Document`
      */
-    public val document: love.forte.simbot.telegram.type.Document? = null,
+    public val document: Document? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a photo, available sizes of the photo
      *
      * type: `Array of PhotoSize`
      */
-    public val photo: List<love.forte.simbot.telegram.type.PhotoSize>? = null,
+    public val photo: List<PhotoSize>? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a sticker, information about the sticker
      *
      * type: `Sticker`
      */
     public val sticker: love.forte.simbot.telegram.type.sticker.Sticker? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a forwarded story
      *
      * type: `Story`
      */
-    public val story: love.forte.simbot.telegram.type.Story? = null,
+    public val story: Story? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a video, information about the video
      *
      * type: `Video`
      */
-    public val video: love.forte.simbot.telegram.type.Video? = null,
+    public val video: Video? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a video note, information about the video message
      *
      * type: `VideoNote`
      */
     @SerialName("video_note")
-    public val videoNote: love.forte.simbot.telegram.type.VideoNote? = null,
+    public val videoNote: VideoNote? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a voice message, information about the file
      *
      * type: `Voice`
      */
-    public val voice: love.forte.simbot.telegram.type.Voice? = null,
+    public val voice: Voice? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the message media is covered by a spoiler animation
      *
      * type: `True`
@@ -135,69 +135,69 @@ public data class ExternalReplyInfo(
     @SerialName("has_media_spoiler")
     public val hasMediaSpoiler: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a shared contact, information about the contact
      *
      * type: `Contact`
      */
-    public val contact: love.forte.simbot.telegram.type.Contact? = null,
+    public val contact: Contact? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a dice with random value
      *
      * type: `Dice`
      */
-    public val dice: love.forte.simbot.telegram.type.Dice? = null,
+    public val dice: Dice? = null,
     /**
-     * Optional. 
-     * Message is a game, information about the game. 
+     * Optional.
+     * Message is a game, information about the game.
      * More about games »
      *
      * type: `Game`
      */
     public val game: love.forte.simbot.telegram.type.game.Game? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a scheduled giveaway, information about the giveaway
      *
      * type: `Giveaway`
      */
-    public val giveaway: love.forte.simbot.telegram.type.Giveaway? = null,
+    public val giveaway: Giveaway? = null,
     /**
-     * Optional. 
+     * Optional.
      * A giveaway with public winners was completed
      *
      * type: `GiveawayWinners`
      */
     @SerialName("giveaway_winners")
-    public val giveawayWinners: love.forte.simbot.telegram.type.GiveawayWinners? = null,
+    public val giveawayWinners: GiveawayWinners? = null,
     /**
-     * Optional. 
-     * Message is an invoice for a payment, information about the invoice. 
+     * Optional.
+     * Message is an invoice for a payment, information about the invoice.
      * More about payments »
      *
      * type: `Invoice`
      */
     public val invoice: love.forte.simbot.telegram.type.payment.Invoice? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a shared location, information about the location
      *
      * type: `Location`
      */
-    public val location: love.forte.simbot.telegram.type.Location? = null,
+    public val location: Location? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a native poll, information about the poll
      *
      * type: `Poll`
      */
-    public val poll: love.forte.simbot.telegram.type.Poll? = null,
+    public val poll: Poll? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message is a venue, information about the venue
      *
      * type: `Venue`
      */
-    public val venue: love.forte.simbot.telegram.type.Venue? = null,
+    public val venue: Venue? = null,
 )

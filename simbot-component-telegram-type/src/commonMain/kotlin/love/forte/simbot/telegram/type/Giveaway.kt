@@ -35,7 +35,7 @@ public data class Giveaway(
      *
      * type: `Array of Chat`
      */
-    public val chats: List<love.forte.simbot.telegram.type.Chat> = emptyList(),
+    public val chats: List<Chat> = emptyList(),
     /**
      * Point in time (Unix timestamp) when winners of the giveaway will be selected
      *
@@ -51,7 +51,7 @@ public data class Giveaway(
     @SerialName("winner_count")
     public val winnerCount: Int,
     /**
-     * Optional. 
+     * Optional.
      * True, if only users who join the chats after the giveaway started should be eligible to win
      *
      * type: `True`
@@ -59,7 +59,7 @@ public data class Giveaway(
     @SerialName("only_new_members")
     public val onlyNewMembers: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the list of giveaway winners will be visible to everyone
      *
      * type: `True`
@@ -67,7 +67,7 @@ public data class Giveaway(
     @SerialName("has_public_winners")
     public val hasPublicWinners: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Description of additional giveaway prize
      *
      * type: `String`
@@ -75,10 +75,10 @@ public data class Giveaway(
     @SerialName("prize_description")
     public val prizeDescription: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which
-     * eligible users for the giveaway must come. 
-     * If empty, then all users can participate in the giveaway. 
+     * eligible users for the giveaway must come.
+     * If empty, then all users can participate in the giveaway.
      * Users with a phone number that was bought on Fragment can always participate in giveaways.
      *
      * type: `Array of String`
@@ -86,7 +86,7 @@ public data class Giveaway(
     @SerialName("country_codes")
     public val countryCodes: List<String>? = null,
     /**
-     * Optional. 
+     * Optional.
      * The number of months the Telegram Premium subscription won from the giveaway will be active
      * for
      *
@@ -115,7 +115,7 @@ public data class GiveawayCompleted(
     @SerialName("winner_count")
     public val winnerCount: Int,
     /**
-     * Optional. 
+     * Optional.
      * Number of undistributed prizes
      *
      * type: `Integer`
@@ -123,13 +123,13 @@ public data class GiveawayCompleted(
     @SerialName("unclaimed_prize_count")
     public val unclaimedPrizeCount: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Message with the giveaway that was completed, if it wasn't deleted
      *
      * type: `Message`
      */
     @SerialName("giveaway_message")
-    public val giveawayMessage: love.forte.simbot.telegram.type.Message? = null,
+    public val giveawayMessage: Message? = null,
 )
 
 /**
@@ -142,10 +142,7 @@ public data class GiveawayCompleted(
  * @author ForteScarlet
  */
 @Serializable
-public class GiveawayCreated {
-    // TODO Empty class?
-
-}
+public class GiveawayCreated
 
 /**
  * [GiveawayWinners](https://core.telegram.org/bots/api#giveawaywinners)
@@ -162,7 +159,7 @@ public data class GiveawayWinners(
      *
      * type: `Chat`
      */
-    public val chat: love.forte.simbot.telegram.type.Chat,
+    public val chat: Chat,
     /**
      * Identifier of the message with the giveaway in the chat
      *
@@ -189,9 +186,9 @@ public data class GiveawayWinners(
      *
      * type: `Array of User`
      */
-    public val winners: List<love.forte.simbot.telegram.type.User> = emptyList(),
+    public val winners: List<User> = emptyList(),
     /**
-     * Optional. 
+     * Optional.
      * The number of other chats the user had to join in order to be eligible for the giveaway
      *
      * type: `Integer`
@@ -199,7 +196,7 @@ public data class GiveawayWinners(
     @SerialName("additional_chat_count")
     public val additionalChatCount: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * The number of months the Telegram Premium subscription won from the giveaway will be active
      * for
      *
@@ -208,7 +205,7 @@ public data class GiveawayWinners(
     @SerialName("premium_subscription_month_count")
     public val premiumSubscriptionMonthCount: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * Number of undistributed prizes
      *
      * type: `Integer`
@@ -216,7 +213,7 @@ public data class GiveawayWinners(
     @SerialName("unclaimed_prize_count")
     public val unclaimedPrizeCount: Int? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if only users who had joined the chats after the giveaway started were eligible to win
      *
      * type: `True`
@@ -224,7 +221,7 @@ public data class GiveawayWinners(
     @SerialName("only_new_members")
     public val onlyNewMembers: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the giveaway was canceled because the payment for it was refunded
      *
      * type: `True`
@@ -232,7 +229,7 @@ public data class GiveawayWinners(
     @SerialName("was_refunded")
     public val wasRefunded: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Description of additional giveaway prize
      *
      * type: `String`

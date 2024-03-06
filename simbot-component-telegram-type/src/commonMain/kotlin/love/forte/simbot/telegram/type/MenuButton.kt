@@ -23,19 +23,26 @@ import kotlinx.serialization.Serializable
 /**
  * [MenuButton](https://core.telegram.org/bots/api#menubutton)
  *
- * This object describes the bot's menu button in a private chat. It should be one of
- * MenuButtonCommands MenuButtonWebApp MenuButtonDefault
- * If a menu button other than MenuButtonDefault is set for a private chat, then it is applied in
+ * This object describes the bot's menu button in a private chat.
+ *
+ * If a menu button other than [MenuButtonDefault] is set for a private chat, then it is applied in
  * the chat. Otherwise the default menu button is applied. By default, the menu button opens the list
  * of bot commands.
+ *
+ * @see MenuButtonCommands
+ * @see MenuButtonWebApp
+ * @see MenuButtonDefault
  *
  * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
-public class MenuButton {
-    // TODO Empty class?
-
+public sealed class MenuButton {
+    public companion object {
+        public const val COMMANDS_TYPE_NAME: String = "commands"
+        public const val WEB_APP_TYPE_NAME: String = "web_app"
+        public const val DEFAULT_TYPE_NAME: String = "default"
+    }
 }
 
 /**
@@ -47,14 +54,8 @@ public class MenuButton {
  * @author ForteScarlet
  */
 @Serializable
-public data class MenuButtonCommands(
-    /**
-     * Type of the button, must be commands
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(MenuButton.COMMANDS_TYPE_NAME)
+public data object MenuButtonCommands : MenuButton()
 
 /**
  * [MenuButtonDefault](https://core.telegram.org/bots/api#menubuttondefault)
@@ -65,14 +66,8 @@ public data class MenuButtonCommands(
  * @author ForteScarlet
  */
 @Serializable
-public data class MenuButtonDefault(
-    /**
-     * Type of the button, must be default
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(MenuButton.DEFAULT_TYPE_NAME)
+public data object MenuButtonDefault : MenuButton()
 
 /**
  * [MenuButtonWebApp](https://core.telegram.org/bots/api#menubuttonwebapp)
@@ -83,13 +78,8 @@ public data class MenuButtonDefault(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(MenuButton.WEB_APP_TYPE_NAME)
 public data class MenuButtonWebApp(
-    /**
-     * Type of the button, must be web_app
-     *
-     * type: `String`
-     */
-    public val type: String,
     /**
      * Text on the button
      *
@@ -97,12 +87,12 @@ public data class MenuButtonWebApp(
      */
     public val text: String,
     /**
-     * Description of the Web App that will be launched when the user presses the button. 
+     * Description of the Web App that will be launched when the user presses the button.
      * The Web App will be able to send an arbitrary message on behalf of the user using the method
      * answerWebAppQuery.
      *
      * type: `WebAppInfo`
      */
     @SerialName("web_app")
-    public val webApp: love.forte.simbot.telegram.type.WebAppInfo,
-)
+    public val webApp: WebAppInfo,
+) : MenuButton()

@@ -35,13 +35,13 @@ public data class ProximityAlertTriggered(
      *
      * type: `User`
      */
-    public val traveler: love.forte.simbot.telegram.type.User,
+    public val traveler: User,
     /**
      * User that set the alert
      *
      * type: `User`
      */
-    public val watcher: love.forte.simbot.telegram.type.User,
+    public val watcher: User,
     /**
      * The distance between the users
      *

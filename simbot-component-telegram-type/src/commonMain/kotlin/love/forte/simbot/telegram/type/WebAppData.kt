@@ -31,14 +31,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class WebAppData(
     /**
-     * The data. 
+     * The data.
      * Be aware that a bad client can send arbitrary data in this field.
      *
      * type: `String`
      */
     public val `data`: String,
     /**
-     * Text of the web_app keyboard button from which the Web App was opened. 
+     * Text of the web_app keyboard button from which the Web App was opened.
      * Be aware that a bad client can send arbitrary data in this field.
      *
      * type: `String`

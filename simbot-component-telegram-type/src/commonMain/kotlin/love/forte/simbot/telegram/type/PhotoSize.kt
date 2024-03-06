@@ -39,7 +39,7 @@ public data class PhotoSize(
     public val fileId: String,
     /**
      * Unique identifier for this file, which is supposed to be the same over time and for different
-     * bots. 
+     * bots.
      * Can't be used to download or reuse the file.
      *
      * type: `String`
@@ -59,7 +59,7 @@ public data class PhotoSize(
      */
     public val height: Int,
     /**
-     * Optional. 
+     * Optional.
      * File size in bytes
      *
      * type: `Integer`

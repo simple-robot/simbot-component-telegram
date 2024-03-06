@@ -22,8 +22,11 @@ import kotlinx.serialization.Serializable
 /**
  * [MaybeInaccessibleMessage](https://core.telegram.org/bots/api#maybeinaccessiblemessage)
  *
- * This object describes a message that can be inaccessible to the bot. It can be one of
- * Message InaccessibleMessage
+ * This object describes a message that can be inaccessible to the bot.
+ *
+
+ * @see Message
+ * @see InaccessibleMessage
  *
  * (auto-generated)
  * @author ForteScarlet

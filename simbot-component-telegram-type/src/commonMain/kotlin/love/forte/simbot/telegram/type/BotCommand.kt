@@ -64,13 +64,13 @@ public data class BotCommand(
 @Serializable
 public sealed class BotCommandScope {
     public companion object {
-        public const val DEFAULT_SCOPE_NAME: String = "default"
-        public const val ALL_PRIVATE_CHATS_SCOPE_NAME: String = "all_private_chats"
-        public const val ALL_GROUP_CHATS_SCOPE_NAME: String = "all_group_chats"
-        public const val ALL_CHAT_ADMINISTRATORS_SCOPE_NAME: String = "all_chat_administrators"
-        public const val CHAT_SCOPE_NAME: String = "chat"
-        public const val CHAT_ADMINISTRATORS_SCOPE_NAME: String = "chat_administrators"
-        public const val CHAT_MEMBER_SCOPE_NAME: String = "chat_member"
+        public const val DEFAULT_TYPE_NAME: String = "default"
+        public const val ALL_PRIVATE_CHATS_TYPE_NAME: String = "all_private_chats"
+        public const val ALL_GROUP_CHATS_TYPE_NAME: String = "all_group_chats"
+        public const val ALL_CHAT_ADMINISTRATORS_TYPE_NAME: String = "all_chat_administrators"
+        public const val CHAT_TYPE_NAME: String = "chat"
+        public const val CHAT_ADMINISTRATORS_TYPE_NAME: String = "chat_administrators"
+        public const val CHAT_MEMBER_TYPE_NAME: String = "chat_member"
     }
 }
 
@@ -83,7 +83,7 @@ public sealed class BotCommandScope {
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.ALL_CHAT_ADMINISTRATORS_SCOPE_NAME)
+@SerialName(BotCommandScope.ALL_CHAT_ADMINISTRATORS_TYPE_NAME)
 public data object BotCommandScopeAllChatAdministrators : BotCommandScope()
 
 /**
@@ -95,7 +95,7 @@ public data object BotCommandScopeAllChatAdministrators : BotCommandScope()
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.ALL_GROUP_CHATS_SCOPE_NAME)
+@SerialName(BotCommandScope.ALL_GROUP_CHATS_TYPE_NAME)
 public data object BotCommandScopeAllGroupChats : BotCommandScope()
 
 /**
@@ -107,7 +107,7 @@ public data object BotCommandScopeAllGroupChats : BotCommandScope()
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.ALL_PRIVATE_CHATS_SCOPE_NAME)
+@SerialName(BotCommandScope.ALL_PRIVATE_CHATS_TYPE_NAME)
 public data object BotCommandScopeAllPrivateChats : BotCommandScope()
 
 /**
@@ -119,7 +119,7 @@ public data object BotCommandScopeAllPrivateChats : BotCommandScope()
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.CHAT_SCOPE_NAME)
+@SerialName(BotCommandScope.CHAT_TYPE_NAME)
 public data class BotCommandScopeChat(
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
@@ -141,7 +141,7 @@ public data class BotCommandScopeChat(
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.CHAT_ADMINISTRATORS_SCOPE_NAME)
+@SerialName(BotCommandScope.CHAT_ADMINISTRATORS_TYPE_NAME)
 public data class BotCommandScopeChatAdministrators(
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
@@ -162,7 +162,7 @@ public data class BotCommandScopeChatAdministrators(
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.CHAT_MEMBER_SCOPE_NAME)
+@SerialName(BotCommandScope.CHAT_MEMBER_TYPE_NAME)
 public data class BotCommandScopeChatMember(
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
@@ -191,5 +191,5 @@ public data class BotCommandScopeChatMember(
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(BotCommandScope.DEFAULT_SCOPE_NAME)
+@SerialName(BotCommandScope.DEFAULT_TYPE_NAME)
 public data object BotCommandScopeDefault : BotCommandScope()

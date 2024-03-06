@@ -32,8 +32,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public sealed class ReactionType {
-    // TODO 后续添加的 unknown type?
-
+    public companion object {
+        public const val EMOJI_TYPE_NAME: String = "emoji"
+        public const val CUSTOM_EMOJI_TYPE_NAME: String = "custom_emoji"
+    }
 }
 
 /**
@@ -45,14 +47,8 @@ public sealed class ReactionType {
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(love.forte.simbot.telegram.type.ReactionTypeCustomEmoji.Companion.TYPE)
+@SerialName(ReactionType.CUSTOM_EMOJI_TYPE_NAME)
 public data class ReactionTypeCustomEmoji(
-    // /**
-    //  * Type of the reaction, always “custom_emoji”
-    //  *
-    //  * type: `String`
-    //  */
-    // public val type: String,
     /**
      * Custom emoji identifier
      *
@@ -60,11 +56,7 @@ public data class ReactionTypeCustomEmoji(
      */
     @SerialName("custom_emoji_id")
     public val customEmojiId: String,
-) : love.forte.simbot.telegram.type.ReactionType() {
-    public companion object {
-        public const val TYPE: String = "custom_emoji"
-    }
-}
+) : ReactionType()
 
 /**
  * [ReactionTypeEmoji](https://core.telegram.org/bots/api#reactiontypeemoji)
@@ -75,14 +67,8 @@ public data class ReactionTypeCustomEmoji(
  * @author ForteScarlet
  */
 @Serializable
-@SerialName(love.forte.simbot.telegram.type.ReactionTypeEmoji.Companion.TYPE)
+@SerialName(ReactionType.EMOJI_TYPE_NAME)
 public data class ReactionTypeEmoji(
-    // /**
-    //  * Type of the reaction, always “emoji”
-    //  *
-    //  * type: `String`
-    //  */
-    // public val type: String,
     /**
      * Reaction emoji.
      * Currently, it can be one of "👍", "👎", "❤", "🔥", "🥰", "👏", "😁", "🤔", "🤯", "😱",
@@ -95,8 +81,4 @@ public data class ReactionTypeEmoji(
      * type: `String`
      */
     public val emoji: String,
-) : love.forte.simbot.telegram.type.ReactionType() {
-    public companion object {
-        public const val TYPE: String = "emoji"
-    }
-}
+) : ReactionType()

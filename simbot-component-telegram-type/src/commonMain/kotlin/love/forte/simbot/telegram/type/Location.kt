@@ -43,7 +43,7 @@ public data class Location(
      */
     public val longitude: Float,
     /**
-     * Optional. 
+     * Optional.
      * The radius of uncertainty for the location, measured in meters; 0-1500
      *
      * type: `Float`
@@ -51,9 +51,9 @@ public data class Location(
     @SerialName("horizontal_accuracy")
     public val horizontalAccuracy: Float? = null,
     /**
-     * Optional. 
+     * Optional.
      * Time relative to the message sending date, during which the location can be updated; in
-     * seconds. 
+     * seconds.
      * For active live locations only.
      *
      * type: `Integer`
@@ -61,16 +61,16 @@ public data class Location(
     @SerialName("live_period")
     public val livePeriod: Int? = null,
     /**
-     * Optional. 
-     * The direction in which user is moving, in degrees; 1-360. 
+     * Optional.
+     * The direction in which user is moving, in degrees; 1-360.
      * For active live locations only.
      *
      * type: `Integer`
      */
     public val heading: Int? = null,
     /**
-     * Optional. 
-     * The maximum distance for proximity alerts about approaching another chat member, in meters. 
+     * Optional.
+     * The maximum distance for proximity alerts about approaching another chat member, in meters.
      * For sent live locations only.
      *
      * type: `Integer`

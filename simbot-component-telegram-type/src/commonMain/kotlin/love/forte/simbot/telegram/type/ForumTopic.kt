@@ -51,7 +51,7 @@ public data class ForumTopic(
     @SerialName("icon_color")
     public val iconColor: Int,
     /**
-     * Optional. 
+     * Optional.
      * Unique identifier of the custom emoji shown as the topic icon
      *
      * type: `String`
@@ -70,10 +70,7 @@ public data class ForumTopic(
  * @author ForteScarlet
  */
 @Serializable
-public class ForumTopicClosed {
-    // TODO Empty class?
-
-}
+public class ForumTopicClosed
 
 /**
  * [ForumTopicCreated](https://core.telegram.org/bots/api#forumtopiccreated)
@@ -99,7 +96,7 @@ public data class ForumTopicCreated(
     @SerialName("icon_color")
     public val iconColor: Int,
     /**
-     * Optional. 
+     * Optional.
      * Unique identifier of the custom emoji shown as the topic icon
      *
      * type: `String`
@@ -119,14 +116,14 @@ public data class ForumTopicCreated(
 @Serializable
 public data class ForumTopicEdited(
     /**
-     * Optional. 
+     * Optional.
      * New name of the topic, if it was edited
      *
      * type: `String`
      */
     public val name: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string
      * if the icon was removed
      *
@@ -146,7 +143,4 @@ public data class ForumTopicEdited(
  * @author ForteScarlet
  */
 @Serializable
-public class ForumTopicReopened {
-    // TODO Empty class?
-
-}
+public class ForumTopicReopened

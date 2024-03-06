@@ -33,7 +33,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class WriteAccessAllowed(
     /**
-     * Optional. 
+     * Optional.
      * True, if the access was granted after the user accepted an explicit request from a Web App
      * sent by the method requestWriteAccess
      *
@@ -42,7 +42,7 @@ public data class WriteAccessAllowed(
     @SerialName("from_request")
     public val fromRequest: Boolean? = null,
     /**
-     * Optional. 
+     * Optional.
      * Name of the Web App, if the access was granted when the Web App was launched from a link
      *
      * type: `String`
@@ -50,7 +50,7 @@ public data class WriteAccessAllowed(
     @SerialName("web_app_name")
     public val webAppName: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * True, if the access was granted when the bot was added to the attachment or side menu
      *
      * type: `Boolean`

@@ -45,16 +45,16 @@ public data class CallbackQuery(
      *
      * type: `User`
      */
-    public val from: love.forte.simbot.telegram.type.User,
+    public val from: User,
     /**
-     * Optional. 
+     * Optional.
      * Message sent by the bot with the callback button that originated the query
      *
      * type: `MaybeInaccessibleMessage`
      */
-    public val message: love.forte.simbot.telegram.type.MaybeInaccessibleMessage? = null,
+    public val message: MaybeInaccessibleMessage? = null,
     /**
-     * Optional. 
+     * Optional.
      * Identifier of the message sent via the bot in inline mode, that originated the query.
      *
      * type: `String`
@@ -63,7 +63,7 @@ public data class CallbackQuery(
     public val inlineMessageId: String? = null,
     /**
      * Global identifier, uniquely corresponding to the chat to which the message with the callback
-     * button was sent. 
+     * button was sent.
      * Useful for high scores in games.
      *
      * type: `String`
@@ -71,8 +71,8 @@ public data class CallbackQuery(
     @SerialName("chat_instance")
     public val chatInstance: String,
     /**
-     * Optional. 
-     * Data associated with the callback button. 
+     * Optional.
+     * Data associated with the callback button.
      * Be aware that the message originated the query can contain no callback buttons with this
      * data.
      *
@@ -80,7 +80,7 @@ public data class CallbackQuery(
      */
     public val `data`: String? = null,
     /**
-     * Optional. 
+     * Optional.
      * Short name of a Game to be returned, serves as the unique identifier for the game
      *
      * type: `String`

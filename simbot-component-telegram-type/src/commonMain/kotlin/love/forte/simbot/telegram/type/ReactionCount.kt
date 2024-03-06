@@ -35,7 +35,7 @@ public data class ReactionCount(
      *
      * type: `ReactionType`
      */
-    public val type: love.forte.simbot.telegram.type.ReactionType,
+    public val type: ReactionType,
     /**
      * Number of times the reaction was added
      *

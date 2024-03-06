@@ -50,5 +50,5 @@ public data class OrderInfo(
      * User shipping address
      */
     @SerialName("shipping_address")
-    val shippingAddress: love.forte.simbot.telegram.type.payment.ShippingAddress? = null,
+    val shippingAddress: ShippingAddress? = null,
 )

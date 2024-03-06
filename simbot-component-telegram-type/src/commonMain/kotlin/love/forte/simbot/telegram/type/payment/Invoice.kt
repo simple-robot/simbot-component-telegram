@@ -25,8 +25,6 @@ import kotlinx.serialization.Serializable
  *
  * This object contains basic information about an invoice.
  *
- * TODO
- *
  * @author ForteScarlet
  */
 @Serializable

@@ -17,8 +17,10 @@
 
 package love.forte.simbot.telegram.type
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 import kotlin.jvm.JvmStatic
 
 /**
@@ -646,16 +648,29 @@ public data class ChatBoostRemoved(
 /**
  * [ChatBoostSource](https://core.telegram.org/bots/api#chatboostsource)
  *
- * This object describes the source of a chat boost. It can be one of
- * ChatBoostSourcePremium ChatBoostSourceGiftCode ChatBoostSourceGiveaway
+ * This object describes the source of a chat boost.
  *
- * (auto-generated)
+ * Note: Because the property name of the class discriminator is not `type`,
+ * [JsonClassDiscriminator] is specified,
+ * and therefore only using [Json][kotlinx.serialization.json.Json] serialization is better.
+ *
+ * @see ChatBoostSourcePremium
+ * @see ChatBoostSourceGiftCode
+ * @see ChatBoostSourceGiveaway
+ *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-public class ChatBoostSource {
-    // TODO Empty class?
+@JsonClassDiscriminator(ChatBoostSource.CLASS_DISCRIMINATOR)
+public sealed class ChatBoostSource {
+    public companion object {
+        public const val CLASS_DISCRIMINATOR: String = "source"
 
+        public const val PREMIUM_SOURCE_NAME: String = "premium"
+        public const val GIFT_CODE_SOURCE_NAME: String = "gift_code"
+        public const val GIVEAWAY_SOURCE_NAME: String = "giveaway"
+    }
 }
 
 /**
@@ -668,20 +683,15 @@ public class ChatBoostSource {
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatBoostSource.GIFT_CODE_SOURCE_NAME)
 public data class ChatBoostSourceGiftCode(
-    /**
-     * Source of the boost, always “gift_code”
-     *
-     * type: `String`
-     */
-    public val source: String,
     /**
      * User for which the gift code was created
      *
      * type: `User`
      */
     public val user: User,
-)
+) : ChatBoostSource()
 
 /**
  * [ChatBoostSourceGiveaway](https://core.telegram.org/bots/api#chatboostsourcegiveaway)
@@ -693,13 +703,8 @@ public data class ChatBoostSourceGiftCode(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatBoostSource.GIVEAWAY_SOURCE_NAME)
 public data class ChatBoostSourceGiveaway(
-    /**
-     * Source of the boost, always “giveaway”
-     *
-     * type: `String`
-     */
-    public val source: String,
     /**
      * Identifier of a message in the chat with the giveaway; the message could have been deleted
      * already.
@@ -724,7 +729,7 @@ public data class ChatBoostSourceGiveaway(
      */
     @SerialName("is_unclaimed")
     public val isUnclaimed: Boolean? = null,
-)
+) : ChatBoostSource()
 
 /**
  * [ChatBoostSourcePremium](https://core.telegram.org/bots/api#chatboostsourcepremium)
@@ -736,20 +741,15 @@ public data class ChatBoostSourceGiveaway(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatBoostSource.PREMIUM_SOURCE_NAME)
 public data class ChatBoostSourcePremium(
-    /**
-     * Source of the boost, always “premium”
-     *
-     * type: `String`
-     */
-    public val source: String,
     /**
      * User that boosted the chat
      *
      * type: `User`
      */
     public val user: User,
-)
+) : ChatBoostSource()
 
 /**
  * [ChatBoostUpdated](https://core.telegram.org/bots/api#chatboostupdated)
@@ -941,18 +941,36 @@ public data class ChatLocation(
 /**
  * [ChatMember](https://core.telegram.org/bots/api#chatmember)
  *
- * This object contains information about one member of a chat. Currently, the following 6 types of
- * chat members are supported:
- * ChatMemberOwner ChatMemberAdministrator ChatMemberMember ChatMemberRestricted ChatMemberLeft
- * ChatMemberBanned
+ * This object contains information about one member of a chat.
+ *
+ * Note: Because the property name of the class discriminator is not `type`,
+ * [JsonClassDiscriminator] is specified,
+ * and therefore only using [Json][kotlinx.serialization.json.Json] serialization is better.
+ *
+ * @see ChatMemberOwner
+ * @see ChatMemberAdministrator
+ * @see ChatMemberMember
+ * @see ChatMemberRestricted
+ * @see ChatMemberLeft
+ * @see ChatMemberBanned
  *
  * (auto-generated)
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-public class ChatMember {
-    // TODO Empty class?
+@JsonClassDiscriminator(ChatMember.CLASS_DISCRIMINATOR)
+public sealed class ChatMember {
+    public companion object {
+        public const val CLASS_DISCRIMINATOR: String = "status"
 
+        public const val OWNER_STATUS_NAME: String = "creator"
+        public const val ADMINISTRATOR_STATUS_NAME: String = "administrator"
+        public const val MEMBER_STATUS_NAME: String = "member"
+        public const val RESTRICTED_STATUS_NAME: String = "restricted"
+        public const val LEFT_STATUS_NAME: String = "left"
+        public const val BANNED_STATUS_NAME: String = "kicked"
+    }
 }
 
 /**
@@ -964,13 +982,8 @@ public class ChatMember {
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.ADMINISTRATOR_STATUS_NAME)
 public data class ChatMemberAdministrator(
-    /**
-     * The member's status in the chat, always “administrator”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
@@ -1109,7 +1122,7 @@ public data class ChatMemberAdministrator(
      */
     @SerialName("custom_title")
     public val customTitle: String? = null,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberBanned](https://core.telegram.org/bots/api#chatmemberbanned)
@@ -1121,13 +1134,8 @@ public data class ChatMemberAdministrator(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.BANNED_STATUS_NAME)
 public data class ChatMemberBanned(
-    /**
-     * The member's status in the chat, always “kicked”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
@@ -1142,7 +1150,7 @@ public data class ChatMemberBanned(
      */
     @SerialName("until_date")
     public val untilDate: Int,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberLeft](https://core.telegram.org/bots/api#chatmemberleft)
@@ -1153,20 +1161,15 @@ public data class ChatMemberBanned(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.LEFT_STATUS_NAME)
 public data class ChatMemberLeft(
-    /**
-     * The member's status in the chat, always “left”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
      * type: `User`
      */
     public val user: User,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberMember](https://core.telegram.org/bots/api#chatmembermember)
@@ -1177,13 +1180,8 @@ public data class ChatMemberLeft(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.MEMBER_STATUS_NAME)
 public data class ChatMemberMember(
-    /**
-     * The member's status in the chat, always “member”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
@@ -1201,13 +1199,8 @@ public data class ChatMemberMember(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.OWNER_STATUS_NAME)
 public data class ChatMemberOwner(
-    /**
-     * The member's status in the chat, always “creator”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
@@ -1229,7 +1222,7 @@ public data class ChatMemberOwner(
      */
     @SerialName("custom_title")
     public val customTitle: String? = null,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberRestricted](https://core.telegram.org/bots/api#chatmemberrestricted)
@@ -1240,13 +1233,8 @@ public data class ChatMemberOwner(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(ChatMember.RESTRICTED_STATUS_NAME)
 public data class ChatMemberRestricted(
-    /**
-     * The member's status in the chat, always “restricted”
-     *
-     * type: `String`
-     */
-    public val status: String,
     /**
      * Information about the user
      *
@@ -1367,7 +1355,7 @@ public data class ChatMemberRestricted(
      */
     @SerialName("until_date")
     public val untilDate: Int,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberUpdated](https://core.telegram.org/bots/api#chatmemberupdated)

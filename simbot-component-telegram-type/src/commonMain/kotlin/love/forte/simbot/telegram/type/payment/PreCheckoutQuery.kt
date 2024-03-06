@@ -64,5 +64,5 @@ public data class PreCheckoutQuery(
      * Order information provided by the user
      */
     @SerialName("order_info")
-    val orderInfo: love.forte.simbot.telegram.type.payment.OrderInfo? = null,
+    val orderInfo: OrderInfo? = null,
 )

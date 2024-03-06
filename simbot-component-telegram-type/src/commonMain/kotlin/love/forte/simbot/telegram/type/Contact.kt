@@ -45,7 +45,7 @@ public data class Contact(
     @SerialName("first_name")
     public val firstName: String,
     /**
-     * Optional. 
+     * Optional.
      * Contact's last name
      *
      * type: `String`
@@ -53,10 +53,10 @@ public data class Contact(
     @SerialName("last_name")
     public val lastName: String? = null,
     /**
-     * Optional. 
-     * Contact's user identifier in Telegram. 
+     * Optional.
+     * Contact's user identifier in Telegram.
      * This number may have more than 32 significant bits and some programming languages may have
-     * difficulty/silent defects in interpreting it. 
+     * difficulty/silent defects in interpreting it.
      * But it has at most 52 significant bits, so a 64-bit integer or double-precision float type
      * are safe for storing this identifier.
      *
@@ -65,7 +65,7 @@ public data class Contact(
     @SerialName("user_id")
     public val userId: Long? = null,
     /**
-     * Optional. 
+     * Optional.
      * Additional data about the contact in the form of a vCard
      *
      * type: `String`

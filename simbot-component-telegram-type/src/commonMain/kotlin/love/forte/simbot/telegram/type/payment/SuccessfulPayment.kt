@@ -17,14 +17,13 @@
 
 package love.forte.simbot.telegram.type.payment
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
  * [SuccessfulPayment](https://core.telegram.org/bots/api#successfulpayment)
  *
  * This object contains basic information about a successful payment.
- *
- * TODO
  *
  * @author ForteScarlet
  */
@@ -34,5 +33,39 @@ public data class SuccessfulPayment(
      * Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
      */
     val currency: String,
+    /**
+     * Total price in the smallest units of the currency (integer, not float/double).
+     * For example, for a price of `US$ 1.45` pass `amount = 145`.
+     * See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+     * it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     */
+    @SerialName("total_amount")
+    val totalAmount: Int,
+    /**
+     * Bot specified invoice payload
+     */
+    @SerialName("invoice_payload")
+    val invoicePayload: String,
+    /**
+     * Optional.
+     * Identifier of the shipping option chosen by the user
+     */
+    @SerialName("shipping_option_id")
+    val shippingOptionId: String? = null,
+    /**
+     * Optional.
+     * Order information provided by the user
+     */
+    @SerialName("order_info")
+    val orderInfo: OrderInfo? = null,
+    /**
+     * Telegram payment identifier
+     */
+    @SerialName("telegram_payment_charge_id")
+    val telegramPaymentChargeId: String,
+    /**
+     * Provider payment identifier
+     */
+    @SerialName("provider_payment_charge_id")
+    val providerPaymentChargeId: String,
 )
-// TODO
