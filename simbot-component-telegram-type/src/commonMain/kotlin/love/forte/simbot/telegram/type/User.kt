@@ -137,7 +137,7 @@ public data class UserChatBoosts(
      *
      * type: `Array of ChatBoost`
      */
-    public val boosts: List<love.forte.simbot.telegram.type.ChatBoost> = emptyList(),
+    public val boosts: List<ChatBoost> = emptyList(),
 )
 
 /**
@@ -162,7 +162,7 @@ public data class UserProfilePhotos(
      *
      * type: `Array of Array of PhotoSize`
      */
-    public val photos: List<List<love.forte.simbot.telegram.type.PhotoSize>> = emptyList(),
+    public val photos: List<List<PhotoSize>> = emptyList(),
 )
 
 /**

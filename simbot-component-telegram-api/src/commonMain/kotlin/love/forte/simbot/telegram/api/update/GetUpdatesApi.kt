@@ -134,7 +134,7 @@ public class GetUpdatesApi private constructor(body: Body) : SimpleBodyTelegramA
  * ([HttpRequestTimeoutException] will be caught by default [onError].
  *
  * @param timeout see [GetUpdatesApi.Body.timeout]
- * @param limit see [GetUpdatesApi.Body.limit].
+ * @param eachLimit see [GetUpdatesApi.Body.limit].
  * It is recommended to set a larger value,
  * and its millis value should be smaller than
  * the `requestTimeoutMillis` of the [receiver client][HttpClient].
@@ -147,7 +147,8 @@ public class GetUpdatesApi private constructor(body: Body) : SimpleBodyTelegramA
  */
 public inline fun getUpdateFlow(
     timeout: Int? = null,
-    limit: Int? = null,
+    firstOffset: Int? = null,
+    eachLimit: Int? = null,
     allowedUpdates: Collection<String>? = null,
     crossinline onEachResult: (List<Update>) -> List<Update> = { it },
     crossinline onError: (Throwable) -> List<Update> = { if (it is HttpRequestTimeoutException) emptyList() else throw it },
@@ -155,13 +156,13 @@ public inline fun getUpdateFlow(
 ): Flow<Update> {
     return flow {
         var api: GetUpdatesApi
-        var offset: Int? = null
+        var offset: Int? = firstOffset
 
         while (true) {
             api = GetUpdatesApi.create(
                 GetUpdatesApi.Body(
                     offset = offset,
-                    limit = limit,
+                    limit = eachLimit,
                     timeout = timeout,
                     allowedUpdates = allowedUpdates
                 )
