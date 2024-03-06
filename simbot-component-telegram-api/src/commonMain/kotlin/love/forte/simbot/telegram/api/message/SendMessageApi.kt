@@ -56,29 +56,9 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
          * @param chatId see [Body]
          * @param text see [Body]
          */
-        @JvmSynthetic
+        @JvmStatic
         public fun create(chatId: ChatId, text: String): SendMessageApi =
             create(Body(chatId = chatId, text = text))
-
-        /**
-         * Create a [SendMessageApi] based only on required arguments.
-         *
-         * @param chatId see [Body]
-         * @param text see [Body]
-         */
-        @JvmStatic
-        public fun create(chatId: String, text: String): SendMessageApi =
-            create(chatId = ChatId(chatId), text = text)
-
-        /**
-         * Create a [SendMessageApi] based only on required arguments.
-         *
-         * @param chatId see [Body]
-         * @param text see [Body]
-         */
-        @JvmStatic
-        public fun create(chatId: Long, text: String): SendMessageApi =
-            create(chatId = ChatId(chatId), text = text)
 
         /**
          * Create a [SendMessageApi] via [body].
@@ -146,7 +126,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
      * @see Builder
      */
     @Serializable
-    public class Body internal constructor(
+    public data class Body internal constructor(
         @SerialName("chat_id")
         public val chatId: ChatId, // Integer or String
         public val text: String,

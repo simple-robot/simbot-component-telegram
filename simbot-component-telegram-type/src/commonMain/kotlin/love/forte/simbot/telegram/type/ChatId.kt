@@ -15,6 +15,9 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:JvmName("ChatIds")
+@file:JvmMultifileClass
+
 package love.forte.simbot.telegram.type
 
 import kotlinx.serialization.KSerializer
@@ -23,91 +26,71 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.telegram.type.ChatId.Companion.valueOf
-import kotlin.jvm.JvmInline
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 /**
  * A Chat id that can be either [Long] or [String].
  * If it's a string, it should start with '@'.
  *
- * The description of [ChatId] is usually:
- * _Unique identifier for the target chat or username of the target supergroup or channel (in the format `@channelusername`)_.
+ * [ChatId] is usually used for request body types and is not recommended for scenarios that require deserialization.
+ * It is serialized directly to a literal value, such as a number or a string, rather than a struct.
  *
- * Note: [ChatId] is usually used for request body types and is not recommended for scenarios that require deserialization.
+ * In Java, create an instance of [ChatId] via [`ChatIds.valueOf(...)`][ChatId] .
  */
-@Suppress("MemberVisibilityCanBePrivate")
-@JvmInline
 @Serializable(ChatIdSerializer::class)
-public value class ChatId internal constructor(internal val value: Any) {
-    init {
-        require(value is String || value is Long) {
-            "`value` can only be String or Long"
-        }
+public sealed class ChatId {
+    /**
+     * Chat id of type [Long].
+     * This parameter is **valid only** if [string] is not null,
+     * otherwise, return `0` always.
+     */
+    public abstract val long: Long
+
+    /**
+     * Chat id of type [String].
+     * This parameter is valid only if [string] is not null.
+     */
+    public abstract val string: String?
+
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ChatId) return false
+
+        if (long != other.long) return false
+        if (string != other.string) return false
+
+        return true
     }
 
-    /**
-     * `true` if `value` is [Long].
-     */
-    public val isLongValue: Boolean
-        get() = value is Long
-
-    /**
-     * `true` if `value` is [String].
-     */
-    public val isStringValue: Boolean
-        get() = value is String
-
-    /**
-     * If the value of [ChatId] is type of [Long], return long value,
-     * otherwise, return `null`.
-     */
-    public val longOrNull: Long?
-        get() = value as? Long
-
-    /**
-     * If the value of [ChatId] is type of [String], return string value,
-     * otherwise, return `null`.
-     */
-    public val stringOrNull: String?
-        get() = value as? String
-
-    /**
-     * If the value of [ChatId] is type of [Long], return long value,
-     * otherwise, throw [ClassCastException].
-     */
-    public val long: Long
-        get() = longOrNull ?: throw ClassCastException("`value` !is Long")
-
-    /**
-     * If the value of [ChatId] is type of [String], return string value,
-     * otherwise, throw [ClassCastException].
-     */
-    public val string: String
-        get() = stringOrNull ?: throw ClassCastException("`value` !is String")
-
-    /**
-     * return `value`.toString().
-     */
-    override fun toString(): String = value.toString()
-
-    public companion object {
-        /**
-         * @throws IllegalArgumentException if [value] !is [Long] or [String].
-         */
-        public fun valueOf(value: Any): ChatId = ChatId(value)
+    final override fun hashCode(): Int {
+        var result = long.hashCode()
+        result = 31 * result + (string?.hashCode() ?: 0)
+        return result
     }
 }
 
 /**
  * Create a [ChatId] by [Long].
  */
-public fun ChatId(value: Long): ChatId = valueOf(value)
+@JvmName("valueOf")
+public fun ChatId(value: Long): ChatId = LChatId(value)
 
 /**
  * Create a [ChatId] by [String].
  */
-public fun ChatId(value: String): ChatId = valueOf(value)
+@JvmName("valueOf")
+public fun ChatId(value: String): ChatId = SChatId(value)
 
+private class LChatId(override val long: Long) : ChatId() {
+    override val string: String? get() = null
+    override fun toString(): String = "ChatId($long)"
+}
+
+private class SChatId(override val string: String) : ChatId() {
+    override val long: Long get() = 0L
+    override fun toString(): String = "ChatId(\"$string\")"
+}
 
 /**
  * The serializer of [ChatId].
@@ -129,9 +112,9 @@ public object ChatIdSerializer : KSerializer<ChatId> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("ChatId")
 
     override fun serialize(encoder: Encoder, value: ChatId) {
-        when (val v = value.value) {
-            is Long -> encoder.encodeLong(v)
-            else -> encoder.encodeString(v.toString())
+        when (value) {
+            is LChatId -> encoder.encodeLong(value.long)
+            is SChatId -> encoder.encodeString(value.string)
         }
     }
 }

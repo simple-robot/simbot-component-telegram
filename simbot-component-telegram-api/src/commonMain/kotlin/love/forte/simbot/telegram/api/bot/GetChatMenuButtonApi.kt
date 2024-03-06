@@ -24,7 +24,7 @@ import love.forte.simbot.telegram.api.utils.SingleChatIdBody
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.MenuButton
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmSynthetic
+import kotlin.jvm.JvmStatic
 
 
 /**
@@ -46,30 +46,11 @@ public class GetChatMenuButtonApi private constructor(chatId: ChatId?) : SimpleB
          * @param chatId Optional.
          * Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
          */
-        @JvmSynthetic
+        @JvmStatic
+        @JvmOverloads
         public fun create(chatId: ChatId? = null): GetChatMenuButtonApi {
             return chatId?.let { GetChatMenuButtonApi(it) } ?: EMPTY
         }
-
-        /**
-         * Create [GetChatMenuButtonApi].
-         * @param chatId Optional.
-         * Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
-         */
-        @JvmSynthetic
-        @JvmOverloads
-        public fun create(chatId: Long? = null): GetChatMenuButtonApi =
-            create(chatId?.let(::ChatId))
-
-        /**
-         * Create [GetChatMenuButtonApi].
-         * @param chatId Optional.
-         * Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
-         */
-        @JvmSynthetic
-        public fun create(chatId: String?): GetChatMenuButtonApi =
-            create(chatId?.let(::ChatId))
-
     }
 
     override val name: String

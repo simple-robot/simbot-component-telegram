@@ -25,7 +25,6 @@ import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.ChatMember
 import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -45,23 +44,9 @@ public class GetChatMemberApi private constructor(body: Body) : SimpleBodyTelegr
         /**
          * Create an instance of [GetChatMemberApi].
          */
-        @JvmSynthetic
+        @JvmStatic
         public fun create(chatId: ChatId, userId: Int): GetChatMemberApi =
             GetChatMemberApi(Body(chatId, userId))
-
-        /**
-         * Create an instance of [GetChatMemberApi].
-         */
-        @JvmStatic
-        public fun create(chatId: String, userId: Int): GetChatMemberApi =
-            create(ChatId(chatId), userId)
-
-        /**
-         * Create an instance of [GetChatMemberApi].
-         */
-        @JvmStatic
-        public fun create(chatId: Long, userId: Int): GetChatMemberApi =
-            create(ChatId(chatId), userId)
     }
 
     override val name: String

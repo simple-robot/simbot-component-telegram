@@ -24,7 +24,6 @@ import love.forte.simbot.telegram.api.utils.SingleChatIdBody
 import love.forte.simbot.telegram.type.Chat
 import love.forte.simbot.telegram.type.ChatId
 import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -44,24 +43,8 @@ public class GetChatApi private constructor(cid: ChatId) : SimpleBodyTelegramApi
          *
          * @param chatId Unique identifier for the target chat or username of the target supergroup or channel (in the format `@channelusername`)
          */
-        @JvmSynthetic
+        @JvmStatic
         public fun create(chatId: ChatId): GetChatApi = GetChatApi(chatId)
-
-        /**
-         * Create an instance of [GetChatApi].
-         *
-         * @param chatId Unique identifier for the target chat
-         */
-        @JvmStatic
-        public fun create(chatId: String): GetChatApi = create(ChatId(chatId))
-
-        /**
-         * Create an instance of [GetChatApi].
-         *
-         * @param chatId Unique identifier for the target chat or username of the target supergroup or channel (in the format `@channelusername`)
-         */
-        @JvmStatic
-        public fun create(chatId: Long): GetChatApi = create(ChatId(chatId))
     }
 
     override val name: String

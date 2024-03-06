@@ -25,7 +25,6 @@ import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.UserChatBoosts
 import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -48,30 +47,9 @@ public class GetUserChatBoostsApi private constructor(body: Body) : SimpleBodyTe
          * @param userId Unique identifier of the target user
          *
          */
-        @JvmSynthetic
+        @JvmStatic
         public fun create(chatId: ChatId, userId: Int): GetUserChatBoostsApi =
             GetUserChatBoostsApi(Body(chatId, userId))
-
-        /**
-         * Create [GetUserChatBoostsApi]
-         *
-         * @param chatId Username of the channel (in the format `@channelusername`)
-         * @param userId Unique identifier of the target user
-         */
-        @JvmStatic
-        public fun create(chatId: String, userId: Int): GetUserChatBoostsApi =
-            create(ChatId(chatId), userId)
-
-        /**
-         * Create [GetUserChatBoostsApi]
-         *
-         * @param chatId Unique identifier for the chat
-         * @param userId Unique identifier of the target user
-         */
-        @JvmStatic
-        public fun create(chatId: Long, userId: Int): GetUserChatBoostsApi =
-            create(ChatId(chatId), userId)
-
     }
 
     override val name: String
