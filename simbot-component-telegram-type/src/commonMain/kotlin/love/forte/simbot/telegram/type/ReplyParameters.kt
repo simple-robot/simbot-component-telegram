@@ -46,7 +46,7 @@ public data class ReplyParameters(
      * type: `Integer or String`
      */
     @SerialName("chat_id")
-    public val chatId: String? = null,
+    public val chatId: ChatId? = null,
     /**
      * Optional. 
      * Pass True if the message should be sent even if the specified message to be replied to is not

@@ -45,7 +45,7 @@ import kotlin.jvm.JvmSynthetic
 public suspend fun TelegramApi<*>.requestRaw(
     client: HttpClient,
     token: String,
-    server: String? = null,
+    server: Url? = null,
 ): HttpResponse {
     val builder = HttpRequestBuilder()
     builder.url {
@@ -122,6 +122,22 @@ public suspend fun TelegramApi<*>.requestRaw(
 /**
  * Request the [TelegramApi] by [client] with [token].
  *
+ * @param client The [HttpClient]
+ * @param token The bot token in the query API (should with the prefix `bot`).
+ * e.g. `"bot<token>"` of `https://api.telegram.org/bot<token>/METHOD_NAME`.
+ * @param server The query API server (e.g. `"https://example.com"`).
+ * Default is [Telegram.BASE_SERVER_VALUE].
+ */
+@JvmSynthetic
+public suspend fun TelegramApi<*>.requestRaw(
+    client: HttpClient,
+    token: String,
+    server: String? = null,
+): HttpResponse = requestRaw(client, token, server?.let(Telegram::serverUrl))
+
+/**
+ * Request the [TelegramApi] by [client] with [token].
+ *
  * @param client see `client` in [requestRaw]
  * @param token see `token` in [requestRaw]
  * @param server see `server` in [requestRaw]
@@ -131,7 +147,7 @@ public suspend fun TelegramApi<*>.requestRaw(
 public suspend fun <R : Any> TelegramApi<R>.requestResult(
     client: HttpClient,
     token: String,
-    server: String? = null,
+    server: Url? = null,
 ): TelegramApiResult<R> {
     val rawResponse = requestRaw(client, token, server)
     val raw = rawResponse.bodyAsText()
@@ -148,10 +164,40 @@ public suspend fun <R : Any> TelegramApi<R>.requestResult(
  * @throws TelegramApiResultNotOkException
  */
 @JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestResult(
+    client: HttpClient,
+    token: String,
+    server: String? = null,
+): TelegramApiResult<R> = requestResult(client, token, server?.let(Telegram::serverUrl))
+
+/**
+ * Request the [TelegramApi] by [client] with [token].
+ *
+ * @param client see `client` in [requestRaw]
+ * @param token see `token` in [requestRaw]
+ * @param server see `server` in [requestRaw]
+ * @throws TelegramApiResultNotOkException
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestData(
+    client: HttpClient,
+    token: String,
+    server: Url? = null,
+): R {
+    return requestResult(client, token, server).resultOrThrow()
+}
+
+/**
+ * Request the [TelegramApi] by [client] with [token].
+ *
+ * @param client see `client` in [requestRaw]
+ * @param token see `token` in [requestRaw]
+ * @param server see `server` in [requestRaw]
+ * @throws TelegramApiResultNotOkException
+ */
+@JvmSynthetic
 public suspend fun <R : Any> TelegramApi<R>.requestData(
     client: HttpClient,
     token: String,
     server: String? = null,
-): R {
-    return requestResult(client, token, server).resultOrThrow()
-}
+): R = requestData(client, token, server?.let(Telegram::serverUrl))

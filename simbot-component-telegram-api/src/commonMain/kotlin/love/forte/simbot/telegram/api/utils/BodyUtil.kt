@@ -15,16 +15,15 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("BotRequests")
-@file:JvmMultifileClass
+package love.forte.simbot.telegram.api.utils
 
-package love.forte.simbot.telegram.stdlib.bot
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import love.forte.simbot.telegram.type.ChatId
 
-import love.forte.simbot.telegram.api.TelegramApi
-import love.forte.simbot.telegram.api.requestData
-import kotlin.jvm.JvmMultifileClass
-import kotlin.jvm.JvmName
+@Serializable
+internal data class SingleChatIdBody(@SerialName("chat_id") val chatId: ChatId)
 
-public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: Bot): R {
-    return requestData(bot.apiClient, bot.ticket.token, bot.server)
-}
+@Serializable
+internal data class LanguageCodeBody(@SerialName("language_code") val languageCode: String)
+

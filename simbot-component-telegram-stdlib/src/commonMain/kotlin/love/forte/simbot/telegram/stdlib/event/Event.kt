@@ -51,4 +51,10 @@ public interface Event {
      * such as [Message] ([Update.message]).
      */
     public val content: Any
+
+    /**
+     * The raw JSON string used to parse out [update].
+     * If [update] is externally provided and raw is not provided, it may get `null`
+     */
+    public val raw: String?
 }

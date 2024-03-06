@@ -31,7 +31,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class BotCommand(
     /**
-     * Text of the command; 1-32 characters. 
+     * Text of the command; 1-32 characters.
      * Can contain only lowercase English letters, digits and underscores.
      *
      * type: `String`
@@ -48,34 +48,30 @@ public data class BotCommand(
 /**
  * [BotCommandScope](https://core.telegram.org/bots/api#botcommandscope)
  *
- * This object represents the scope to which bot commands are applied. Currently, the following 7
- * scopes are supported:
- * BotCommandScopeDefault BotCommandScopeAllPrivateChats BotCommandScopeAllGroupChats
- * BotCommandScopeAllChatAdministrators BotCommandScopeChat BotCommandScopeChatAdministrators
- * BotCommandScopeChatMember
- * Determining list of commands
- * The following algorithm is used to determine the list of commands for a particular user viewing
- * the bot menu. The first list of commands which is set is returned:
- * Commands in the chat with the bot
- * botCommandScopeChat + language_code botCommandScopeChat botCommandScopeAllPrivateChats +
- * language_code botCommandScopeAllPrivateChats botCommandScopeDefault + language_code
- * botCommandScopeDefault
- * Commands in group and supergroup chats
- * botCommandScopeChatMember + language_code botCommandScopeChatMember
- * botCommandScopeChatAdministrators + language_code (administrators only)
- * botCommandScopeChatAdministrators (administrators only) botCommandScopeChat + language_code
- * botCommandScopeChat botCommandScopeAllChatAdministrators + language_code (administrators only)
- * botCommandScopeAllChatAdministrators (administrators only) botCommandScopeAllGroupChats +
- * language_code botCommandScopeAllGroupChats botCommandScopeDefault + language_code
- * botCommandScopeDefault
+ * This object represents the scope to which bot commands are applied.
+ *
+ * @see BotCommandScopeDefault
+ * @see BotCommandScopeAllPrivateChats
+ * @see BotCommandScopeAllGroupChats
+ * @see BotCommandScopeAllChatAdministrators
+ * @see BotCommandScopeChat
+ * @see BotCommandScopeChatAdministrators
+ * @see BotCommandScopeChatMember
  *
  * (auto-generated)
  * @author ForteScarlet
  */
 @Serializable
-public class BotCommandScope {
-    // TODO Empty class?
-
+public sealed class BotCommandScope {
+    public companion object {
+        public const val DEFAULT_SCOPE_NAME: String = "default"
+        public const val ALL_PRIVATE_CHATS_SCOPE_NAME: String = "all_private_chats"
+        public const val ALL_GROUP_CHATS_SCOPE_NAME: String = "all_group_chats"
+        public const val ALL_CHAT_ADMINISTRATORS_SCOPE_NAME: String = "all_chat_administrators"
+        public const val CHAT_SCOPE_NAME: String = "chat"
+        public const val CHAT_ADMINISTRATORS_SCOPE_NAME: String = "chat_administrators"
+        public const val CHAT_MEMBER_SCOPE_NAME: String = "chat_member"
+    }
 }
 
 /**
@@ -87,14 +83,8 @@ public class BotCommandScope {
  * @author ForteScarlet
  */
 @Serializable
-public data class BotCommandScopeAllChatAdministrators(
-    /**
-     * Scope type, must be all_chat_administrators
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(BotCommandScope.ALL_CHAT_ADMINISTRATORS_SCOPE_NAME)
+public data object BotCommandScopeAllChatAdministrators : BotCommandScope()
 
 /**
  * [BotCommandScopeAllGroupChats](https://core.telegram.org/bots/api#botcommandscopeallgroupchats)
@@ -105,14 +95,8 @@ public data class BotCommandScopeAllChatAdministrators(
  * @author ForteScarlet
  */
 @Serializable
-public data class BotCommandScopeAllGroupChats(
-    /**
-     * Scope type, must be all_group_chats
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(BotCommandScope.ALL_GROUP_CHATS_SCOPE_NAME)
+public data object BotCommandScopeAllGroupChats : BotCommandScope()
 
 /**
  * [BotCommandScopeAllPrivateChats](https://core.telegram.org/bots/api#botcommandscopeallprivatechats)
@@ -123,14 +107,8 @@ public data class BotCommandScopeAllGroupChats(
  * @author ForteScarlet
  */
 @Serializable
-public data class BotCommandScopeAllPrivateChats(
-    /**
-     * Scope type, must be all_private_chats
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(BotCommandScope.ALL_PRIVATE_CHATS_SCOPE_NAME)
+public data object BotCommandScopeAllPrivateChats : BotCommandScope()
 
 /**
  * [BotCommandScopeChat](https://core.telegram.org/bots/api#botcommandscopechat)
@@ -141,13 +119,8 @@ public data class BotCommandScopeAllPrivateChats(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(BotCommandScope.CHAT_SCOPE_NAME)
 public data class BotCommandScopeChat(
-    /**
-     * Scope type, must be chat
-     *
-     * type: `String`
-     */
-    public val type: String,
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
      * `@supergroupusername`)
@@ -155,8 +128,8 @@ public data class BotCommandScopeChat(
      * type: `Integer or String`
      */
     @SerialName("chat_id")
-    public val chatId: String,
-)
+    public val chatId: ChatId,
+) : BotCommandScope()
 
 /**
  * [BotCommandScopeChatAdministrators](https://core.telegram.org/bots/api#botcommandscopechatadministrators)
@@ -168,13 +141,8 @@ public data class BotCommandScopeChat(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(BotCommandScope.CHAT_ADMINISTRATORS_SCOPE_NAME)
 public data class BotCommandScopeChatAdministrators(
-    /**
-     * Scope type, must be chat_administrators
-     *
-     * type: `String`
-     */
-    public val type: String,
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
      * `@supergroupusername`)
@@ -182,8 +150,8 @@ public data class BotCommandScopeChatAdministrators(
      * type: `Integer or String`
      */
     @SerialName("chat_id")
-    public val chatId: String,
-)
+    public val chatId: ChatId,
+) : BotCommandScope()
 
 /**
  * [BotCommandScopeChatMember](https://core.telegram.org/bots/api#botcommandscopechatmember)
@@ -194,13 +162,8 @@ public data class BotCommandScopeChatAdministrators(
  * @author ForteScarlet
  */
 @Serializable
+@SerialName(BotCommandScope.CHAT_MEMBER_SCOPE_NAME)
 public data class BotCommandScopeChatMember(
-    /**
-     * Scope type, must be chat_member
-     *
-     * type: `String`
-     */
-    public val type: String,
     /**
      * Unique identifier for the target chat or username of the target supergroup (in the format
      * `@supergroupusername`)
@@ -208,7 +171,7 @@ public data class BotCommandScopeChatMember(
      * type: `Integer or String`
      */
     @SerialName("chat_id")
-    public val chatId: String,
+    public val chatId: ChatId,
     /**
      * Unique identifier of the target user
      *
@@ -216,7 +179,7 @@ public data class BotCommandScopeChatMember(
      */
     @SerialName("user_id")
     public val userId: Int,
-)
+) : BotCommandScope()
 
 /**
  * [BotCommandScopeDefault](https://core.telegram.org/bots/api#botcommandscopedefault)
@@ -228,11 +191,5 @@ public data class BotCommandScopeChatMember(
  * @author ForteScarlet
  */
 @Serializable
-public data class BotCommandScopeDefault(
-    /**
-     * Scope type, must be default
-     *
-     * type: `String`
-     */
-    public val type: String,
-)
+@SerialName(BotCommandScope.DEFAULT_SCOPE_NAME)
+public data object BotCommandScopeDefault : BotCommandScope()

@@ -20,6 +20,7 @@ package love.forte.simbot.telegram
 import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 
 public object Telegram {
     /**
@@ -40,6 +41,15 @@ public object Telegram {
      */
     @JvmField
     public val BaseServerUrl: Url = Url(BASE_SERVER_VALUE)
+
+    /**
+     * If [url] == [BASE_SERVER_VALUE],
+     * return [BaseServerUrl],
+     * otherwise, return a new [Url].
+     */
+    @JvmStatic
+    public fun serverUrl(url: String): Url
+        = if (url == BASE_SERVER_VALUE) BaseServerUrl else Url(url)
 
     /**
      * A default [Json].

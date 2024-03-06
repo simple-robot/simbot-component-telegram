@@ -16,7 +16,7 @@ class SendMessageApiTests {
     fun bodySerTest() {
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.Body(
-                chatId = 123L,
+                chatId = ChatId(123L),
                 text = "forte"
             )
 
@@ -26,7 +26,7 @@ class SendMessageApiTests {
         }
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.Body(
-                chatId = "@1234",
+                chatId = ChatId("@1234"),
                 text = "forte"
             )
 

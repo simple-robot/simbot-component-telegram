@@ -18,9 +18,6 @@
 package love.forte.simbot.telegram.api.message
 
 import kotlinx.serialization.*
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -32,6 +29,7 @@ import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.api.message.SendMessageApi.Builder
 import love.forte.simbot.telegram.api.utils.requireNotNullNamed
 import love.forte.simbot.telegram.type.*
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
@@ -58,8 +56,8 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
          * @param chatId see [Body]
          * @param text see [Body]
          */
-        @JvmStatic
-        public fun create(chatId: String, text: String): SendMessageApi =
+        @JvmSynthetic
+        public fun create(chatId: ChatId, text: String): SendMessageApi =
             create(Body(chatId = chatId, text = text))
 
         /**
@@ -69,8 +67,18 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
          * @param text see [Body]
          */
         @JvmStatic
+        public fun create(chatId: String, text: String): SendMessageApi =
+            create(chatId = ChatId(chatId), text = text)
+
+        /**
+         * Create a [SendMessageApi] based only on required arguments.
+         *
+         * @param chatId see [Body]
+         * @param text see [Body]
+         */
+        @JvmStatic
         public fun create(chatId: Long, text: String): SendMessageApi =
-            create(Body(chatId = chatId, text = text))
+            create(chatId = ChatId(chatId), text = text)
 
         /**
          * Create a [SendMessageApi] via [body].
@@ -108,7 +116,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
      *
      * Note: Can only be used for serialization, not deserialization.
      *
-     * @property chatId [Long] or [String].
+     * @property chatId [Long] or [String] (See also [ChatId]).
      * Unique identifier for the target chat or username of the target channel (in the format `@channelusername`)
      * @property messageThreadId Optional.
      * Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -140,8 +148,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
     @Serializable
     public class Body internal constructor(
         @SerialName("chat_id")
-        @Serializable(BodyChatIdSer::class)
-        public val chatId: Any, // Integer or String
+        public val chatId: ChatId, // Integer or String
         public val text: String,
 
         @SerialName("message_thread_id")
@@ -163,7 +170,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         public val replyMarkup: Any? = null,
     ) {
         init {
-            require(chatId is String || chatId is Int || chatId is Long) { "`chatId` must be `String` | `Int` | `Long`, but $chatId" }
             require(
                 replyMarkup == null
                         || (
@@ -186,20 +192,22 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         /**
          * @see Body.chatId
          */
-        private var chatId: Any? = null
+        @get:JvmName("getChatId")
+        @set:JvmSynthetic
+        public var chatId: ChatId? = null
 
         /**
          * @see chatId
          */
         public fun chatId(value: Long) {
-            chatId = value
+            chatId = ChatId(value)
         }
 
         /**
          * @see chatId
          */
         public fun chatId(value: String) {
-            chatId = value
+            chatId = ChatId(value)
         }
 
         /**
@@ -314,26 +322,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         public fun build(): SendMessageApi = create(buildBody())
     }
 
-    internal object BodyChatIdSer : KSerializer<Any> {
-        override fun deserialize(decoder: Decoder): Any {
-            // deserialized as String always.
-            return String.serializer().deserialize(decoder)
-        }
-
-        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("chat_id", PrimitiveKind.STRING)
-
-        override fun serialize(encoder: Encoder, value: Any) {
-            when (value) {
-                is Long -> encoder.encodeLong(value)
-                is String -> encoder.encodeString(value)
-                is Int -> encoder.encodeLong(value.toLong())
-                else -> {
-                    // Do something?
-                }
-            }
-        }
-    }
-
     internal object BodyReplyMarkupSer : KSerializer<Any> {
         // Json ONLY
         // or throw an exception?
@@ -387,22 +375,10 @@ public inline fun buildSendMessageApi(block: Builder.() -> Unit): SendMessageApi
  * [buildSendMessageApi] with required arguments.
  */
 public inline fun buildSendMessageApi(
-    chatId: Long, text: String,
+    chatId: ChatId, text: String,
     block: Builder.() -> Unit
 ): SendMessageApi = buildSendMessageApi {
-    chatId(chatId)
-    this.text = text
-    block()
-}
-
-/**
- * [buildSendMessageApi] with required arguments.
- */
-public inline fun buildSendMessageApi(
-    chatId: String, text: String,
-    block: Builder.() -> Unit
-): SendMessageApi = buildSendMessageApi {
-    chatId(chatId)
+    this.chatId = chatId
     this.text = text
     block()
 }

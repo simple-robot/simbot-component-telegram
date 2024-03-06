@@ -19,6 +19,7 @@ package love.forte.simbot.telegram.stdlib.bot.internal
 
 import io.ktor.client.*
 import io.ktor.client.plugins.*
+import io.ktor.http.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,8 @@ import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
 import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.requestData
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.api.update.UpdateValues
 import love.forte.simbot.telegram.api.update.getUpdateFlow
@@ -55,7 +58,7 @@ internal class BotImpl(
     private val logger = LoggerFactory.getLogger("love.forte.simbot.telegram.stdlib.bot")
     private val eventLogger = LoggerFactory.getLogger("love.forte.simbot.telegram.stdlib.bot.event")
 
-    private val server = configuration.server
+    override val server: Url = configuration.server?.let(::Url) ?: Telegram.BaseServerUrl
 
     override val coroutineContext: CoroutineContext
     private val job: Job
@@ -123,10 +126,10 @@ internal class BotImpl(
         processors.add(processor)
     }
 
-    override suspend fun pushUpdate(update: Update) {
+    override suspend fun pushUpdate(update: Update, raw: String?) {
         job.ensureActive()
         val channel = eventChannel ?: throw IllegalStateException("Bot not started yet")
-        val event = update.resolveToEvent()
+        val event = update.resolveToEvent(raw)
 
         channel.send(event)
     }
@@ -193,8 +196,8 @@ internal class BotImpl(
             longPollingFlow
                 .filter { it !== init }
                 .collect { longPolling ->
-                updateLongPollingTask(longPolling)
-            }
+                    updateLongPollingTask(longPolling)
+                }
         }
 
         // job completion callback
@@ -255,13 +258,16 @@ internal class BotImpl(
 
     private suspend fun HttpClient.longPolling(
         token: String,
-        server: String?,
+        server: Url?,
         timeout: Int?,
         limit: Int?,
         allowedUpdates: Collection<String>?,
     ) {
+        val client = this
         getUpdateFlow(
-            token, server, timeout, limit, allowedUpdates,
+            timeout,
+            limit,
+            allowedUpdates,
             onError = { error ->
                 when (error) {
                     is CancellationException -> {
@@ -283,10 +289,11 @@ internal class BotImpl(
                 }
 
                 emptyList()
-            })
-            .collect { update ->
-                pushUpdate(update)
-            }
+            }) { api ->
+            api.requestData(client, token, server)
+        }.collect { update ->
+            pushUpdate(update)
+        }
     }
 
     override fun cancel(cause: Throwable?) {
@@ -299,7 +306,10 @@ internal class BotImpl(
 }
 
 
-private data class EventImpl(override val name: String, override val content: Any, override val update: Update) : Event
+private data class EventImpl(
+    override val name: String, override val content: Any, override val update: Update,
+    override val raw: String?
+) : Event
 
-private fun Update.resolveToEvent(): Event =
-    UpdateValues.resolveTo(this) { name, value -> EventImpl(name, value, this) }
+private fun Update.resolveToEvent(raw: String?): Event =
+    UpdateValues.resolveTo(this) { name, value -> EventImpl(name, value, this, raw) }

@@ -27,7 +27,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import love.forte.simbot.telegram.api.SimpleBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
-import love.forte.simbot.telegram.api.requestData
 import kotlin.jvm.JvmStatic
 import kotlin.math.max
 
@@ -121,14 +120,19 @@ public class GetUpdatesApi private constructor(body: Body) : SimpleBodyTelegramA
 /**
  * Create a [Flow] based on Long Polling with [GetUpdatesApi].
  *
+ * ```Kotlin
+ * getUpdateFlow(...) { api ->
+ *     httpClient.requestData(token, server)
+ * }
+ *
+ * ```
+ *
  * @receiver The [HttpClient] to call this **long polling**.
  * It is recommended to configure a larger `requestTimeoutMillis` value,
  * at least larger than the milliseconds value corresponding to timeout.
  * Otherwise, an [HttpRequestTimeoutException] is likely to be thrown.
  * ([HttpRequestTimeoutException] will be caught by default [onError].
  *
- * @param token see `token` in [requestData]
- * @param server see `server` in [requestData]
  * @param timeout see [GetUpdatesApi.Body.timeout]
  * @param limit see [GetUpdatesApi.Body.limit].
  * It is recommended to set a larger value,
@@ -141,16 +145,14 @@ public class GetUpdatesApi private constructor(body: Body) : SimpleBodyTelegramA
  * Default: `{ if (it is HttpRequestTimeoutException) emptyList() else throw it }`:
  * if it is [HttpRequestTimeoutException], ignore. Otherwise, throw it.
  */
-public inline fun HttpClient.getUpdateFlow(
-    token: String,
-    server: String? = null,
+public inline fun getUpdateFlow(
     timeout: Int? = null,
     limit: Int? = null,
     allowedUpdates: Collection<String>? = null,
     crossinline onEachResult: (List<Update>) -> List<Update> = { it },
-    crossinline onError: (Throwable) -> List<Update> = { if (it is HttpRequestTimeoutException) emptyList() else throw it }
+    crossinline onError: (Throwable) -> List<Update> = { if (it is HttpRequestTimeoutException) emptyList() else throw it },
+    crossinline requestor: suspend (GetUpdatesApi) -> List<Update>
 ): Flow<Update> {
-    val client = this
     return flow {
         var api: GetUpdatesApi
         var offset: Int? = null
@@ -166,7 +168,8 @@ public inline fun HttpClient.getUpdateFlow(
             )
 
             val updates = kotlin.runCatching {
-                api.requestData(client, token, server).let(onEachResult)
+                requestor(api).let(onEachResult)
+                // api.requestData(client, token, server).let(onEachResult)
             }.getOrElse { onError(it) }
 
             if (updates.isEmpty()) {

@@ -19,10 +19,12 @@ package love.forte.simbot.telegram.stdlib.bot
 
 import io.ktor.client.*
 import io.ktor.client.engine.*
+import io.ktor.http.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.SerializationException
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.telegram.Telegram
@@ -50,6 +52,13 @@ public interface Bot : CoroutineScope {
      * Ticket.
      */
     public val ticket: Ticket
+
+    /**
+     * The server address used by the Bot.
+     * If [BotConfiguration.server] is `null`,
+     * [Telegram.BaseServerUrl] is returned.
+     */
+    public val server: Url
 
     /**
      * Whether the launch [start] was successfully executed once.
@@ -138,13 +147,14 @@ public interface Bot : CoroutineScope {
      *
      * Long polling also uses [pushUpdate] to push events.
      *
+     * @param raw see [Event.raw]
      * @see Update
      * @see Update.decodeFromRawJson
      *
      * @throws IllegalStateException if [isStarted] == false
      * @throws CancellationException if [isActive] == false
      */
-    public suspend fun pushUpdate(update: Update)
+    public suspend fun pushUpdate(update: Update, raw: String? = null)
 
     /**
      * Start this bot.
@@ -378,3 +388,12 @@ public inline fun <reified T : Any> Bot.preProcess(
     }
 }
 
+/**
+ * Push a [Update] raw JSON string.
+ *
+ * @throws SerializationException see [Update.decodeFromRawJson]
+ * @throws IllegalArgumentException see [Update.decodeFromRawJson]
+ */
+public suspend fun Bot.pushRawUpdate(raw: String) {
+    pushUpdate(Update.decodeFromRawJson(raw), raw)
+}
