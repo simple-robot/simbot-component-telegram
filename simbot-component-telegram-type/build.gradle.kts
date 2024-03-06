@@ -65,6 +65,15 @@ kotlin {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.serialization.json)
         }
+
+        jvmTest.dependencies {
+            // for gen
+            // https://jsoup.org/download
+            implementation("org.jsoup:jsoup:1.17.2")
+            // poet
+            // https://square.github.io/kotlinpoet/
+            implementation(libs.kotlinPoet)
+        }
     }
 
 }
