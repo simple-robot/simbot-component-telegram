@@ -22,8 +22,6 @@ import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.core.project.version as v
 
 
-const val SIMBOT_GROUP = "love.forte.simbot"
-
 /**
  * Project versions.
  */
@@ -35,7 +33,7 @@ object P {
 
     object ComponentTelegram : ProjectDetail() {
         const val GROUP = "love.forte.simbot.component"
-        const val DESCRIPTION = "A Simple Robot component that supports Telegram bot"
+        const val DESCRIPTION = "Kotlin coroutines based Telegram bot API/SDK Kotlin multiplatform library, is also a Simple Robot Component library"
         const val HOMEPAGE = "https://github.com/simple-robot/simbot-component-telegram"
 
         override val group: String get() = GROUP

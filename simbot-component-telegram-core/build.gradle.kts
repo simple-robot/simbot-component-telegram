@@ -58,6 +58,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":simbot-component-telegram-api"))
             api(project(":simbot-component-telegram-stdlib"))
+            api(libs.simbot.api)
             api(libs.kotlinx.coroutines.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
@@ -72,6 +73,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.simbot.core)
             implementation(libs.kotlinx.coroutines.debug)
             implementation(libs.kotlinx.coroutines.test)
             // https://ktor.io/docs/http-client-testing.html
