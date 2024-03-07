@@ -24,22 +24,19 @@ _中文_ | [English](README.md)
 > [!caution]
 > WIP
 
-这是 
-[**Simple Robot v4**](https://github.com/simple-robot/simpler-robot/tree/v4-dev)
-下的子项目，是针对 
-[**Telegram Bot**](https://telegram.com/developers/docs/intro) 
-各方面的 simbot 组件库实现， 
-包括对 `API` 内容的实现、事件相关的实现以及BOT对于事件的监听与交互等。
+这是一个基于 [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+的 [**Telegram Bot**][telegram bot doc] API/SDK 
+Kotlin 多平台库，异步高效、Java友好。
 
-Telegram Component 可以作为底层API依赖使用、
-轻量级的 Telegram 事件调度框架使用，
-也可以基于 simbot 核心库的种种快速开发一个功能强大的 Telegram Bot！
+它同样是一个 [Simple Robot v4][simbot4 gh] (下文简称 simbot)
+的组件库，是 simbot 的子项目之一。
+借助 simbot 核心库提供的能力，它可以支持更多高级功能和封装，比如组件协同、Spring支持等。
 
-- 基于 [`Kotlin`](https://kotlinlang.org/) 提供 [KMP 多平台](https://kotlinlang.org/docs/multiplatform.html) 特性，并提供 Java 友好的API。
-- 基于 [`Kotlin coroutines`](https://github.com/Kotlin/kotlinx.coroutines) 与 [`Ktor`](https://ktor.io/) 提供轻量高效的API。
+它可以作为一个低级别的 API/SDK 辅助依赖库，
+也可在 simbot 核心库的支持下用作为一个轻量级的快速开发框架！ 
 
-> [!Note]
-> 下文中 `Simple Robot v4` 简称为 `simbot4`
+序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization) 
+和 [Ktor](https://ktor.io/).
 
 ## 文档
 
@@ -111,3 +108,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 If not, see <https://www.gnu.org/licenses/>.
 ```
 
+[simbot4 gh]: https://github.com/simple-robot/simpler-robot/tree/v4-dev
+[simbot doc]: https://simbot.forte.love
+[telegram bot doc]:https://core.telegram.org/bots/api
+[KMP]: https://kotlinlang.org/docs/multiplatform.html

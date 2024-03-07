@@ -45,7 +45,7 @@ import kotlin.jvm.JvmSynthetic
 public suspend fun TelegramApi<*>.requestRaw(
     client: HttpClient,
     token: String,
-    server: Url? = null,
+    server: Url?,
 ): HttpResponse {
     val builder = HttpRequestBuilder()
     builder.url {
@@ -72,6 +72,7 @@ public suspend fun TelegramApi<*>.requestRaw(
             is OutgoingContent -> {
 
             }
+
             else -> {
                 // JSON body.
                 if (HttpHeaders.ContentType !in builder.headers) {
@@ -109,7 +110,8 @@ public suspend fun TelegramApi<*>.requestRaw(
                     if (HttpHeaders.ContentType !in builder.headers) {
                         builder.headers.append(HttpHeaders.ContentType, ContentType.Application.Json)
                     }
-                    val serializer = bodySerializationStrategy ?: guessSerializer(b, Telegram.DefaultJson.serializersModule)
+                    val serializer =
+                        bodySerializationStrategy ?: guessSerializer(b, Telegram.DefaultJson.serializersModule)
                     builder.setBody(Telegram.DefaultJson.encodeToString(serializer, b))
                 }
             }
@@ -147,7 +149,7 @@ public suspend fun TelegramApi<*>.requestRaw(
 public suspend fun <R : Any> TelegramApi<R>.requestResult(
     client: HttpClient,
     token: String,
-    server: Url? = null,
+    server: Url?,
 ): TelegramApiResult<R> {
     val rawResponse = requestRaw(client, token, server)
     val raw = rawResponse.bodyAsText()
@@ -182,7 +184,7 @@ public suspend fun <R : Any> TelegramApi<R>.requestResult(
 public suspend fun <R : Any> TelegramApi<R>.requestData(
     client: HttpClient,
     token: String,
-    server: Url? = null,
+    server: Url?,
 ): R {
     return requestResult(client, token, server).resultOrThrow()
 }

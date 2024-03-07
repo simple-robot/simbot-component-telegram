@@ -95,6 +95,8 @@ kotlin {
             implementation(libs.log4j.slf4j2)
             implementation(libs.kotlinx.coroutines.reactor)
             implementation(libs.reactor.core)
+            // mockK
+            implementation(libs.mockk)
         }
 
         jsMain.dependencies {

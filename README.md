@@ -25,19 +25,18 @@
 
 > This content is machine-translated.
 
-This is a subproject of  
-[**Simple Robot v4**][simbot4 gh] (simbot),
-which is a simbot component library implementation for 
-[**Telegram Bot**][telegram bot doc].
-This includes the implementation of the API, 
-the implementation of events and the bots listening and interaction with events.
+This is a [**Telegram Bot**][telegram bot doc] API/SDK Kotlin multi-platform library based on 
+[Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines), 
+efficient and asynchronous, Java-friendly.
 
-The Telegram Component can be used as a low-level API dependency,
-The lightweight Telegram event scheduling framework or SDK uses,
-It is also possible to quickly develop a powerful Telegram Bot based on the simbot core library!
+It is also a component library of [Simple Robot v4][simbot4 gh] (simbot), which is a subproject of simbot.
+With the capabilities provided by the simbot core library, it can support more advanced encapsulation,
+as well as component collaboration, Spring support, and more.
 
-- Based on [`Kotlin`](https://kotlinlang.org/) and [KMP][KMP], and provide friendly Java API.
-- Based on [`Kotlin coroutines`](https://github.com/Kotlin/kotlinx.coroutines) and [`Ktor`](https://ktor.io/) provides efficient and easy to use API;
+It can be used as aid as a low-level API/SDK dependency or as a lightweight framework 
+that can be developed quickly with the help of the simbot core library!
+
+Serialization and network requests are based on [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization) and [Ktor](https://ktor.io/).
 
 ## Documentation
 
