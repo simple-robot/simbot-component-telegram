@@ -5,7 +5,7 @@
 
 
 
-## examples
+## Examples
 
 **Create and start the bot**
 
