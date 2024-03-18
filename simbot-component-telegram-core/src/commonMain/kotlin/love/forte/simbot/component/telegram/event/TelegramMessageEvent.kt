@@ -17,28 +17,18 @@
 
 package love.forte.simbot.component.telegram.event
 
-import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.IntID.Companion.ID
-import love.forte.simbot.event.Event
-import love.forte.simbot.telegram.api.update.Update
+import love.forte.simbot.event.MessageEvent
 
-
-public typealias StdlibEvent = love.forte.simbot.telegram.stdlib.event.Event
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramEvent : Event {
-    public val sourceEvent: StdlibEvent
-
-    public val sourceUpdate: Update
-        get() = sourceEvent.update
-
-    override val id: ID
-        get() = sourceUpdate.updateId.ID
+public interface TelegramMessageEvent : TelegramEvent, MessageEvent {
 
 
-
-    // TODO
 }
+
+
+
+public interface TelegramChatGroupMessageEvent

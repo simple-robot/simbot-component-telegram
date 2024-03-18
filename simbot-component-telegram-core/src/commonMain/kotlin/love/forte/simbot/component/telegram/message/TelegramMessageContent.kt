@@ -15,30 +15,34 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.event
+package love.forte.simbot.component.telegram.message
 
+import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IntID.Companion.ID
-import love.forte.simbot.event.Event
-import love.forte.simbot.telegram.api.update.Update
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.Messages
 
-
-public typealias StdlibEvent = love.forte.simbot.telegram.stdlib.event.Event
+public typealias StdlibMessage = love.forte.simbot.telegram.type.Message
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramEvent : Event {
-    public val sourceEvent: StdlibEvent
-
-    public val sourceUpdate: Update
-        get() = sourceEvent.update
+public interface TelegramMessageContent : MessageContent {
+    public val source: StdlibMessage
 
     override val id: ID
-        get() = sourceUpdate.updateId.ID
+        get() = source.messageId.ID
 
+    override val messages: Messages
+        get() = TODO("Not yet implemented")
 
+    override val plainText: String?
+        get() = TODO("Not yet implemented")
 
-    // TODO
+    override suspend fun delete(vararg options: DeleteOption) {
+
+        TODO("Not yet implemented")
+    }
 }
