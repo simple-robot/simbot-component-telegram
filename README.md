@@ -44,9 +44,10 @@ Serialization and network requests are based on [Kotlin serialization](https://g
 
 ## Documentation
 
-- Learn about simbot: [**The Simple Robot Reference Manual**][simbot doc]
 - **Telegram Component** Reference Manual: (to be built)
+- Learn about simbot: [**The Simple Robot Reference Manual**][simbot doc]
 - **API Documentation**: [**The KDoc of Telegram Component**](https://docs.simbot.forte.love/components/telegram) in the [**document guide site**](https://docs.simbot.forte.love). 
+- [**Communities**](https://simbot.forte.love/communities.html): Have fun interacting with us and other developers!
 
 ## Modules
 ### Type module

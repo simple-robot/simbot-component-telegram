@@ -44,9 +44,10 @@ Kotlin 多平台库，异步高效、Java友好。
 
 ## 文档
 
-- 了解simbot: [**Simple Robot 应用手册**](https://simbot.forte.love)
 - **Telegram组件**手册：(待建设)
+- 了解simbot: [**Simple Robot 应用手册**](https://simbot.forte.love)
 - **API文档**: [**文档引导站点**](https://docs.simbot.forte.love) 中 Telegram 的 [**KDoc站点**](https://docs.simbot.forte.love/components/telegram)
+- [**社群**](https://simbot.forte.love/communities.html): 与我们和其他开发者愉快地交流！
 
 ## 模块引导
 ### Type模块
