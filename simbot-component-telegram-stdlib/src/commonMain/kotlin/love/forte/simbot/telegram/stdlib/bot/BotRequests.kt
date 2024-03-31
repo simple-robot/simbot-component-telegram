@@ -25,6 +25,9 @@ import love.forte.simbot.telegram.api.requestData
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
+// TODO request raw/result
+// TODO Doc
+
 public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: Bot): R {
     return requestData(bot.apiClient, bot.ticket.token, bot.server)
 }

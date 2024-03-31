@@ -43,6 +43,34 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * A Telegram Bot.
  *
+ *
+ * ## Process Event
+ *
+ * Instead of using [registerEventProcessor] directly,
+ * you can also register event handlers using a convenient extension function.
+ *
+ * **[Bot.process]**
+ *
+ * ```kotlin
+ * bot.process<Message> { event: Event, content: Message ->
+ *     // ...
+ * }
+ * ```
+ *
+ * See [Bot.process] for more information.
+ *
+ * **`Bot.onXxx`**
+ *
+ * For example: [Bot.onEditedMessage]
+ *
+ * ```kotlin
+ * bot.onEditedMessage { event, editedMessage ->
+ *     // ...
+ * }
+ * ```
+ *
+ * See [Bot.onEditedMessage] (Or other similar functions, which are automatically generated) for more information.
+ *
  * @author ForteScarlet
  */
 public interface Bot : CoroutineScope {
