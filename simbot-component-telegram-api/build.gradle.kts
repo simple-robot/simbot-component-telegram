@@ -20,6 +20,8 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import java.nio.file.StandardOpenOption
+import kotlin.io.path.writeText
 
 plugins {
     kotlin("multiplatform")
@@ -121,7 +123,7 @@ dependencies {
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
@@ -141,3 +143,77 @@ tasks.withType<DokkaTaskPartial>().configureEach {
 //     arg("qg.api.finder.api.output", rootDir.resolve("generated-docs/api-list.md").absolutePath)
 //     arg("qg.api.finder.event.output", rootDir.resolve("generated-docs/event-list.md").absolutePath)
 // }
+
+data class SupportListItem(val depth: Int, val name: String, val link: String, val mark: Boolean? = null)
+
+tasks.create("updateSupportListsDoc") {
+    group = "documentation"
+
+    val apiDir = "src/commonMain/kotlin/love/forte/simbot/telegram/api"
+    val apiFile = project.file(apiDir)
+
+    val builder = StringBuilder()
+    builder.appendLine("# Supported API List\n")
+
+    val list = mutableListOf<SupportListItem>()
+
+    project.fileTree(apiFile) {
+        include("**/*Api.kt")
+        exclude("utils/**")
+    }.visit(object : FileVisitor {
+        override fun visitDir(dirDetails: FileVisitDetails) {
+            list.add(
+                SupportListItem(
+                    depth = dirDetails.relativePath.segments.size - 1,
+                    name = dirDetails.name,
+                    link = apiDir + "/" + dirDetails.relativePath.pathString,
+                    mark = null,
+                )
+            )
+        }
+
+        override fun visitFile(fileDetails: FileVisitDetails) {
+            val name = fileDetails.name
+                .substringBeforeLast(".kt")
+
+            list.add(
+                SupportListItem(
+                    depth = fileDetails.relativePath.segments.size - 1,
+                    name = name,
+                    link = apiDir + "/" + fileDetails.relativePath.pathString,
+                    mark = true,
+                )
+            )
+        }
+    })
+
+    list.forEach { item ->
+        repeat(item.depth) {
+            builder.append("  ")
+        }
+        builder.append("- ")
+        item.mark?.also {
+            if (it) {
+                builder.append(" [x] ")
+            } else {
+                builder.append(" [ ] ")
+            }
+        }
+        builder.append("[")
+            .append(item.name)
+            .append("](")
+            .append(item.link)
+            .append(")\n")
+    }
+
+    builder.appendLine("- [ ] **Others not listed**")
+
+    with(project.file("supports.md")) {
+        toPath().writeText(
+            builder, Charsets.UTF_8,
+            StandardOpenOption.WRITE,
+            StandardOpenOption.TRUNCATE_EXISTING,
+            StandardOpenOption.CREATE
+        )
+    }
+}

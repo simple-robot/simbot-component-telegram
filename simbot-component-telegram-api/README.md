@@ -2,6 +2,10 @@
 
 > TODO
 
+## Supports
+
+See [supports](supports.md).
+
 ## Examples
 
 **API**
