@@ -54,14 +54,14 @@ Serialization and network requests are based on [Kotlin serialization](https://g
 - [**Communities**](https://simbot.forte.love/communities.html): Have fun interacting with us and other developers!
 
 ## Modules
-### Type module
+### ⭐ Type module
 
 Provides definitions for most types in Telegram and supports serialization based on
 [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization).
 
 👉 [Go to Modules](simbot-component-telegram-type) to learn more.
 
-### API module
+### ⭐ API module
 
 Based on [Type module](simbot-component-telegram-type) 
 and [Ktor](https://ktor.io/)'s 
@@ -73,7 +73,7 @@ The goal is to preserve the feel of the original API as much as possible without
 
 👉 [Go to Modules](simbot-component-telegram-api) to learn more.
 
-### Stdlib module
+### ⭐ Stdlib module
 
 Based on [API module](simbot-component-telegram-api), 
 for the implementation of authentication, subscription events and other related functions in bot.
@@ -85,7 +85,7 @@ Again, the goal is to provide as much of the feel of the original API as possibl
 
 👉 [Go to Modules](simbot-component-telegram-stdlib) to learn more.
 
-### Core Component module
+### ⭐ Core Component module
 
 A component implementation of the [simbot4 core library][simbot4 gh] based on [standard library module](simbot-component-telegram-stdlib).
 
