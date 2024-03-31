@@ -230,6 +230,7 @@ internal class BotImpl(
                 newClient.longPolling(
                     ticket.token,
                     server,
+                    null,
                     timeout?.inWholeSeconds?.toInt(),
                     longPolling.limit,
                     longPolling.allowedUpdates
@@ -259,15 +260,17 @@ internal class BotImpl(
     private suspend fun HttpClient.longPolling(
         token: String,
         server: Url?,
+        firstOffset: Int?,
         timeout: Int?,
         limit: Int?,
         allowedUpdates: Collection<String>?,
     ) {
         val client = this
         getUpdateFlow(
-            timeout,
-            limit,
-            allowedUpdates,
+            timeout = timeout,
+            firstOffset = firstOffset,
+            eachLimit = limit,
+            allowedUpdates = allowedUpdates,
             onError = { error ->
                 when (error) {
                     is CancellationException -> {
