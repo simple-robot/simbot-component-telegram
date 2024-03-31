@@ -25,7 +25,11 @@
 [中文](README_CN.md) | _English_
 
 > [!caution]
-> WIP
+> WIP.
+> 
+> Some thoughts? 
+> [Feel free to share](https://github.com/simple-robot/simbot-component-telegram/issues)
+> or join the [communities](https://simbot.forte.love/communities.html).
 
 > This content is machine-translated.
 

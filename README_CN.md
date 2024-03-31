@@ -26,7 +26,12 @@
 _中文_ | [English](README.md)
 
 > [!caution]
-> WIP
+> WIP.
+> 
+> 有些想法？欢迎
+> [留言交流](https://github.com/simple-robot/simbot-component-telegram/issues)
+> 或
+> [加入社群](https://simbot.forte.love/communities.html)~
 
 这是一个基于 [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 的 [**Telegram Bot**][telegram bot doc] API/SDK 
