@@ -55,7 +55,7 @@ Kotlin 多平台库，异步高效、Java友好。
 - [**社群**](https://simbot.forte.love/communities.html): 与我们和其他开发者愉快地交流！
 
 ## 模块引导
-### Type模块
+### ⭐ Type模块
 
 提供 Telegram 中的绝大多数类型定义，并基于
 [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization)
@@ -63,7 +63,7 @@ Kotlin 多平台库，异步高效、Java友好。
 
 👉 [前往模块](simbot-component-telegram-type/README_CN.md) 了解更多。
 
-### API模块
+### ⭐ API模块
 
 基于 `Ktor` 针对 [Telegram API](https://telegram.com/developers/docs/intro) 
 的基本完整的[KMP](https://kotlinlang.org/docs/multiplatform.html)多平台封装实现，
@@ -73,7 +73,7 @@ Kotlin 多平台库，异步高效、Java友好。
 
 👉 [前往模块](simbot-component-telegram-api/README_CN.md) 了解更多。
 
-### 标准库模块
+### ⭐ 标准库模块
 
 基于 [API模块](simbot-component-telegram-api) 针对 bot 的鉴权、事件订阅等功能的实现。
 
@@ -81,7 +81,7 @@ Kotlin 多平台库，异步高效、Java友好。
 
 👉 [前往模块](simbot-component-telegram-stdlib) 了解更多。
 
-### 核心组件模块
+### ⭐ 核心组件模块
 
 基于 
 [标准库模块](simbot-component-telegram-stdlib) 
