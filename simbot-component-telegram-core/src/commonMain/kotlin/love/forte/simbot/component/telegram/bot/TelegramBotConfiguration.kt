@@ -15,20 +15,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.event
+package love.forte.simbot.component.telegram.bot
 
-import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.function.invokeWith
+import love.forte.simbot.telegram.stdlib.bot.BotConfiguration
+import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmOverloads
 
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageEvent : BasicTelegramMessageEvent, MessageEvent {
+public class TelegramBotConfiguration @JvmOverloads constructor(public var botConfiguration: BotConfiguration = BotConfiguration()) {
+    public var coroutineContext: CoroutineContext by botConfiguration::coroutineContext
 
-
+    public fun botConfiguration(block: ConfigurerFunction<BotConfiguration>): TelegramBotConfiguration = apply {
+        block.invokeWith(botConfiguration)
+    }
 }
-
-
-
-public interface TelegramChatGroupMessageEvent : TelegramMessageEvent

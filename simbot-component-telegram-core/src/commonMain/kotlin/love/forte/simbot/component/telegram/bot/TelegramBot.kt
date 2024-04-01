@@ -22,6 +22,10 @@ import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID.Companion.ID
+import love.forte.simbot.component.telegram.component.TelegramComponent
+import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
 
@@ -34,20 +38,49 @@ public typealias StdlibBot = love.forte.simbot.telegram.stdlib.bot.Bot
  */
 public interface TelegramBot : Bot {
     override val coroutineContext: CoroutineContext
+    override val component: TelegramComponent
 
     /**
-     *
-     * @throws IllegalStateException if bot is not started yet.
+     * The source [bot][StdlibBot].
      */
-    override val id: ID
+    public val source: StdlibBot
 
     /**
+     * [User] info of current bot.
+     * The value is updated each time [queryUserInfo] is used.
      *
-     * @throws IllegalStateException if bot is not started yet.
+     * @throws IllegalStateException The bot has not been started, or has never been used [queryUserInfo].
+     */
+    public val userInfo: User
+
+    /**
+     * The name ([User.username] or [User.firstName] if it is null) of current bot.
+     *
+     * @throws IllegalStateException The bot has not been started, or has never been used [queryUserInfo].
+     * @see userInfo
      */
     override val name: String
+        get() = userInfo.username ?: userInfo.firstName
 
-    public val source: StdlibBot
+    /**
+     * The id of current bot.
+     *
+     * @throws IllegalStateException The bot has not been started, or has never been used [queryUserInfo].
+     * @see userInfo
+     *
+     */
+    override val id: ID
+        get() = userInfo.id.ID
+
+    /**
+     * Query user info of the current bot.
+     * And update the value of [userInfo].
+     *
+     * It is used to initialize [userInfo] at [start].
+     */
+    @ST
+    public suspend fun queryUserInfo(): User
+
 
 
     override val groupRelation: GroupRelation?

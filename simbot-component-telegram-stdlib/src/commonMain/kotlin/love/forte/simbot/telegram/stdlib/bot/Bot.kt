@@ -26,6 +26,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.SerializationException
 import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.telegram.Telegram
 import love.forte.simbot.telegram.api.requestRaw
@@ -279,6 +281,23 @@ public class BotConfiguration {
                 field = null
             }
         }
+
+    /**
+     * A configurer function for API requests [HttpClient].
+     */
+    public var apiClientConfigurer: ConfigurerFunction<HttpClientConfig<*>>? = null
+
+    /**
+     * Add a configurer function for API requests [HttpClient].
+     */
+    public fun applyApiClientConfigurer(configurer: ConfigurerFunction<HttpClientConfig<*>>): BotConfiguration = apply {
+        apiClientConfigurer = apiClientConfigurer?.let { old ->
+            ConfigurerFunction {
+                invokeBy(old)
+                invokeBy(configurer)
+            }
+        } ?: configurer
+    }
 
     /**
      * Used for the `server` parameter in API requests.

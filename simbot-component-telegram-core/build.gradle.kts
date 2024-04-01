@@ -19,11 +19,12 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    // alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp)
     `simbot-telegram-dokka-partial-configure`
 }
 
@@ -41,6 +42,7 @@ kotlin {
 
     sourceSets.configureEach {
         languageSettings {
+            optIn("love.forte.simbot.annotations.InternalSimbotAPI")
         }
     }
 
@@ -114,23 +116,23 @@ kotlin {
 
 
 
-// dependencies {
-//     add("kspCommonMainMetadata", project(":internal-processors:stdlib-processor-extensions-processor"))
-// }
-//
-// // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-//     if(name != "kspCommonMainKotlinMetadata") {
-//         dependsOn("kspCommonMainKotlinMetadata")
-//     }
-// }
-//
-// kotlin.sourceSets.commonMain {
-//     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-// }
-//
-// tasks.withType<DokkaTaskPartial>().configureEach {
-//     dokkaSourceSets.configureEach {
-//         suppressGeneratedFiles.set(false)
-//     }
-// }
+dependencies {
+    add("kspCommonMainMetadata", project(":internal-processors:component-events-processor"))
+}
+
+// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    dokkaSourceSets.configureEach {
+        suppressGeneratedFiles.set(false)
+    }
+}

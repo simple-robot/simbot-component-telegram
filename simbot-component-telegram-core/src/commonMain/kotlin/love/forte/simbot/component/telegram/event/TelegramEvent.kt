@@ -19,17 +19,27 @@ package love.forte.simbot.component.telegram.event
 
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IntID.Companion.ID
-import love.forte.simbot.event.Event
+import love.forte.simbot.component.telegram.bot.TelegramBot
+import love.forte.simbot.component.telegram.component.TelegramComponent
+import love.forte.simbot.event.BotEvent
 import love.forte.simbot.telegram.api.update.Update
 
 
 public typealias StdlibEvent = love.forte.simbot.telegram.stdlib.event.Event
 
 /**
+ * A Telegram Event definition in current Component.
  *
  * @author ForteScarlet
  */
-public interface TelegramEvent : Event {
+public interface TelegramEvent : BotEvent {
+    // 所有的 Telegram Event 都是建立在 Bot 之上的，
+    // 因此所有 TelegramEvent 都实现 BotEvent
+
+    override val bot: TelegramBot
+    override val component: TelegramComponent
+        get() = bot.component
+
     public val sourceEvent: StdlibEvent
 
     public val sourceUpdate: Update
@@ -37,6 +47,8 @@ public interface TelegramEvent : Event {
 
     override val id: ID
         get() = sourceUpdate.updateId.ID
+
+    public val sourceContent: Any
 
 
 

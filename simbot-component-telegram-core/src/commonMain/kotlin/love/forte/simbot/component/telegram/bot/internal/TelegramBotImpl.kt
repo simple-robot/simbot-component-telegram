@@ -15,20 +15,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.event
-
-import love.forte.simbot.event.MessageEvent
+package love.forte.simbot.component.telegram.bot.internal
 
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageEvent : BasicTelegramMessageEvent, MessageEvent {
+internal class TelegramBotImpl(
 
-
+) {
 }
-
-
-
-public interface TelegramChatGroupMessageEvent : TelegramMessageEvent

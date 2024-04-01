@@ -30,6 +30,7 @@ import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
+import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.telegram.Telegram
 import love.forte.simbot.telegram.api.requestData
@@ -69,7 +70,9 @@ internal class BotImpl(
         val job = SupervisorJob(coroutineContext[Job])
         this.coroutineContext = coroutineContext.minusKey(Job) + job
         this.job = job
-        val apiClient = resolveHttpClient()
+        val apiClient = resolveHttpClient {
+            configuration.apiClientConfigurer?.invokeWith(this)
+        }
         job.invokeOnCompletion { apiClient.close() }
         this.apiClient = apiClient
     }
