@@ -23,12 +23,16 @@ import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.component.TelegramComponent
 import love.forte.simbot.event.BotEvent
 import love.forte.simbot.telegram.api.update.Update
+import love.forte.simbot.telegram.type.Message
 
-
+/**
+ * The [Event][love.forte.simbot.telegram.stdlib.event.Event] from the `stdlib` module.
+ */
 public typealias StdlibEvent = love.forte.simbot.telegram.stdlib.event.Event
 
 /**
- * A Telegram Event definition in current Component.
+ * Is a Telegram simbot component event definition type.
+ * Is an implementation of the event type in the simbot API.
  *
  * @author ForteScarlet
  */
@@ -36,21 +40,45 @@ public interface TelegramEvent : BotEvent {
     // 所有的 Telegram Event 都是建立在 Bot 之上的，
     // 因此所有 TelegramEvent 都实现 BotEvent
 
+    /**
+     * The [TelegramBot].
+     */
     override val bot: TelegramBot
+
+    /**
+     * The [TelegramComponent].
+     */
     override val component: TelegramComponent
         get() = bot.component
 
+    /**
+     * The source event [StdlibEvent].
+     */
     public val sourceEvent: StdlibEvent
 
+    /**
+     * [Update] in [sourceEvent]
+     */
     public val sourceUpdate: Update
         get() = sourceEvent.update
 
+    /**
+     * [Update.updateId] in [sourceUpdate]
+     */
     override val id: ID
         get() = sourceUpdate.updateId.ID
 
+    /**
+     * The `content` in [StdlibEvent].
+     * In `BasicTelegramXxxEvent` (for example [BasicTelegramMessageEvent])
+     * is covered by a more specific type (for example [Message] in [BasicTelegramMessageEvent.sourceContent]).
+     */
     public val sourceContent: Any
 
+    /**
+     * The [sourceEvent.raw][love.forte.simbot.telegram.stdlib.event.Event.raw].
+     */
+    public val sourceRaw: String?
+        get() = sourceEvent.raw
 
-
-    // TODO
 }
