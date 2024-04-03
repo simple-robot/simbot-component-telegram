@@ -71,6 +71,7 @@ kotlin {
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
             api(libs.simbot.common.core)
+            api(libs.simbot.common.ktor.inputfile)
             compileOnly(libs.simbot.common.annotations)
 
             api(libs.ktor.client.core)

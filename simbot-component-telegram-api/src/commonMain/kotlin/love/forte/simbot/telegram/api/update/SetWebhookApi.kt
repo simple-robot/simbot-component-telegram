@@ -21,9 +21,9 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.builtins.serializer
+import love.forte.simbot.common.ktor.inputfile.InputFile
 import love.forte.simbot.telegram.api.FormBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
-import love.forte.simbot.telegram.api.file.InputFile
 
 
 /**
