@@ -17,6 +17,8 @@
 
 package love.forte.simbot.component.telegram.bot
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.telegram.stdlib.bot.BotConfiguration
@@ -25,12 +27,25 @@ import kotlin.jvm.JvmOverloads
 
 
 /**
+ * A [TelegramBot] configuration.
  *
  * @author ForteScarlet
  */
-public class TelegramBotConfiguration @JvmOverloads constructor(public var botConfiguration: BotConfiguration = BotConfiguration()) {
+public class TelegramBotConfiguration @JvmOverloads constructor(
+    /**
+     * The source [configuration][BotConfiguration] for [StdlibBot].
+     */
+    public var botConfiguration: BotConfiguration = BotConfiguration()
+) {
+    /**
+     * The [CoroutineContext] delegate from [botConfiguration].
+     * If [Job] is provided, it ends up wrapped as parent in a new [SupervisorJob].
+     */
     public var coroutineContext: CoroutineContext by botConfiguration::coroutineContext
 
+    /**
+     * configure the [botConfiguration].
+     */
     public fun botConfiguration(block: ConfigurerFunction<BotConfiguration>): TelegramBotConfiguration = apply {
         block.invokeWith(botConfiguration)
     }

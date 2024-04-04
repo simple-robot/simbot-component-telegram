@@ -25,6 +25,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.update.Update.Companion.decodeFromRawJson
 import love.forte.simbot.telegram.type.*
 import love.forte.simbot.telegram.type.inline.ChosenInlineResult
 import love.forte.simbot.telegram.type.inline.InlineQuery
@@ -42,6 +43,7 @@ import kotlin.jvm.JvmStatic
  * At most one of the optional parameters can be present in any given update.
  *
  * @see UpdateValues
+ * @see decodeFromRawJson
  *
  * @author ForteScarlet
  */

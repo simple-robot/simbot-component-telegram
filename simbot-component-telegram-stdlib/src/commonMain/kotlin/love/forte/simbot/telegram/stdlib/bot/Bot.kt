@@ -48,10 +48,10 @@ import kotlin.time.Duration.Companion.minutes
  *
  * ## Process Event
  *
- * Instead of using [registerEventProcessor] directly,
+ * Instead of using [subscribe] directly,
  * you can also register event handlers using a convenient extension function.
  *
- * **[Bot.process]**
+ * **[Bot.subscribe]**
  *
  * ```kotlin
  * bot.process<Message> { event: Event, content: Message ->
@@ -59,7 +59,7 @@ import kotlin.time.Duration.Companion.minutes
  * }
  * ```
  *
- * See [Bot.process] for more information.
+ * See [Bot.subscribe] for more information.
  *
  * **`Bot.onXxx`**
  *
@@ -117,16 +117,21 @@ public interface Bot : CoroutineScope {
     public val apiClient: HttpClient
 
     /**
-     * Takes precedence over all normal [EventProcessor] ([registerEventProcessor]).
-     * It is suitable for some pre-processing behavior,
-     * and it needs to ensure that the number of concurrent transactions is only one.
+     * Register a processor with the specified sequence level for subscribing to events.
      *
-     * The action should be done quickly.
+     * @param sequence The subscribe sequence level. The default is [SubscribeSequence.NORMAL].
+     * @see SubscribeSequence
      */
-    public fun registerPreEventProcessor(processor: EventProcessor)
+    public fun subscribe(sequence: SubscribeSequence, processor: EventProcessor)
 
-    // TODO Doc
-    public fun registerEventProcessor(processor: EventProcessor)
+    /**
+     * Register a processor with the [SubscribeSequence.NORMAL] sequence level for subscribing to events.
+     *
+     *  @see SubscribeSequence
+     */
+    public fun subscribe(processor: EventProcessor) {
+        subscribe(SubscribeSequence.NORMAL, processor)
+    }
 
     /**
      * Gets or modifies long polling config.
@@ -184,6 +189,7 @@ public interface Bot : CoroutineScope {
      * @throws IllegalStateException if [isStarted] == false
      * @throws CancellationException if [isActive] == false
      */
+    @ST
     public suspend fun pushUpdate(update: Update, raw: String? = null)
 
     /**
@@ -288,9 +294,9 @@ public class BotConfiguration {
     public var apiClientConfigurer: ConfigurerFunction<HttpClientConfig<*>>? = null
 
     /**
-     * Add a configurer function for API requests [HttpClient].
+     * config with [apiClientConfigurer].
      */
-    public fun applyApiClientConfigurer(configurer: ConfigurerFunction<HttpClientConfig<*>>): BotConfiguration = apply {
+    public fun apiClientConfigurer(configurer: ConfigurerFunction<HttpClientConfig<*>>): BotConfiguration = apply {
         apiClientConfigurer = apiClientConfigurer?.let { old ->
             ConfigurerFunction {
                 invokeBy(old)
@@ -327,6 +333,25 @@ public class BotConfiguration {
     }
 }
 
+public enum class SubscribeSequence {
+    /**
+     * The preprocessing sequence level.
+     *
+     * All processors at this level are executed one after another in synchronous order.
+     * The logic in the PRE level should be as fast as possible.
+     *
+     * This level is designed to perform some pre-processing (such as synchronous caching, etc.)
+     * and should not be used to execute business logic.
+     */
+    PRE,
+
+    /**
+     * The normal sequence level.
+     * Always executes asynchronously after [PRE].
+     */
+    NORMAL;
+}
+
 /**
  * Long polled configurations.
  *
@@ -344,34 +369,35 @@ public data class LongPolling(
 )
 
 /**
- * [Bot.registerEventProcessor] simplified extension.
+ * [Bot.subscribe] simplified extension.
  * Matches events based on type [T] (and optional name).
  *
  * Note: If the matched type does not match the name, the result may never be matched.
  *
  * ```kotlin
- * bot.process<Message> { event: Event, content: Message ->
+ * bot.subscribe<Message> { event: Event, content: Message ->
  *      // ...
  * }
  *
- * bot.process<Message>("edited_message") { event: Event, event: Message ->
+ * bot.subscribe<Message>("edited_message", sequence = ...) { event: Event, event: Message ->
  *      // ...
  * }
  *
- * bot.process<Message>(UpdateValues.EDITED_MESSAGE_NAME) { event: Event, event: Message ->
+ * bot.subscribe<Message>(UpdateValues.EDITED_MESSAGE_NAME, sequence = ...) { event: Event, event: Message ->
  *      // ...
  * }
  * ```
  *
- * @see Bot.registerEventProcessor
+ * @see Bot.subscribe
  * @see EventProcessor.process
  */
-public inline fun <reified T> Bot.process(
+public inline fun <reified T> Bot.subscribe(
     name: String? = null,
+    sequence: SubscribeSequence = SubscribeSequence.NORMAL,
     crossinline processor: suspend (Event, T) -> Unit
 ) {
     if (name != null) {
-        registerEventProcessor { event ->
+        subscribe(sequence) { event ->
             event.content.also { content ->
                 if (name == event.name && content is T) {
                     processor(event, content)
@@ -379,53 +405,7 @@ public inline fun <reified T> Bot.process(
             }
         }
     } else {
-        registerEventProcessor { event ->
-            event.content.also { content ->
-                if (content is T) {
-                    processor(event, content)
-                }
-            }
-        }
-    }
-}
-
-/**
- * [Bot.registerPreEventProcessor] simplified extension.
- * Matches events based on type [T] (and optional name).
- *
- * Note: If the matched type does not match the name, the result may never be matched.
- *
- * ```kotlin
- * bot.preProcess<Message> { event: Event, event: Message ->
- *      // ...
- * }
- *
- * bot.preProcess<Message>("edited_message") { event: Event, event: Message ->
- *      // ...
- * }
- *
- * bot.preProcess<Message>(UpdateValues.EDITED_MESSAGE_NAME) { event: Event, event: Message ->
- *      // ...
- * }
- * ```
- *
- * @see Bot.registerPreEventProcessor
- * @see EventProcessor.process
- */
-public inline fun <reified T : Any> Bot.preProcess(
-    name: String? = null,
-    crossinline processor: suspend (Event, T) -> Unit
-) {
-    if (name != null) {
-        registerPreEventProcessor { event ->
-            event.content.also { content ->
-                if (name == event.name && content is T) {
-                    processor(event, content)
-                }
-            }
-        }
-    } else {
-        registerPreEventProcessor { event ->
+        subscribe(sequence) { event ->
             event.content.also { content ->
                 if (content is T) {
                     processor(event, content)

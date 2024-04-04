@@ -57,7 +57,6 @@ private const val SERIAL_NAME_ANNOTATION_TYPE = "kotlinx.serialization.SerialNam
 private const val STDLIB_EVENT_PACKAGE = "love.forte.simbot.telegram.stdlib.event"
 private const val BOT_CLASS_PACKAGE = "love.forte.simbot.telegram.stdlib.bot"
 private const val BOT_CLASS_SIMPLE_NAME = "Bot"
-private const val BOT_CLASS_NAME = "$BOT_CLASS_PACKAGE.$BOT_CLASS_SIMPLE_NAME"
 private val BotClassName = ClassName(BOT_CLASS_PACKAGE, BOT_CLASS_SIMPLE_NAME)
 
 private const val UPDATE_CLASS_PACKAGE = "love.forte.simbot.telegram.api.update"
@@ -67,17 +66,18 @@ private val UpdateClassName = ClassName(UPDATE_CLASS_PACKAGE, UPDATE_CLASS_SIMPL
 
 private const val EVENT_CLASS_PACKAGE = "love.forte.simbot.telegram.stdlib.event"
 private const val EVENT_CLASS_SIMPLE_NAME = "Event"
-private const val EVENT_CLASS_NAME = "$EVENT_CLASS_PACKAGE.$EVENT_CLASS_SIMPLE_NAME"
 private val EventClassName = ClassName(EVENT_CLASS_PACKAGE, EVENT_CLASS_SIMPLE_NAME)
+
+private val SubscribeSequenceClassName = ClassName(BOT_CLASS_PACKAGE, "SubscribeSequence")
+private val DefaultSubscribeSequenceValue = MemberName(SubscribeSequenceClassName, "NORMAL")
 
 private const val FILE_NAME = "BotEvents.Generated"
 
-private val BotProcessMember = MemberName(BOT_CLASS_PACKAGE, "process")
-private val BotPreProcessMember = MemberName(BOT_CLASS_PACKAGE, "preProcess")
+private val BotSubscribeExtensionMember = MemberName(BOT_CLASS_PACKAGE, "subscribe")
 private val UpdateValuesClassName =
     ClassName(UPDATE_CLASS_PACKAGE, "UpdateValues")
 
-private const val IS_PRE_PROCESSOR_PARAM_NAME = "isPreProcessor"
+private const val SEQUENCE_PARAM_NAME = "sequence"
 private const val PROCESSOR_PARAM_NAME = "processor"
 
 private class UpdateEventProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
@@ -143,13 +143,10 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
     /**
      * ```kotlin
      * inline Bot.onXxx(
-     * isPreProcessor: true/false,
+     * sequence: SubscribeSequence = SubscribeSequence.NORMAL,
      * crossinline processor: suspend (Update, T) -> Unit
      * ) {
-     *      if (isPreProcessor) {
-     *          bot.process<T>(NAME, processor)
-     *      } else {
-     *      }
+     *      bot.subscribe<T>(NAME, sequence, processor)
      * }
      *
      * ```
@@ -162,8 +159,8 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addModifiers(KModifier.INLINE)
             receiver(BotClassName)
             addParameter(
-                ParameterSpec.builder(IS_PRE_PROCESSOR_PARAM_NAME, BOOLEAN)
-                    .defaultValue("false")
+                ParameterSpec.builder(SEQUENCE_PARAM_NAME, SubscribeSequenceClassName)
+                    .defaultValue("%M", DefaultSubscribeSequenceValue)
                     .build()
             )
             addParameter(
@@ -184,35 +181,31 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
             addCode(
                 CodeBlock.builder()
-                    .beginControlFlow("if(%L)", IS_PRE_PROCESSOR_PARAM_NAME)
-                    .addStatement("// is pre")
-                    // <T>(NAME, processor)
-                    .addStatement("%M<%T>(%M, %L)", BotPreProcessMember, eventType, nameMember, PROCESSOR_PARAM_NAME)
-                    .nextControlFlow("else")
-                    .addStatement("// not pre")
-                    // <T>(NAME, processor)
-                    .addStatement("%M<%T>(%M, %L)", BotProcessMember, eventType, nameMember, PROCESSOR_PARAM_NAME)
-                    .endControlFlow()
+                    // subscribe<Type>(NAME, sequence, processor)
+                    .addStatement(
+                        "%M<%T>(%M, %L, %L)",
+                        BotSubscribeExtensionMember, eventType,
+                        nameMember, SEQUENCE_PARAM_NAME, PROCESSOR_PARAM_NAME
+                    )
                     .build()
             )
 
             addKdoc("Register processor for [%T] named [%M]\n\n", eventType, nameMember)
-            addKdoc("""
+            addKdoc(
+                """
                 Equivalent to the following:
                 ```kotlin
                 // process or preProcess
-                bot.process<%T>(%M) { event, %L ->
+                bot.subscribe<%T>(sequence, %M) { event, %L ->
                     // ...
                 }
                 ```
                 
                 @see %M
                 @see %M
-                @see %M
             """.trimIndent(),
                 eventType, nameMember, propertyName,
-                BotPreProcessMember,
-                BotProcessMember,
+                BotSubscribeExtensionMember,
                 MemberName(UpdateClassName, propertyName)
             )
 

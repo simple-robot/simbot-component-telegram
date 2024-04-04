@@ -17,37 +17,22 @@
 
 package love.forte.simbot.component.telegram.event
 
-import love.forte.simbot.event.ChatGroupEvent
-import love.forte.simbot.event.ContactMessageEvent
-import love.forte.simbot.event.MessageEvent
-import love.forte.simbot.telegram.type.Message
+import love.forte.simbot.annotations.ExperimentalSimbotAPI
+import love.forte.simbot.annotations.FragileSimbotAPI
+import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.component.telegram.bot.TelegramBot
 
 
 /**
- * An event type related to [Message].
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageRelatedEvent : BasicTelegramMessageEvent {
-    override val sourceContent: Message
+@FragileSimbotAPI
+public class TelegramUnsupportedEvent(override val bot: TelegramBot, override val sourceEvent: StdlibEvent) :
+    TelegramEvent {
+    @OptIn(ExperimentalSimbotAPI::class)
+    override val time: Timestamp = Timestamp.now()
 
+    override val sourceContent: Any
+        get() = sourceEvent.content
 }
-
-/**
- * A [Message] [event][MessageEvent].
- *
- * @author ForteScarlet
- */
-public interface TelegramMessageEvent : MessageEvent
-
-/**
- *
- * @author ForteScarlet
- */
-public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroupEvent
-
-/**
- *
- * @author ForteScarlet
- */
-public interface TelegramContactMessageEvent : TelegramMessageEvent, ContactMessageEvent

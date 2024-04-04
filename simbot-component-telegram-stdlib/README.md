@@ -45,12 +45,12 @@ bot.join()
 val bot = createYourBot()
 
 // Subscribe to all events
-bot.registerEventProcessor { event ->
+bot.subscribe { event ->
     println("Event: $event")
 }
 
 // Subscribe to events by event name (optional) and event type
-bot.process<Message>(UpdateValues.MESSAGE_NAME) { event, message ->
+bot.subscribe<Message>(UpdateValues.MESSAGE_NAME) { event, message ->
     println("Event message: $message")
     // ...
 }

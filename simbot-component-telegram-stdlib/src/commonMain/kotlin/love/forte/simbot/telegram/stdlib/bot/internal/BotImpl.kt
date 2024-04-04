@@ -40,6 +40,7 @@ import love.forte.simbot.telegram.api.update.getUpdateFlow
 import love.forte.simbot.telegram.stdlib.bot.Bot
 import love.forte.simbot.telegram.stdlib.bot.BotConfiguration
 import love.forte.simbot.telegram.stdlib.bot.LongPolling
+import love.forte.simbot.telegram.stdlib.bot.SubscribeSequence
 import love.forte.simbot.telegram.stdlib.event.Event
 import love.forte.simbot.telegram.stdlib.event.EventProcessor
 import kotlin.concurrent.Volatile
@@ -121,11 +122,11 @@ internal class BotImpl(
     override val isCompleted: Boolean
         get() = job.isCompleted
 
-    override fun registerPreEventProcessor(processor: EventProcessor) {
-        preProcessors.add(processor)
-    }
-
-    override fun registerEventProcessor(processor: EventProcessor) {
+    override fun subscribe(sequence: SubscribeSequence, processor: EventProcessor) {
+        when (sequence) {
+            SubscribeSequence.PRE -> preProcessors.add(processor)
+            SubscribeSequence.NORMAL -> processors.add(processor)
+        }
         processors.add(processor)
     }
 

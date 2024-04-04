@@ -79,7 +79,7 @@ public data class SerializableTelegramBotConfiguration(
                     c.server?.also { server = it }
                     c.longPolling?.also { longPolling = it.toBotLongPolling() }
                     c.proxy?.also {
-                        applyApiClientConfigurer {
+                        apiClientConfigurer {
                             engine {
                                 proxy = when (val pv = it.value) {
                                     is ProxyValue.Http -> ProxyBuilder.http(pv.url)

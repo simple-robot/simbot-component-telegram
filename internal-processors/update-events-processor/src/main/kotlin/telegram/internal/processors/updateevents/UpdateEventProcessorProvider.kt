@@ -95,6 +95,16 @@ private const val GET_UPDATE_TYPE_FUNC_NAME = "getUpdateType"
  */
 private const val RESOLVE_FUN_NAME = "resolveTo"
 
+// Divider
+
+private const val DIVIDER_CLASS_NAME = "UpdateDivider"
+private val UpdateDividerClassName = ClassName(UPDATE_PACKAGE, DIVIDER_CLASS_NAME)
+private val SuspendUpdateDividerClassName = ClassName(UPDATE_PACKAGE, "Suspendable$DIVIDER_CLASS_NAME")
+private const val DIVIDER_NAME_PARAM_NAME = "name"
+private const val DIVIDER_VALUE_PARAM_NAME = "value"
+private const val DIVIDER_UPDATE_PARAM_NAME = "update"
+private const val DIVIDER_CONTEXT_PARAM_NAME = "context"
+
 private class UpdateEventProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
     private val generated = AtomicBoolean(false)
 
@@ -108,7 +118,10 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             ?: throw NoSuchElementException("Class: $UPDATE_CLASS_NAME")
 
         val updateValuesObjectBuilder = TypeSpec.objectBuilder(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME))
-        updateValuesObjectBuilder.addKdoc("Some generated constants and helper methods related to [%T]\n\n", UpdateClassName)
+        updateValuesObjectBuilder.addKdoc(
+            "Some generated constants and helper methods related to [%T]\n\n",
+            UpdateClassName
+        )
         updateValuesObjectBuilder.addKdoc("(Automatically generated at %L)", Instant.now().toString())
 
         val optionalPropertiesWithNames = updateClass.optionalPropertiesWithNames()
@@ -117,6 +130,19 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
         updateValuesObjectBuilder.addNamesProperty(updateClass, nameConstants)
         updateValuesObjectBuilder.addGetUpdateTypeFun(optionalPropertiesWithNames)
         updateValuesObjectBuilder.addResolveToFun(optionalPropertiesWithNames)
+
+        val updateValuesObject = updateValuesObjectBuilder.build()
+
+        val dividerClass = generateUpdateDivider(
+            UpdateDividerClassName,
+            false,
+            optionalPropertiesWithNames
+        )
+        val suspendDividerClass = generateUpdateDivider(
+            SuspendUpdateDividerClassName,
+            true,
+            optionalPropertiesWithNames
+        )
 
         val updateValuesFile = FileSpec.builder(UPDATE_PACKAGE, FILE_NAME)
             .jvmMultifileClass()
@@ -128,7 +154,9 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 ****************************
             """.trimIndent()
             )
-            .addType(updateValuesObjectBuilder.build())
+            .addType(updateValuesObject)
+            .addType(dividerClass)
+            .addType(suspendDividerClass)
             .indent("    ")
             .build()
 
@@ -202,9 +230,11 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
             returns(tv)
 
-            addKdoc("Find the first optional property that is not null based on [%T], " +
-                    "and use [block] to process the serialized name and value of this property." +
-                    "\n\n", UpdateClassName)
+            addKdoc(
+                "Find the first optional property that is not null based on [%T], " +
+                        "and use [block] to process the serialized name and value of this property." +
+                        "\n\n", UpdateClassName
+            )
             addKdoc(
                 "@throws %T If no optional properties that are not null are found in [%T]",
                 UnknownUpdateFieldExceptionClassName,
@@ -304,5 +334,149 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
 
     private fun constantName(name: String) = "${name.uppercase()}_NAME"
+
+    /**
+     *
+     * 为 Update中所有的事件实现一个 Divider。
+     *
+     * ```
+     * abstract class UpdateEventDivider {
+     *     abstract fun onMismatchEvent(name: String, value: xxx, update: Update?) {
+     *     }
+     *     open fun onXxx(name: String, value: xxx, update: Update?) {
+     *         onMismatchEvent(name, value)
+     *     }
+     *
+     *     ...
+     *
+     *     final fun accept(update: Update? = null, name: String, value: Any) {
+     *         when (name) {
+     *             // ...
+     *         }
+     *     }
+     *     final fun accept(update: Update) {
+     *         // ...
+     *     }
+     * }
+     * ```
+     *
+     * @author ForteScarlet
+     */
+    private fun generateUpdateDivider(
+        name: ClassName,
+        suspend: Boolean,
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>,
+        ): TypeSpec {
+        val tv = TypeVariableName("C")
+        return TypeSpec.classBuilder(name).apply {
+            addTypeVariable(tv)
+            addModifiers(KModifier.PUBLIC, KModifier.ABSTRACT)
+            // onMismatchEvent
+            addFunction(updateDividerOnMismatchEventFun(suspend, tv))
+            // visitFunctions
+
+            for ((property, _) in optionalPropertiesWithNames) {
+                addFunction(updateDividerEventFun(suspend, tv, property.simpleName.asString(), property.type.resolve().toTypeName()))
+            }
+
+            addFunction(updateDividerAcceptByUpdateFun(suspend, tv, optionalPropertiesWithNames))
+            addFunction(updateDividerAcceptByNameValueFun(suspend, tv, optionalPropertiesWithNames))
+
+        }.build()
+    }
+
+    private fun String.toOnFunName(): String = "on${replaceFirstChar(Char::uppercase)}"
+
+    private fun updateDividerOnMismatchEventFun(suspend: Boolean, tv: TypeVariableName): FunSpec {
+        return FunSpec.builder("onMismatchUpdateEvent").apply {
+            addModifiers(KModifier.PROTECTED, KModifier.ABSTRACT)
+            if (suspend) {
+                addModifiers(KModifier.SUSPEND)
+            }
+            addParameter(DIVIDER_NAME_PARAM_NAME, STRING)
+            addParameter(DIVIDER_VALUE_PARAM_NAME, ANY)
+            addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName.copy(nullable = true))
+            addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
+        }.build()
+    }
+
+    private fun updateDividerEventFun(suspend: Boolean, tv: TypeVariableName, name: String, type: TypeName): FunSpec {
+        return FunSpec.builder(name.toOnFunName()).apply {
+            addModifiers(KModifier.PROTECTED, KModifier.OPEN)
+            if (suspend) {
+                addModifiers(KModifier.SUSPEND)
+            }
+            addParameter(DIVIDER_NAME_PARAM_NAME, STRING)
+            addParameter(DIVIDER_VALUE_PARAM_NAME, type.copy(nullable = false))
+            addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName.copy(nullable = true))
+            addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
+            addCode(
+                "onMismatchUpdateEvent(%L, %L, %L, %L)",
+                DIVIDER_NAME_PARAM_NAME, DIVIDER_VALUE_PARAM_NAME, DIVIDER_UPDATE_PARAM_NAME, DIVIDER_CONTEXT_PARAM_NAME
+            )
+        }.build()
+    }
+
+    private fun updateDividerAcceptByUpdateFun(suspend: Boolean, tv: TypeVariableName, optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): FunSpec {
+        return FunSpec.builder("accept").apply {
+            addModifiers(KModifier.PUBLIC, KModifier.FINAL)
+            if (suspend) {
+                addModifiers(KModifier.SUSPEND)
+            }
+            addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName)
+            addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
+
+            addCode(buildCodeBlock {
+                beginControlFlow("when")
+
+                for ((property, name) in optionalPropertiesWithNames) {
+                    val pname = property.simpleName.asString()
+                    // update.xxx != null -> onXxx
+                    add("%L.%L != null -> ", DIVIDER_UPDATE_PARAM_NAME, pname)
+                    addStatement("%L(%M, %L.%L, %L, %L)",
+                        pname.toOnFunName(),
+                        MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name)),
+                        DIVIDER_UPDATE_PARAM_NAME, pname,
+                        DIVIDER_UPDATE_PARAM_NAME,
+                        DIVIDER_CONTEXT_PARAM_NAME
+                    )
+                }
+
+                endControlFlow()
+            })
+        }.build()
+    }
+
+    private fun updateDividerAcceptByNameValueFun(suspend: Boolean, tv: TypeVariableName, optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): FunSpec {
+        return FunSpec.builder("accept").apply {
+            addModifiers(KModifier.PUBLIC, KModifier.FINAL)
+            if (suspend) {
+                addModifiers(KModifier.SUSPEND)
+            }
+            addParameter(DIVIDER_NAME_PARAM_NAME, STRING)
+            addParameter(DIVIDER_VALUE_PARAM_NAME, ANY)
+            addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName.copy(nullable = true))
+            addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
+            addCode(buildCodeBlock {
+                beginControlFlow("when")
+
+                for ((property, name) in optionalPropertiesWithNames) {
+                    val pname = property.simpleName.asString()
+                    // name == constant && value is xxx -> onXxx
+                    add("%L == %M ", DIVIDER_NAME_PARAM_NAME, MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name)))
+                    add("&& %L is %T -> ", DIVIDER_VALUE_PARAM_NAME, property.type.toTypeName().copy(nullable = false))
+                    addStatement("%L(%L, %L, %L, %L)",
+                        pname.toOnFunName(),
+                        DIVIDER_NAME_PARAM_NAME,
+                        DIVIDER_VALUE_PARAM_NAME,
+                        DIVIDER_UPDATE_PARAM_NAME,
+                        DIVIDER_CONTEXT_PARAM_NAME
+                    )
+                }
+
+                endControlFlow()
+            })
+        }.build()
+    }
 
 }

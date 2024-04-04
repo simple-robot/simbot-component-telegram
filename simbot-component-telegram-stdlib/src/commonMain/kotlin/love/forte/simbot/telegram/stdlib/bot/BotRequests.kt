@@ -20,14 +20,32 @@
 
 package love.forte.simbot.telegram.stdlib.bot
 
-import love.forte.simbot.telegram.api.TelegramApi
-import love.forte.simbot.telegram.api.requestData
+import io.ktor.client.statement.*
+import love.forte.simbot.telegram.api.*
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
-// TODO request raw/result
-// TODO Doc
+/**
+ * Use [bot] to request the [TelegramApi] and get [HttpResponse].
+ * @see TelegramApi.requestRaw
+ */
+@JvmSynthetic
+public suspend fun TelegramApi<*>.requestRawBy(bot: Bot): HttpResponse =
+    requestRaw(bot.apiClient, bot.ticket.token, bot.server)
 
-public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: Bot): R {
-    return requestData(bot.apiClient, bot.ticket.token, bot.server)
-}
+/**
+ * Use [bot] to request the [TelegramApi] and get [TelegramApiResult] with [R].
+ * @see TelegramApi.requestResult
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestResultBy(bot: Bot): TelegramApiResult<R> =
+    requestResult(bot.apiClient, bot.ticket.token, bot.server)
+
+/**
+ * Use [bot] to request the [TelegramApi] and get [R].
+ * @see TelegramApi.requestData
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: Bot): R =
+    requestData(bot.apiClient, bot.ticket.token, bot.server)

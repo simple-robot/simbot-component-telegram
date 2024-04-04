@@ -25,6 +25,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.component.telegram.component.TelegramComponent
 import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
@@ -81,15 +82,23 @@ public interface TelegramBot : Bot {
     @ST
     public suspend fun queryUserInfo(): User
 
+    /**
+     * Same to [source.pushUpdate][love.forte.simbot.telegram.stdlib.bot.Bot.pushUpdate]
+     * @see love.forte.simbot.telegram.stdlib.bot.Bot.pushUpdate
+     */
+    @ST
+    public suspend fun pushUpdate(update: Update, raw: String? = null) {
+        source.pushUpdate(update, raw)
+    }
 
 
     override val groupRelation: GroupRelation?
-        get() = null
+        get() = null // TODO
 
     override val guildRelation: GuildRelation?
-        get() = null
+        get() = null // TODO
 
     override val contactRelation: ContactRelation?
-        get() = null
+        get() = null // TODO
 
 }
