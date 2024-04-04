@@ -28,8 +28,8 @@ import love.forte.simbot.telegram.type.Message
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageRelatedEvent : BasicTelegramMessageEvent {
-    override val sourceContent: Message
+public interface TelegramMessageRelatedEvent : TelegramEvent {
+    // override val sourceContent: Message
 
 }
 
