@@ -23,16 +23,17 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import love.forte.simbot.ability.EventMentionAware
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.telegram.bot.StdlibBot
 import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.bot.TelegramBotConfiguration
 import love.forte.simbot.component.telegram.component.TelegramComponent
-import love.forte.simbot.component.telegram.event.BasicTelegramMessageEvent
 import love.forte.simbot.component.telegram.event.TelegramUnsupportedEvent
+import love.forte.simbot.component.telegram.event.internal.TelegramChatGroupMessageEventImpl
+import love.forte.simbot.component.telegram.event.internal.TelegramPrivateMessageEventImpl
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.onEachError
@@ -43,6 +44,7 @@ import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.stdlib.bot.SubscribeSequence
 import love.forte.simbot.telegram.stdlib.bot.requestDataBy
 import love.forte.simbot.telegram.type.*
+import love.forte.simbot.telegram.type.ChatType.Companion.chatTypeOrNull
 import love.forte.simbot.telegram.type.inline.ChosenInlineResult
 import love.forte.simbot.telegram.type.inline.InlineQuery
 import love.forte.simbot.telegram.type.payment.PreCheckoutQuery
@@ -62,7 +64,7 @@ internal class TelegramBotImpl(
     override val source: StdlibBot,
     private val configuration: TelegramBotConfiguration,
     private val eventDispatcher: EventDispatcher,
-) : TelegramBot, JobBasedBot(), EventMentionAware {
+) : TelegramBot, JobBasedBot() {
     internal val subContext = coroutineContext.minusKey(Job)
     internal val logger = LoggerFactory.getLogger("love.forte.simbot.component.telegram.bot")
     internal val eventLogger = LoggerFactory.getLogger("love.forte.simbot.component.telegram.stdlib.bot.event")
@@ -79,25 +81,21 @@ internal class TelegramBotImpl(
     }
 
     override fun isMe(id: ID): Boolean {
-        TODO("Not yet implemented")
+        // TODO
+        return source.ticket.token == id.literal
     }
 
-    override fun isMention(event: Event): Boolean {
-        if (event is BasicTelegramMessageEvent) {
-            event.sourceContent
-        }
-        TODO("Not yet implemented")
-    }
 
     private val startLock = Mutex()
 
     override suspend fun start() {
         job.ensureActive()
-        if (isStarted) {
-            // already started.
-            return
-        }
         startLock.withLock {
+            if (isStarted) {
+                // already started.
+                return
+            }
+
             source.start()
             subscribeInternalProcessor(this, source, eventDispatcher)
 
@@ -116,19 +114,19 @@ internal fun subscribeInternalProcessor(
 ) {
     val divider = object : SuspendableUpdateDivider<StdlibEvent>() {
         private suspend fun pushEvent(event: Event) {
-            bot.logger.debug("Bot {} on event: {}", event)
+            bot.logger.debug("Bot {} on event: {}", bot, event)
             eventDispatcher.push(event)
                 .onEachError { result ->
-                    bot.logger.error("Bot {} on event dispatch error result: {}", bot, result, result.content)
+                    bot.eventLogger.error("Bot {} on event dispatch error result: {}", bot, result, result.content)
                 }
                 .onCompletion {
-                    bot.logger.trace("Bot {} event publish completed", bot)
+                    bot.eventLogger.trace("Bot {} event publish completed", bot)
                 }
                 .collect()
         }
 
         override suspend fun onMismatchUpdateEvent(name: String, value: Any, update: Update?, context: StdlibEvent) {
-            bot.logger.warn("onMismatchUpdateEvent(name={}, value={}, update={})", name, value, update)
+            bot.eventLogger.warn("onMismatchUpdateEvent(name={}, value={}, update={})", name, value, update)
             pushEvent(TelegramUnsupportedEvent(bot, context))
         }
 
@@ -138,7 +136,30 @@ internal fun subscribeInternalProcessor(
             update: Update?,
             context: StdlibEvent
         ) {
-            super.onMessage(name, value, update, context)
+            val chat = value.chat
+            when (chat.chatTypeOrNull) {
+                ChatType.GROUP -> {
+                    pushEvent(
+                        TelegramChatGroupMessageEventImpl(
+                            bot = bot,
+                            sourceEvent = context,
+                            sourceContent = value
+                        )
+                    )
+                }
+
+                ChatType.PRIVATE -> {
+                    pushEvent(
+                        TelegramPrivateMessageEventImpl(
+                            bot = bot,
+                            sourceEvent = context,
+                            sourceContent = value
+                        )
+                    )
+                }
+                // TODO others
+                else -> onMismatchUpdateEvent(name, value, update, context)
+            }
         }
 
         override suspend fun onEditedMessage(
@@ -296,6 +317,7 @@ internal fun subscribeInternalProcessor(
     }
 
     source.subscribe(SubscribeSequence.NORMAL) { event ->
+        bot.eventLogger.debug("Accept event: {}", event)
         divider.accept(event.name, event.content, event.update, event)
     }
 }

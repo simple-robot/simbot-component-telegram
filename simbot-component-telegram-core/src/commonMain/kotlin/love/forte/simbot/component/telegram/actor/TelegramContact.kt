@@ -17,47 +17,49 @@
 
 package love.forte.simbot.component.telegram.actor
 
-import kotlinx.coroutines.Job
-import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
 import love.forte.simbot.common.id.LongID.Companion.ID
-import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
-import love.forte.simbot.definition.Member
+import love.forte.simbot.definition.Contact
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.telegram.type.User
-import kotlin.coroutines.CoroutineContext
+
 
 /**
+ * A Telegram contact (that from a private chat).
  *
  * @author ForteScarlet
  */
-public interface TelegramMember : TelegramUser, Member {
-    /**
-     * From [TelegramBot], without [Job].
-     */
-    override val coroutineContext: CoroutineContext
+public interface TelegramContact : TelegramUser, Contact {
     override val source: User
 
-    override val id: ID
+    /**
+     * The [User.id]
+     */
+    override val id: LongID
         get() = source.id.ID
 
+    /**
+     * The [User.username] or [User.firstName] if its null.
+     */
     override val name: String
         get() = source.username ?: source.firstName
 
-    override val nick: String?
-        get() = null
-
+    /**
+     * Always `null`.
+     * [User] can not get avatar directly.
+     */
     override val avatar: String?
         get() = null
 
     @ST
-    override suspend fun send(text: String): TelegramMessageReceipt
+    override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
 
     @ST
     override suspend fun send(message: Message): TelegramMessageReceipt
 
     @ST
-    override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
+    override suspend fun send(text: String): TelegramMessageReceipt
 }

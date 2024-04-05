@@ -15,15 +15,34 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.actor
+package love.forte.simbot.component.telegram.message.internal
 
-import love.forte.simbot.telegram.type.User
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.component.telegram.message.StdlibMessage
+import love.forte.simbot.component.telegram.message.TelegramMessageContent
+import love.forte.simbot.message.Messages
 
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramUser {
-    public val source: User
+internal class TelegramMessageContentImpl(
+    override val source: StdlibMessage
+) : TelegramMessageContent {
+
+    override val messages: Messages
+        get() = TODO("Not yet implemented")
+
+    override val plainText: String?
+        get() = source.text // TODO entries
+
+    override suspend fun delete(vararg options: DeleteOption) {
+
+        TODO("Not yet implemented")
+    }
+
+
+    override fun toString(): String =
+        "TelegramMessageContent(source=$source)"
 }

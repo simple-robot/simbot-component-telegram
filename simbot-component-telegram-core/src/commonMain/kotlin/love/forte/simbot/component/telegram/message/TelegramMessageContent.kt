@@ -17,11 +17,9 @@
 
 package love.forte.simbot.component.telegram.message
 
-import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.Messages
 
 public typealias StdlibMessage = love.forte.simbot.telegram.type.Message
 
@@ -35,14 +33,4 @@ public interface TelegramMessageContent : MessageContent {
     override val id: ID
         get() = source.messageId.ID
 
-    override val messages: Messages
-        get() = TODO("Not yet implemented")
-
-    override val plainText: String?
-        get() = TODO("Not yet implemented")
-
-    override suspend fun delete(vararg options: DeleteOption) {
-
-        TODO("Not yet implemented")
-    }
 }

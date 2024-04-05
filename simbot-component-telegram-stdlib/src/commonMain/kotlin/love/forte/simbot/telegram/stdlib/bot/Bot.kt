@@ -24,6 +24,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.function.ConfigurerFunction
@@ -366,7 +367,18 @@ public data class LongPolling(
     val limit: Int? = null,
     val timeout: Int? = DefaultLongPollingTimeout.inWholeSeconds.toInt(),
     val allowedUpdates: Collection<String>? = null,
-)
+    // retry times on error
+    val retry: Retry? = null
+) {
+
+    @Serializable
+    public data class Retry(
+        val maxRetries: Int = 3,
+        val delayMillis: Long = 5000,
+        val isDelayMillisMultiplyByRetryTimes: Boolean = false
+    )
+    // multiplyBy
+}
 
 /**
  * [Bot.subscribe] simplified extension.

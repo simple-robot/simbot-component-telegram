@@ -143,6 +143,7 @@ public interface TelegramBotManager : BotManager {
                 job = mergedContext[Job]!!,
                 coroutineContext = mergedContext,
                 component,
+                context.eventDispatcher,
                 configuration
             )
         }

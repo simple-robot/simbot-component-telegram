@@ -42,7 +42,7 @@ class ComponentEventProcessorProvider : SymbolProcessorProvider {
         ComponentEventProcessor(environment)
 }
 
-// private const val SERIAL_NAME_ANNOTATION_TYPE = "kotlinx.serialization.SerialName"
+
 private const val UPDATE_PACKAGE = "love.forte.simbot.telegram.api.update"
 
 private const val UPDATE_CLASS_NAME = "$UPDATE_PACKAGE.Update"
@@ -51,6 +51,7 @@ private val UpdateClassName = ClassName(UPDATE_PACKAGE, "Update")
 private const val EVENT_PACKAGE = "love.forte.simbot.component.telegram.event"
 
 private val TelegramEventClassName = ClassName(EVENT_PACKAGE, "TelegramEvent")
+private val GeneratedAnnotationClassName = ClassName(EVENT_PACKAGE, "GeneratedEvent")
 
 private const val GENERATED_EVENTS_FILE_NAME = "TelegramEvents.generated"
 
@@ -133,6 +134,7 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
             .map { (property, typeName) ->
                 val typeSimpleName = property.type.resolve().toClassName().simpleName
                 val inter = TypeSpec.interfaceBuilder(typeSimpleName.toTelegramTypeEventName()).apply {
+                    addAnnotation(GeneratedAnnotationClassName)
                     addSuperinterface(TelegramEventClassName)
                     addProperty(
                         PropertySpec.builder(
@@ -173,6 +175,7 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
                     addSuperinterface(TelegramEventClassName)
                 }
 
+                addAnnotation(GeneratedAnnotationClassName)
                 addProperty(
                     PropertySpec.builder(
                         name = TELEGRAM_EVENT_PROPERTY_SOURCE_CONTENT_NAME,

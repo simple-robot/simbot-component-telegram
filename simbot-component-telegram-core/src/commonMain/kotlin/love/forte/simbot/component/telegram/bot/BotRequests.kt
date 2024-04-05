@@ -15,9 +15,45 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("BotRequests")
+@file:JvmName("TelegramBotRequests")
 @file:JvmMultifileClass
+
 package love.forte.simbot.component.telegram.bot
 
+import io.ktor.client.statement.*
+import love.forte.simbot.telegram.api.TelegramApi
+import love.forte.simbot.telegram.api.TelegramApiResult
+import love.forte.simbot.telegram.api.requestData
+import love.forte.simbot.telegram.api.requestResult
+import love.forte.simbot.telegram.stdlib.bot.requestDataBy
+import love.forte.simbot.telegram.stdlib.bot.requestRawBy
+import love.forte.simbot.telegram.stdlib.bot.requestResultBy
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
+
+// TODO JVM
+
+/**
+ * Use [TelegramBot] to request the [TelegramApi] and get [HttpResponse].
+ * @see TelegramApi.requestRawBy
+ */
+@JvmSynthetic
+public suspend fun TelegramApi<*>.requestRawBy(bot: TelegramBot): HttpResponse =
+    requestRawBy(bot.source)
+
+/**
+ * Use [TelegramBot] to request the [TelegramApi] and get [TelegramApiResult] with [R].
+ * @see TelegramApi.requestResult
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestResultBy(bot: TelegramBot): TelegramApiResult<R> =
+    requestResultBy(bot.source)
+
+/**
+ * Use [TelegramBot] to request the [TelegramApi] and get [R].
+ * @see TelegramApi.requestData
+ */
+@JvmSynthetic
+public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: TelegramBot): R =
+    requestDataBy(bot.source)

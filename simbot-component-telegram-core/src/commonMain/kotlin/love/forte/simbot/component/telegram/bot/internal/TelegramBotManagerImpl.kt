@@ -18,8 +18,12 @@
 package love.forte.simbot.component.telegram.bot.internal
 
 import kotlinx.coroutines.Job
+import love.forte.simbot.bot.ConflictBotException
 import love.forte.simbot.bot.JobBasedBotManager
+import love.forte.simbot.common.collection.computeValue
 import love.forte.simbot.common.collection.concurrentMutableMap
+import love.forte.simbot.common.collection.removeValue
+import love.forte.simbot.common.coroutines.mergeWith
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.NumericalID
 import love.forte.simbot.common.id.literal
@@ -28,7 +32,9 @@ import love.forte.simbot.component.telegram.bot.TelegramBotConfiguration
 import love.forte.simbot.component.telegram.bot.TelegramBotManager
 import love.forte.simbot.component.telegram.bot.TelegramBotManagerConfiguration
 import love.forte.simbot.component.telegram.component.TelegramComponent
+import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.telegram.stdlib.bot.Bot
+import love.forte.simbot.telegram.stdlib.bot.BotFactory
 import kotlin.coroutines.CoroutineContext
 
 
@@ -40,15 +46,45 @@ internal class TelegramBotManagerImpl(
     override val job: Job,
     private val coroutineContext: CoroutineContext,
     private val component: TelegramComponent,
+    private val eventDispatcher: EventDispatcher,
     private val configuration: TelegramBotManagerConfiguration,
 ) : TelegramBotManager, JobBasedBotManager() {
 
-    private val botsWithTokenKey = concurrentMutableMap<String, TelegramBot>() // TODO BotImpl
+    private val botsWithTokenKey = concurrentMutableMap<String, TelegramBotImpl>()
     // id token cache
-    private val idTokenMap = concurrentMutableMap<Long, String>() // TODO BotImpl
+    private val idTokenMap = concurrentMutableMap<Long, String>()
 
     override fun register(ticket: Bot.Ticket, configuration: TelegramBotConfiguration): TelegramBot {
-        TODO("Not yet implemented")
+        val token = ticket.token
+
+        fun createBot(): TelegramBotImpl {
+            val context = configuration.coroutineContext.mergeWith(coroutineContext)
+            val job = context[Job]!!
+
+            return TelegramBotImpl(
+                job = job,
+                coroutineContext = context,
+                component = component,
+                source = BotFactory.create(ticket, configuration.botConfiguration),
+                configuration = configuration,
+                eventDispatcher = eventDispatcher
+                )
+        }
+
+
+
+        val newBot = botsWithTokenKey.computeValue(token) { k, old ->
+            if (old != null && old.isActive) throw ConflictBotException("TelegramBot with token $k")
+            createBot()
+        }!!
+
+        // TODO register update idTokenMap
+
+        newBot.onCompletion {
+            botsWithTokenKey.removeValue(token) { newBot }
+        }
+
+        return newBot
     }
 
     override fun all(): Sequence<TelegramBot> =

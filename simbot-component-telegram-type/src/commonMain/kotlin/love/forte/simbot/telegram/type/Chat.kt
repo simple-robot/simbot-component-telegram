@@ -21,6 +21,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -415,6 +416,26 @@ public enum class ChatType(public val value: String) {
                 "channel" -> CHANNEL
                 else -> null
             }
+
+        /**
+         * Get from [Chat].
+         *
+         * @throws NoSuchElementException if is unknown value
+         */
+        @get:JvmName("ofChat")
+        @get:JvmStatic
+        public val Chat.chatType: ChatType
+            get() = ofChatTypeValue(type)
+
+        /**
+         * Get from [Chat] or null.
+         */
+        @get:JvmName("ofChatOrNull")
+        @get:JvmStatic
+        public val Chat.chatTypeOrNull: ChatType?
+            get() = ofChatTypeValueOrNull(type)
+
+
 
     }
 }

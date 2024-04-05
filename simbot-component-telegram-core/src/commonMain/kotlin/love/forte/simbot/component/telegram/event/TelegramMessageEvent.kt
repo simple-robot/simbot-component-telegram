@@ -17,10 +17,22 @@
 
 package love.forte.simbot.component.telegram.event
 
-import love.forte.simbot.event.ChatGroupEvent
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID.Companion.ID
+import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.component.telegram.actor.TelegramChatGroup
+import love.forte.simbot.component.telegram.actor.TelegramContact
+import love.forte.simbot.component.telegram.actor.TelegramMember
+import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
+import love.forte.simbot.component.telegram.time.unixDateTimestamp
+import love.forte.simbot.event.ChatGroupMessageEvent
 import love.forte.simbot.event.ContactMessageEvent
 import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.suspendrunner.STP
 import love.forte.simbot.telegram.type.Message
+import love.forte.simbot.telegram.type.User
 
 
 /**
@@ -28,9 +40,11 @@ import love.forte.simbot.telegram.type.Message
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageRelatedEvent : TelegramEvent {
-    // override val sourceContent: Message
+public interface TelegramMessageRelatedEvent : TelegramEvent, TypeBasedTelegramMessageEvent {
+    override val sourceContent: Message
 
+    override val time: Timestamp
+        get() = unixDateTimestamp(sourceContent.date)
 }
 
 /**
@@ -38,16 +52,64 @@ public interface TelegramMessageRelatedEvent : TelegramEvent {
  *
  * @author ForteScarlet
  */
-public interface TelegramMessageEvent : MessageEvent
+public interface TelegramMessageEvent : TelegramMessageRelatedEvent, BasicTelegramMessageEvent
 
 /**
+ * An event about [Message] from a [TelegramChatGroup] (chat.type == `"group"`)
  *
  * @author ForteScarlet
  */
-public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroupEvent
+public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
+    /**
+     * The [TelegramChatGroup].
+     */
+    @STP
+    override suspend fun content(): TelegramChatGroup
+
+    /**
+     * The [sender][Message.from]'s [id][User.id]
+     */
+    override val authorId: ID
+        get() = sourceContent.from!!.id.ID
+
+    @STP
+    override suspend fun author(): TelegramMember // TODO chat group member?
+
+    @ST
+    override suspend fun reply(text: String): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+}
 
 /**
+ * An event about [Message] from a [TelegramContact] (chat.type == `"private"`)
  *
  * @author ForteScarlet
  */
-public interface TelegramContactMessageEvent : TelegramMessageEvent, ContactMessageEvent
+public interface TelegramPrivateMessageEvent : TelegramMessageEvent, ContactMessageEvent {
+    /**
+     * The [TelegramContact].
+     */
+    @STP
+    override suspend fun content(): TelegramContact
+
+    /**
+     * The [sender][Message.from]'s [id][User.id]
+     */
+    override val authorId: ID
+        get() = sourceContent.from!!.id.ID
+
+
+    @ST
+    override suspend fun reply(text: String): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+}

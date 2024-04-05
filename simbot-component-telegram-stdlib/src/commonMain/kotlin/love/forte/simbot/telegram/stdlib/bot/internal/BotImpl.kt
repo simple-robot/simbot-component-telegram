@@ -71,14 +71,14 @@ internal class BotImpl(
         val job = SupervisorJob(coroutineContext[Job])
         this.coroutineContext = coroutineContext.minusKey(Job) + job
         this.job = job
-        val apiClient = resolveHttpClient {
-            configuration.apiClientConfigurer?.invokeWith(this)
-        }
+        val apiClient = resolveHttpClient()
         job.invokeOnCompletion { apiClient.close() }
         this.apiClient = apiClient
     }
 
     private inline fun resolveHttpClient(crossinline block: HttpClientConfig<*>.() -> Unit = {}): HttpClient {
+        val apiClientConfigurer = configuration.apiClientConfigurer
+
         val engine = configuration.apiClientEngine
         val engineFactory = configuration.apiClientEngineFactory
         if (engine != null && engineFactory != null) {
@@ -87,14 +87,17 @@ internal class BotImpl(
 
         return when {
             engine == null && engineFactory == null -> HttpClient {
+                apiClientConfigurer?.invokeWith(this)
                 block()
             }
 
             engine != null -> HttpClient(engine) {
+                apiClientConfigurer?.invokeWith(this)
                 block()
             }
 
             engineFactory != null -> HttpClient(engineFactory) {
+                apiClientConfigurer?.invokeWith(this)
                 block()
             }
 
@@ -127,7 +130,6 @@ internal class BotImpl(
             SubscribeSequence.PRE -> preProcessors.add(processor)
             SubscribeSequence.NORMAL -> processors.add(processor)
         }
-        processors.add(processor)
     }
 
     override suspend fun pushUpdate(update: Update, raw: String?) {
@@ -228,6 +230,26 @@ internal class BotImpl(
                 install(HttpTimeout) {
                     requestTimeoutMillis = reqTimeout.inWholeMilliseconds
                 }
+                longPolling.retry?.also { retry ->
+                    install(HttpRequestRetry) {
+                        // maxRetries = retry.maxRetries
+                        retryOnException(maxRetries = retry.maxRetries, retryOnTimeout = true)
+
+                        if (retry.isDelayMillisMultiplyByRetryTimes) {
+                            delayMillis { retryTimes ->
+                                (retry.delayMillis * retryTimes).also { millis ->
+                                    eventLogger.debug("LongPolling next retry delay millis {} in retry {}", millis, retryTimes)
+                                }
+                            }
+                        } else {
+                            delayMillis { retryTimes ->
+                                retry.delayMillis.also { millis ->
+                                    eventLogger.debug("LongPolling next retry delay millis {} in retry {}", millis, retryTimes)
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             val job = launch {
@@ -244,6 +266,7 @@ internal class BotImpl(
             job.invokeOnCompletion {
                 eventLogger.debug("LongPolling job {} completed: {}", job, it)
                 newClient.close()
+                longPollingFlow.value = null
             }
 
             longPollingTask = LongPollingTask(longPolling, job).also {

@@ -82,3 +82,10 @@ public interface TelegramEvent : BotEvent {
         get() = sourceEvent.raw
 
 }
+
+/**
+ * Annotate a type as _automatically generated_.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+public annotation class GeneratedEvent

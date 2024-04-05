@@ -18,22 +18,75 @@
 package love.forte.simbot.component.telegram.actor
 
 import kotlinx.coroutines.Job
+import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.component.telegram.bot.TelegramBot
+import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
 import love.forte.simbot.definition.ChatGroup
+import love.forte.simbot.definition.Role
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.suspendrunner.STP
 import love.forte.simbot.telegram.type.Chat
+import love.forte.simbot.telegram.type.ChatType
 import kotlin.coroutines.CoroutineContext
 
 
 /**
  *
+ * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value).
+ *
  * @author ForteScarlet
  */
 public interface TelegramChatGroup : TelegramChat, ChatGroup {
     /**
-     * From [TelegramBot], without [Job].
+     * From [TelegramBot] but without [Job].
      */
     override val coroutineContext: CoroutineContext
 
+    /**
+     * The [Chat].
+     */
     override val source: Chat
 
+    /**
+     * The [Chat.title]
+     */
+    override val name: String
+        get() = source.title ?: ""
+
+    /**
+     * The [Chat.id]
+     */
+    override val id: LongID
+        get() = source.id.ID
+
+    /**
+     * Always `null`.
+     */
+    override val ownerId: ID?
+        get() = null
+
+
+    override val members: Collectable<TelegramMember>
+
+    override val roles: Collectable<Role>
+
+    @STP
+    override suspend fun botAsMember(): TelegramMember
+
+    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
+    override suspend fun member(id: ID): TelegramMember?
+
+    @ST
+    override suspend fun send(text: String): TelegramMessageReceipt
+
+    @ST
+    override suspend fun send(message: Message): TelegramMessageReceipt
+
+    @ST
+    override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
 }

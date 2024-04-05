@@ -37,6 +37,19 @@ public class TelegramComponent : Component {
     override val serializersModule: SerializersModule
         get() = SerializersModule
 
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is TelegramComponent
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun toString(): String =
+        "TelegramComponent(id=$ID_VALUE)"
+
     public companion object Factory : ComponentFactory<TelegramComponent, TelegramComponentConfiguration> {
         public const val ID_VALUE: String = "simbot.telegram"
 
@@ -56,17 +69,6 @@ public class TelegramComponent : Component {
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return other is TelegramComponent
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-
-    override fun toString(): String =
-        "TelegramComponent(id=$ID_VALUE)"
 }
 
 public class TelegramComponentConfiguration
