@@ -31,6 +31,7 @@ import love.forte.simbot.component.telegram.bot.StdlibBot
 import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.bot.TelegramBotConfiguration
 import love.forte.simbot.component.telegram.component.TelegramComponent
+import love.forte.simbot.component.telegram.event.BasicTelegramMessageEvent
 import love.forte.simbot.component.telegram.event.TelegramUnsupportedEvent
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventDispatcher
@@ -82,6 +83,9 @@ internal class TelegramBotImpl(
     }
 
     override fun isMention(event: Event): Boolean {
+        if (event is BasicTelegramMessageEvent) {
+            event.sourceContent
+        }
         TODO("Not yet implemented")
     }
 

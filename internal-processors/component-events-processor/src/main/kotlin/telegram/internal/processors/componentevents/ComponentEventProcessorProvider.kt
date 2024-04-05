@@ -27,10 +27,16 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * 根据 `Update` 中所有事件生成对应的基础事件类型 `BasicTelegramXxxEvent`, `Xxx` 是事件名
+ * 还要根据 `Update` 的事件 **类型** 生成跟类型相关的 `BasicTelegramXxxTypeEvent`, `Xxx` 是类型。
+ *
+ */
 class ComponentEventProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =
         ComponentEventProcessor(environment)
@@ -104,20 +110,69 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
 
     /**
      * 生成：
+     * ```kotlin
+     * interface TypeBasedTelegramXxxEvent : TelegramEvent {
+     *     override val sourceContent: Xxx // 实际上的事件类型, not null
+     * }
+     * ```
      *
      * ```kotlin
-     * interface TelegramXxxEvent : TelegramEvent {
+     * interface BasicTelegramXxxEvent : TypeBasedTelegramXxxEvent {
      *     override val sourceContent: Xxx // 实际上的事件类型, not null
      * }
      * ```
      */
     private fun generateEvents(optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): List<TypeSpec> {
-        return optionalPropertiesWithNames.map { (property, name) ->
+        data class TypeBasedEventData(val property: KSPropertyDeclaration, val typeName: TypeName, val typeBuilder: TypeSpec.Builder)
+        // val eventTypesWithTypeKey = mutableMapOf<>()
+        val typeBasedEventTypes = optionalPropertiesWithNames.asSequence()
+            .map { (property, _) ->
+                property to property.type.toTypeName().copy(nullable = false)
+            }
+            .distinctBy { (_, typeName) -> typeName }
+            .map { (property, typeName) ->
+                val typeSimpleName = property.type.resolve().toClassName().simpleName
+                val inter = TypeSpec.interfaceBuilder(typeSimpleName.toTelegramTypeEventName()).apply {
+                    addSuperinterface(TelegramEventClassName)
+                    addProperty(
+                        PropertySpec.builder(
+                            name = TELEGRAM_EVENT_PROPERTY_SOURCE_CONTENT_NAME,
+                            type = typeName,
+                            KModifier.OVERRIDE, KModifier.PUBLIC
+                        )
+                            .addKdoc(
+                                "Source content with type [%T]\n\n",
+                                typeName
+                            )
+                            .addKdoc("@see %T", typeName)
+                            .build()
+                    )
+
+                    addKdoc("Basic wrapper type for type [%T] ", typeName)
+                    addKdoc("based on [%T].", TelegramEventClassName)
+                    addKdoc("\n\n")
+                    addKdoc("@see %T\n", TelegramEventClassName)
+                    addKdoc("@see %T\n", UpdateClassName)
+
+                }
+
+                TypeBasedEventData(property, typeName, inter)
+            }.associateBy { data -> data.typeName }
+
+        val basicTypeList = optionalPropertiesWithNames.map { (property, name) ->
             val propertyTypeName = property.type.toTypeName().copy(nullable = false)
             val memberName = MemberName(UpdateClassName, name)
+            val eventName = name.toTelegramEventName()
 
-            TypeSpec.interfaceBuilder(name.toTelegramEventName()).apply {
-                addSuperinterface(TelegramEventClassName)
+            TypeSpec.interfaceBuilder(eventName).apply {
+                typeBasedEventTypes[propertyTypeName]?.let { data ->
+                    val typeSimpleName = data.property.type.resolve().toClassName().simpleName
+                    addSuperinterface(ClassName(EVENT_PACKAGE, typeSimpleName.toTelegramTypeEventName()))
+                    data.typeBuilder.addKdoc("@see %T\n", ClassName(EVENT_PACKAGE, eventName))
+                } ?: run {
+                    addSuperinterface(TelegramEventClassName)
+                }
+
                 addProperty(
                     PropertySpec.builder(
                         name = TELEGRAM_EVENT_PROPERTY_SOURCE_CONTENT_NAME,
@@ -138,10 +193,19 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
                 addKdoc("\n\n")
                 addKdoc("@see %T\n", TelegramEventClassName)
                 addKdoc("@see %T\n", UpdateClassName)
+                superinterfaces.keys.forEach {
+                    addKdoc("@see %T\n", it)
+                }
 
             }.build()
+        }
+
+        return buildList {
+            typeBasedEventTypes.values.mapTo(this) { data -> data.typeBuilder.build() }
+            addAll(basicTypeList)
         }
     }
 }
 
 private fun String.toTelegramEventName(): String = "BasicTelegram${replaceFirstChar(Char::uppercaseChar)}Event"
+private fun String.toTelegramTypeEventName(): String = "TypeBasedTelegram${this}Event"
