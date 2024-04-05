@@ -27,9 +27,10 @@ import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.message.internal.TelegramMessageContentImpl
 import love.forte.simbot.component.telegram.message.internal.toTelegramMessageReceipt
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.telegram.api.message.SendMessageApi
+import love.forte.simbot.telegram.api.message.buildSendMessageApi
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.Message
+import love.forte.simbot.telegram.type.ReplyParameters
 
 
 /**
@@ -48,9 +49,10 @@ internal class TelegramPrivateMessageEventImpl(
     }
 
     override suspend fun reply(text: String): TelegramMessageReceipt {
-        return SendMessageApi.create(ChatId(sourceContent.chat.id), text)
-            .requestDataBy(bot)
-            .toTelegramMessageReceipt(bot)
+        return buildSendMessageApi(ChatId(sourceContent.chat.id), text) {
+            replyParameters = ReplyParameters(sourceContent.messageId)
+        }.requestDataBy(bot).toTelegramMessageReceipt(bot)
+
     }
 
     override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt {

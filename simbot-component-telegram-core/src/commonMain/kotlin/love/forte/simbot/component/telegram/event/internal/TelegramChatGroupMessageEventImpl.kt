@@ -22,11 +22,16 @@ import love.forte.simbot.component.telegram.actor.TelegramChatGroup
 import love.forte.simbot.component.telegram.actor.TelegramMember
 import love.forte.simbot.component.telegram.actor.internal.toTelegramChatGroup
 import love.forte.simbot.component.telegram.bot.internal.TelegramBotImpl
+import love.forte.simbot.component.telegram.bot.requestDataBy
 import love.forte.simbot.component.telegram.event.StdlibEvent
 import love.forte.simbot.component.telegram.event.TelegramChatGroupMessageEvent
 import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
+import love.forte.simbot.component.telegram.message.internal.toTelegramMessageReceipt
 import love.forte.simbot.message.MessageContent
+import love.forte.simbot.telegram.api.message.buildSendMessageApi
+import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.Message
+import love.forte.simbot.telegram.type.ReplyParameters
 
 
 /**
@@ -48,7 +53,9 @@ internal class TelegramChatGroupMessageEventImpl(
     }
 
     override suspend fun reply(text: String): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        return buildSendMessageApi(ChatId(sourceContent.chat.id), text) {
+            replyParameters = ReplyParameters(sourceContent.messageId)
+        }.requestDataBy(bot).toTelegramMessageReceipt(bot)
     }
 
     override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt {

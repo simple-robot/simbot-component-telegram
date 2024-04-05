@@ -16,7 +16,7 @@ suspend fun main() {
     }
 
     // subscribe to events
-    app.eventDispatcher.run {
+    app.listeners {
         // subscribe to ChatGroupMessageEvent 
         listen<ChatGroupMessageEvent> { event ->
             // process event...
@@ -28,7 +28,7 @@ suspend fun main() {
         }
 
         // subscribe to ChatGroupMessageEvent
-        process<ChatGroupMemberIncreaseEvent> { event ->
+        process<TelegramPrivateMessageEvent> { event ->
             // process event...
             event.content().send("Welcome, " + At(event.member().id))
 
