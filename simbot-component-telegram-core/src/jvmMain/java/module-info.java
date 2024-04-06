@@ -16,10 +16,10 @@
  */
 
 import love.forte.simbot.component.ComponentFactoryProvider;
-import love.forte.simbot.component.telegram.bot.TelegramBotManagerFactoryConfigurerProvider;
-import love.forte.simbot.component.telegram.bot.TelegramBotManagerFactoryProvider;
-import love.forte.simbot.component.telegram.component.TelegramComponentFactoryConfigurerProvider;
-import love.forte.simbot.component.telegram.component.TelegramComponentFactoryProvider;
+import love.forte.simbot.component.telegram.core.bot.TelegramBotManagerFactoryConfigurerProvider;
+import love.forte.simbot.component.telegram.core.bot.TelegramBotManagerFactoryProvider;
+import love.forte.simbot.component.telegram.core.component.TelegramComponentFactoryConfigurerProvider;
+import love.forte.simbot.component.telegram.core.component.TelegramComponentFactoryProvider;
 import love.forte.simbot.plugin.PluginFactoryProvider;
 
 module simbot.component.telegram.core {
@@ -30,12 +30,13 @@ module simbot.component.telegram.core {
     requires transitive simbot.component.telegram.stdlib;
 
 
-    exports love.forte.simbot.component.telegram.actor;
-    exports love.forte.simbot.component.telegram.bot;
-    exports love.forte.simbot.component.telegram.component;
-    exports love.forte.simbot.component.telegram.event;
-    exports love.forte.simbot.component.telegram.message;
-    exports love.forte.simbot.component.telegram.time;
+    exports love.forte.simbot.component.telegram.core;
+    exports love.forte.simbot.component.telegram.core.actor;
+    exports love.forte.simbot.component.telegram.core.bot;
+    exports love.forte.simbot.component.telegram.core.component;
+    exports love.forte.simbot.component.telegram.core.event;
+    exports love.forte.simbot.component.telegram.core.message;
+    exports love.forte.simbot.component.telegram.core.time;
 
     // component
     provides ComponentFactoryProvider with TelegramComponentFactoryProvider;

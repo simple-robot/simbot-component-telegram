@@ -48,7 +48,7 @@ private const val UPDATE_PACKAGE = "love.forte.simbot.telegram.api.update"
 private const val UPDATE_CLASS_NAME = "$UPDATE_PACKAGE.Update"
 private val UpdateClassName = ClassName(UPDATE_PACKAGE, "Update")
 
-private const val EVENT_PACKAGE = "love.forte.simbot.component.telegram.event"
+private const val EVENT_PACKAGE = "love.forte.simbot.component.telegram.core.event"
 
 private val TelegramEventClassName = ClassName(EVENT_PACKAGE, "TelegramEvent")
 private val GeneratedAnnotationClassName = ClassName(EVENT_PACKAGE, "GeneratedEvent")

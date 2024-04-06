@@ -49,12 +49,12 @@ private val PolymorphicModuleBuilderClassName =
 
 // 此组件下，实现 Message.Element 的顶级类型
 private const val BASE_MESSAGE_ELEMENT_CLASS_NAME =
-    "love.forte.simbot.component.telegram.message.TelegramMessageElement"
+    "love.forte.simbot.component.telegram.core.message.TelegramMessageElement"
 private val BaseMessageElementClassName =
-    ClassName("love.forte.simbot.component.telegram.message", "TelegramMessageElement")
+    ClassName("love.forte.simbot.component.telegram.core.message", "TelegramMessageElement")
 
 // 生成的函数会在此包下
-private const val COMPONENT_PACKAGE = "love.forte.simbot.component.telegram.message"
+private const val COMPONENT_PACKAGE = "love.forte.simbot.component.telegram.core.message"
 
 // ktx 可序列化标记
 private const val SERIALIZABLE_ANNOTATION = "kotlinx.serialization.Serializable"
