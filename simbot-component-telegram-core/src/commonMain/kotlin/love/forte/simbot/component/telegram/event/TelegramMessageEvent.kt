@@ -20,9 +20,11 @@ package love.forte.simbot.component.telegram.event
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.time.Timestamp
+import love.forte.simbot.component.telegram.actor.TelegramChannel
 import love.forte.simbot.component.telegram.actor.TelegramChatGroup
 import love.forte.simbot.component.telegram.actor.TelegramContact
 import love.forte.simbot.component.telegram.actor.TelegramMember
+import love.forte.simbot.component.telegram.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.time.unixDateTimestamp
 import love.forte.simbot.event.ChatGroupMessageEvent
@@ -60,11 +62,46 @@ public interface TelegramMessageEvent : TelegramMessageRelatedEvent, BasicTelegr
  * @author ForteScarlet
  */
 public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
+    override val messageContent: TelegramMessageContent
+
     /**
      * The [TelegramChatGroup].
      */
     @STP
     override suspend fun content(): TelegramChatGroup
+
+    /**
+     * The [sender][Message.from]'s [id][User.id]
+     */
+    override val authorId: ID
+        get() = sourceContent.from!!.id.ID
+
+    @STP
+    override suspend fun author(): TelegramMember // TODO chat group member?
+
+    @ST
+    override suspend fun reply(text: String): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+}
+
+/**
+ * An event about [Message] from a [TelegramChannel] (chat.type == `"channel"`)
+ *
+ * @author ForteScarlet
+ */
+public interface TelegramChannelMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
+    override val messageContent: TelegramMessageContent
+
+    /**
+     * The [TelegramChannel].
+     */
+    @STP
+    override suspend fun content(): TelegramChannel
 
     /**
      * The [sender][Message.from]'s [id][User.id]

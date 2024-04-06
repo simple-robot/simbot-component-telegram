@@ -33,7 +33,7 @@ useK2()
 configJavaCompileWithModule("simbot.component.telegram.type")
 // apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
-//configJsTestTasks()
+configJsTestTasks()
 
 kotlin {
     explicitApi()
@@ -51,9 +51,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        nodejs()
-        browser()
-        binaries.library()
+        configWasmJs()
     }
 
     sourceSets {
@@ -77,3 +75,5 @@ kotlin {
     }
 
 }
+
+configWasmJsTest()

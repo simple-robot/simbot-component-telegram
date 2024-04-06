@@ -1,6 +1,6 @@
 package love.forte.simbot.telegram.api.message
 
-import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.Telegram
 import love.forte.simbot.telegram.type.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -15,7 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.telegram
+package love.forte.simbot.telegram.api
 
 import io.ktor.http.*
 import kotlinx.serialization.json.Json

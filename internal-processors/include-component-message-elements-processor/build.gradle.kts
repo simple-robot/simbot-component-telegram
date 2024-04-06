@@ -15,14 +15,34 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-include(":internal-processors:update-events-processor")
-include(":internal-processors:stdlib-processor-extensions-processor")
-include(":internal-processors:component-events-processor")
-include(":internal-processors:include-component-message-elements-processor")
+plugins {
+    kotlin("jvm")
+}
 
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
-include(":simbot-component-telegram-stdlib")
-include(":simbot-component-telegram-core")
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(11)
+    compilerOptions {
+        javaParameters = true
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
+}
+
+configJavaCompileWithModule()
+
+dependencies {
+//    implementation(project(":annotations"))
+    api(libs.ksp)
+    api(libs.kotlinPoet.ksp)
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+

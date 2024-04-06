@@ -17,10 +17,17 @@
 
 package love.forte.simbot.component.telegram.message.internal
 
+import love.forte.simbot.ability.DeleteFailureException
 import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.ability.StandardDeleteOption
+import love.forte.simbot.component.telegram.bot.internal.TelegramBotImpl
+import love.forte.simbot.component.telegram.bot.requestDataBy
 import love.forte.simbot.component.telegram.message.StdlibMessage
 import love.forte.simbot.component.telegram.message.TelegramMessageContent
 import love.forte.simbot.message.Messages
+import love.forte.simbot.message.emptyMessages
+import love.forte.simbot.telegram.api.message.DeleteMessageApi
+import love.forte.simbot.telegram.type.ChatId
 
 
 /**
@@ -28,20 +35,25 @@ import love.forte.simbot.message.Messages
  * @author ForteScarlet
  */
 internal class TelegramMessageContentImpl(
+    private val bot: TelegramBotImpl,
     override val source: StdlibMessage
 ) : TelegramMessageContent {
 
     override val messages: Messages
-        get() = TODO("Not yet implemented")
+        get() = emptyMessages() // TODO("Not yet implemented")
 
     override val plainText: String?
-        get() = source.text // TODO entries
+        get() = source.text // TODO entries?
 
     override suspend fun delete(vararg options: DeleteOption) {
-
-        TODO("Not yet implemented")
+        kotlin.runCatching {
+            DeleteMessageApi.create(ChatId(source.chat.id), source.messageId).requestDataBy(bot)
+        }.onFailure { e ->
+            if (StandardDeleteOption.IGNORE_ON_FAILURE !in options) {
+                throw DeleteFailureException(e)
+            }
+        }
     }
-
 
     override fun toString(): String =
         "TelegramMessageContent(source=$source)"

@@ -27,29 +27,40 @@ import love.forte.simbot.telegram.type.Message
 public interface TelegramMessageReceipt : MessageReceipt
 
 
+public interface TelegramMessageSourceAware {
+    public val message: Message
+}
+
+
 public abstract class TelegramSingleMessageReceipt : TelegramMessageReceipt, SingleMessageReceipt() {
+    abstract override val id: IntID
+}
+
+
+public abstract class TelegramSingleMessageIdReceipt : TelegramSingleMessageReceipt()
+public abstract class TelegramSingleMessageSourceReceipt : TelegramSingleMessageReceipt() {
+    public abstract val message: Message
     override val id: IntID
         get() = message.messageId.ID
-
-    /**
-     * Sent a message the API returned.
-     */
-    public abstract val message: Message
-
-
 }
 
 public abstract class TelegramAggregatedMessageReceipt : TelegramMessageReceipt, AggregatedMessageReceipt() {
     /**
-     * Sent messages the API returned.
+     * Sent message ids the API returned.
      */
-    public abstract val messages: Collection<Message>
+    public abstract val ids: Collection<IntID>
 
     abstract override fun get(index: Int): TelegramSingleMessageReceipt
 
     abstract override fun iterator(): Iterator<TelegramSingleMessageReceipt>
 
-    override val size: Int
-        get() = messages.size
+    public override val size: Int
+        get() = ids.size
+}
 
+public abstract class TelegramAggregatedMessageIdReceipt : TelegramAggregatedMessageReceipt()
+public abstract class TelegramAggregatedMessageSourceReceipt : TelegramAggregatedMessageReceipt() {
+    public abstract val messages: Collection<Message>
+    override val ids: Collection<IntID>
+        get() = messages.map { it.messageId.ID }
 }

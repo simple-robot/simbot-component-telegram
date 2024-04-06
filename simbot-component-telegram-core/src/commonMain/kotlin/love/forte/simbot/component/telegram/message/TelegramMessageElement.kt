@@ -15,16 +15,22 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("InputFiles")
-@file:JvmMultifileClass
+package love.forte.simbot.component.telegram.message
 
-package love.forte.simbot.telegram.api.file
+import love.forte.simbot.message.Message
 
-import kotlin.jvm.JvmMultifileClass
-import kotlin.jvm.JvmName
 
 /**
- * An [InputFile](https://core.telegram.org/bots/api#inputfile).
+ * The supertype for all [Message.Element] implementations in this Telegram Component.
+ *
+ * @author ForteScarlet
  */
-@Deprecated("Use love.forte.simbot.common.ktor.inputfile.InputFile directly")
-public typealias InputFile = love.forte.simbot.common.ktor.inputfile.InputFile
+public interface TelegramMessageElement : Message.Element
+
+
+/**
+ * Annotate a [TelegramMessageElement] type to be used only for sending.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+public annotation class SendOnly

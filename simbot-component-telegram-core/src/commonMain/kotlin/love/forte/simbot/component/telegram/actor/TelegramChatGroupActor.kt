@@ -19,12 +19,14 @@ package love.forte.simbot.component.telegram.actor
 
 import kotlinx.coroutines.Job
 import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
 import love.forte.simbot.definition.ChatGroup
+import love.forte.simbot.definition.Member
 import love.forte.simbot.definition.Role
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -37,11 +39,24 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  *
- * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value).
+ * @author ForteScarlet
+ */
+public interface TelegramChatAware {
+    public val source: Chat
+
+
+}
+
+/**
+ * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value)
+ * or a channel ([Chat.type] == [ChatType.CHANNEL].value).
+ *
+ * @see TelegramChatGroup
+ * @see TelegramChannel
  *
  * @author ForteScarlet
  */
-public interface TelegramChatGroup : TelegramChat, ChatGroup {
+public interface TelegramChatGroupActor : TelegramChatAware, ChatGroup {
     /**
      * From [TelegramBot] but without [Job].
      */
@@ -70,8 +85,14 @@ public interface TelegramChatGroup : TelegramChat, ChatGroup {
     override val ownerId: ID?
         get() = null
 
+    /**
+     * Always empty: Telegram cannot get all members.
+     */
+    override val members: Collectable<Member>
+        get() = emptyCollectable()
 
-    override val members: Collectable<TelegramMember>
+    @STP
+    public suspend fun memberCount(): Int
 
     override val roles: Collectable<Role>
 
@@ -90,3 +111,23 @@ public interface TelegramChatGroup : TelegramChat, ChatGroup {
     @ST
     override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
 }
+
+
+/**
+ *
+ * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value).
+ *
+ * @author ForteScarlet
+ */
+public interface TelegramChatGroup : TelegramChatGroupActor
+
+
+/**
+ *
+ * A Telegram [Chat] representing a channel ([Chat.type] == [ChatType.CHANNEL].value).
+ *
+ * The **Telegram _channel_** is also a [ChatGroup].
+ *
+ * @author ForteScarlet
+ */
+public interface TelegramChannel : TelegramChatGroupActor

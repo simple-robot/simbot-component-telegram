@@ -40,7 +40,25 @@ suspend fun main() {
     app.telegramBots {
         // register a bot via token
         val bot = register(token = "botaaabbb.123123444") {
-            // config...
+            // Config...
+            // The source stdlib bot config 
+            botConfiguration {
+                apiClientConfigurer {
+                    engine {
+                        // A proxy?
+                        proxy = ProxyBuilder.http("http://127.0.0.1:7790")
+                    }
+                }
+
+                // Enable longPolling?
+                longPolling = LongPolling(
+                    limit = 100,
+                    timeout = 10.minutes.inWholeSeconds.toInt(),
+                    allowedUpdates = setOf(UpdateValues.MESSAGE_NAME),
+                    // Enable retry?
+                    retry = LongPolling.Retry()
+                )
+            }
         }
 
         // start the bot

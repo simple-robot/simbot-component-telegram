@@ -30,7 +30,7 @@ import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.suspendrunner.ST
-import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.Telegram
 import love.forte.simbot.telegram.api.requestRaw
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.api.update.getUpdateFlow

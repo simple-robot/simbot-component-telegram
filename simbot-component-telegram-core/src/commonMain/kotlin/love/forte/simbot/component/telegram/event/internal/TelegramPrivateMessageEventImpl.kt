@@ -23,9 +23,11 @@ import love.forte.simbot.component.telegram.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.bot.requestDataBy
 import love.forte.simbot.component.telegram.event.StdlibEvent
 import love.forte.simbot.component.telegram.event.TelegramPrivateMessageEvent
+import love.forte.simbot.component.telegram.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.message.internal.TelegramMessageContentImpl
 import love.forte.simbot.component.telegram.message.internal.toTelegramMessageReceipt
+import love.forte.simbot.component.telegram.message.toCopyApi
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.telegram.api.message.buildSendMessageApi
 import love.forte.simbot.telegram.type.ChatId
@@ -42,7 +44,7 @@ internal class TelegramPrivateMessageEventImpl(
     override val sourceEvent: StdlibEvent,
     override val sourceContent: Message
 ) : TelegramPrivateMessageEvent {
-    override val messageContent: MessageContent = TelegramMessageContentImpl(sourceContent)
+    override val messageContent: MessageContent = TelegramMessageContentImpl(bot, sourceContent)
 
     override suspend fun content(): TelegramContact {
         return sourceContent.from!!.toTelegramUserContact(bot, sourceContent.chat)
@@ -56,11 +58,17 @@ internal class TelegramPrivateMessageEventImpl(
     }
 
     override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        TODO("reply(Message) Not yet implemented")
     }
 
     override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        if (messageContent is TelegramMessageContent) {
+            return messageContent.source.toCopyApi(ChatId(sourceContent.chat.id)) {
+                replyParameters = ReplyParameters(messageId = sourceContent.messageId)
+            }.requestDataBy(bot).toTelegramMessageReceipt(bot, sourceContent.chat.id)
+        }
+
+        return reply(messageContent.messages)
     }
 
     override fun toString(): String {

@@ -24,11 +24,15 @@ import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.NumericalID
+import love.forte.simbot.common.services.Services
+import love.forte.simbot.common.services.addProviderExceptJvm
 import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.telegram.bot.internal.TelegramBotManagerImpl
 import love.forte.simbot.component.telegram.component.TelegramComponent
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactory
+import love.forte.simbot.plugin.PluginFactoryConfigurerProvider
+import love.forte.simbot.plugin.PluginFactoryProvider
 import love.forte.simbot.telegram.stdlib.bot.Bot
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
@@ -156,5 +160,25 @@ public interface TelegramBotManager : BotManager {
  */
 public class TelegramBotManagerConfiguration {
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
-
 }
+
+/**
+ * A [PluginFactoryProvider] for [TelegramBotManager]
+ */
+public class TelegramBotManagerFactoryProvider : PluginFactoryProvider<TelegramBotManagerConfiguration> {
+    public companion object {
+        init {
+            Services.addProviderExceptJvm(PluginFactoryProvider::class) { TelegramBotManagerFactoryProvider() }
+        }
+    }
+
+    override fun provide(): PluginFactory<*, TelegramBotManagerConfiguration> = TelegramBotManager
+    override fun loadConfigures(): Sequence<PluginFactoryConfigurerProvider<TelegramBotManagerConfiguration>> {
+        return Services.loadProviders<TelegramBotManagerFactoryConfigurerProvider>().map { it() }
+    }
+}
+
+/**
+ * A [PluginFactoryConfigurerProvider] for [TelegramBotManagerFactoryProvider]
+ */
+public interface TelegramBotManagerFactoryConfigurerProvider : PluginFactoryConfigurerProvider<TelegramBotManagerConfiguration>

@@ -17,9 +17,9 @@
 
 package love.forte.simbot.component.telegram.actor.internal
 
-import love.forte.simbot.component.telegram.actor.TelegramChatGroup
+import love.forte.simbot.component.telegram.actor.TelegramMember
 import love.forte.simbot.component.telegram.bot.internal.TelegramBotImpl
-import love.forte.simbot.telegram.type.Chat
+import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
 
@@ -27,16 +27,34 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-internal class TelegramChatGroupImpl(
-    override val bot: TelegramBotImpl,
-    override val source: Chat
-) : AbstractTelegramChatGroupActor(), TelegramChatGroup {
+internal class TelegramMemberImpl(
+    private val bot: TelegramBotImpl,
+    override val source: User,
+) : TelegramMember {
     override val coroutineContext: CoroutineContext = bot.subContext
 
-    override fun toString(): String =
-        "TelegramChatGroup(id=${source.id}, name=${source.title}, type=${source.type})"
+    override fun toString(): String {
+        return "TelegramMember(id=${source.id}, username=${source.username}, firstName=${source.firstName})"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TelegramMemberImpl) return false
+
+        if (bot != other.bot) return false
+        if (source != other.source) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = bot.hashCode()
+        result = 31 * result + source.hashCode()
+        return result
+    }
+
+
 }
 
-
-internal fun Chat.toTelegramChatGroup(bot: TelegramBotImpl): TelegramChatGroupImpl =
-    TelegramChatGroupImpl(bot, this)
+internal fun User.toTelegramMember(bot: TelegramBotImpl): TelegramMemberImpl =
+    TelegramMemberImpl(bot, this)

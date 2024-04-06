@@ -24,7 +24,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.Telegram
 import love.forte.simbot.telegram.api.update.Update.Companion.decodeFromRawJson
 import love.forte.simbot.telegram.type.*
 import love.forte.simbot.telegram.type.inline.ChosenInlineResult

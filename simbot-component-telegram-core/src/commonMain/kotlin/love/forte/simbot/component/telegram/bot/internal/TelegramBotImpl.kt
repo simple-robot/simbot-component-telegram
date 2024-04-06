@@ -32,6 +32,7 @@ import love.forte.simbot.component.telegram.bot.TelegramBot
 import love.forte.simbot.component.telegram.bot.TelegramBotConfiguration
 import love.forte.simbot.component.telegram.component.TelegramComponent
 import love.forte.simbot.component.telegram.event.TelegramUnsupportedEvent
+import love.forte.simbot.component.telegram.event.internal.TelegramChannelMessageEventImpl
 import love.forte.simbot.component.telegram.event.internal.TelegramChatGroupMessageEventImpl
 import love.forte.simbot.component.telegram.event.internal.TelegramPrivateMessageEventImpl
 import love.forte.simbot.event.Event
@@ -157,6 +158,19 @@ internal fun subscribeInternalProcessor(
                         )
                     )
                 }
+
+                ChatType.CHANNEL -> {
+                    pushEvent(
+                        TelegramChannelMessageEventImpl(
+                            bot = bot,
+                            sourceEvent = context,
+                            sourceContent = value
+                        )
+                    )
+                }
+
+                // supergroup?
+
                 // TODO others
                 else -> onMismatchUpdateEvent(name, value, update, context)
             }

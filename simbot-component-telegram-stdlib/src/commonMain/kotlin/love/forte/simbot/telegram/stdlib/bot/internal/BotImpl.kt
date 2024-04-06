@@ -32,7 +32,7 @@ import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createConcurrentQueue
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.logger.LoggerFactory
-import love.forte.simbot.telegram.Telegram
+import love.forte.simbot.telegram.api.Telegram
 import love.forte.simbot.telegram.api.requestData
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.api.update.UpdateValues

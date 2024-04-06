@@ -15,15 +15,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:JvmName("TelegramComponents")
+
 package love.forte.simbot.component.telegram.component
 
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.subclass
+import love.forte.simbot.bot.serializableBotConfigurationPolymorphic
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.ComponentConfigureContext
-import love.forte.simbot.component.ComponentFactory
+import love.forte.simbot.common.services.Services
+import love.forte.simbot.common.services.addProviderExceptJvm
+import love.forte.simbot.component.*
+import love.forte.simbot.component.telegram.bot.SerializableTelegramBotConfiguration
+import love.forte.simbot.component.telegram.message.includeAllComponentMessageElementImpls
+import love.forte.simbot.message.messageElementPolymorphic
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 
 
 /**
@@ -55,7 +63,13 @@ public class TelegramComponent : Component {
 
         @JvmField
         public val SerializersModule: SerializersModule = SerializersModule {
-            // TODO SerializersModule
+            serializableBotConfigurationPolymorphic {
+                subclass(SerializableTelegramBotConfiguration.serializer())
+            }
+
+            messageElementPolymorphic {
+                includeAllComponentMessageElementImpls()
+            }
         }
 
         override val key: ComponentFactory.Key = object : ComponentFactory.Key {}
@@ -71,4 +85,46 @@ public class TelegramComponent : Component {
 
 }
 
+/**
+ * A config for [TelegramComponent].
+ */
 public class TelegramComponentConfiguration
+
+/**
+ * The service provider for [TelegramComponent.Factory].
+ */
+public class TelegramComponentFactoryProvider : ComponentFactoryProvider<TelegramComponentConfiguration> {
+    public companion object {
+        init {
+            Services.addProviderExceptJvm(ComponentFactoryProvider::class) { TelegramComponentFactoryProvider() }
+        }
+    }
+
+    override fun provide(): ComponentFactory<*, TelegramComponentConfiguration> = TelegramComponent
+    override fun loadConfigures(): Sequence<ComponentFactoryConfigurerProvider<TelegramComponentConfiguration>> {
+        return Services.loadProviders<TelegramComponentFactoryConfigurerProvider>().map { it.invoke() }
+    }
+}
+
+/**
+ * The extension configurers for [TelegramComponentFactoryProvider].
+ */
+public interface TelegramComponentFactoryConfigurerProvider : ComponentFactoryConfigurerProvider<TelegramComponentConfiguration>
+
+/**
+ * install [TelegramComponent] to [ComponentInstaller].
+ *
+ * ```Kotlin
+ * launchApplication(...) {
+ *     useTelegramComponent()
+ * }
+ * ```
+ *
+ */
+public fun ComponentInstaller.useTelegramComponent(configurer: ConfigurerFunction<TelegramComponentConfiguration>? = null) {
+    if (configurer == null) {
+        install(TelegramComponent)
+    } else {
+        install(TelegramComponent, configurer)
+    }
+}

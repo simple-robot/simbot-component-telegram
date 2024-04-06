@@ -118,6 +118,7 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", project(":internal-processors:component-events-processor"))
+    add("kspCommonMainMetadata", project(":internal-processors:include-component-message-elements-processor"))
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456

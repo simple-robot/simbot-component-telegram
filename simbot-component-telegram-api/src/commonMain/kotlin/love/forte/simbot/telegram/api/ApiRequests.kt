@@ -27,7 +27,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import love.forte.simbot.common.serialization.guessSerializer
-import love.forte.simbot.telegram.Telegram
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic

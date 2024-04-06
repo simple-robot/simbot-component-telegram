@@ -14,22 +14,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with simbot-component-telegram.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-
 package love.forte.simbot.telegram.api.message
 
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonObject
-import love.forte.simbot.telegram.Telegram
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationStrategy
 import love.forte.simbot.telegram.api.SimpleBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
+import love.forte.simbot.telegram.api.message.ReplyMarkupWrapper.Companion.wrapper
 import love.forte.simbot.telegram.api.message.SendMessageApi.Builder
 import love.forte.simbot.telegram.api.utils.requireNotNullNamed
 import love.forte.simbot.telegram.type.*
-import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
@@ -145,22 +141,9 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         @SerialName("reply_parameters")
         public val replyParameters: ReplyParameters? = null,
 
-        @Serializable(BodyReplyMarkupSer::class)
         @SerialName("reply_markup")
-        public val replyMarkup: Any? = null,
-    ) {
-        init {
-            require(
-                replyMarkup == null
-                        || (
-                        replyMarkup is InlineKeyboardMarkup
-                                || replyMarkup is ReplyKeyboardMarkup
-                                || replyMarkup is ReplyKeyboardRemove
-                                || replyMarkup is ForceReply
-                        )
-            ) { "`replyMarkup` must be `InlineKeyboardMarkup` | `ReplyKeyboardMarkup` | `ReplyKeyboardRemove` | `ForceReply`, but $replyMarkup" }
-        }
-    }
+        public val replyMarkup: ReplyMarkupWrapper? = null,
+    )
 
     /**
      * Builder for [Body].
@@ -172,8 +155,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         /**
          * @see Body.chatId
          */
-        @get:JvmName("getChatId")
-        @set:JvmSynthetic
         public var chatId: ChatId? = null
 
         /**
@@ -244,34 +225,34 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
          *
          * @see Body.replyMarkup
          */
-        private var replyMarkup: Any? = null
+        public var replyMarkup: ReplyMarkupWrapper? = null
 
         /**
          * @see Body.replyMarkup
          */
         public fun replyMarkup(value: InlineKeyboardMarkup) {
-            this.replyMarkup = value
+            this.replyMarkup = value.wrapper()
         }
 
         /**
          * @see Body.replyMarkup
          */
         public fun replyMarkup(value: ReplyKeyboardMarkup) {
-            this.replyMarkup = value
+            this.replyMarkup = value.wrapper()
         }
 
         /**
          * @see Body.replyMarkup
          */
         public fun replyMarkup(value: ReplyKeyboardRemove) {
-            this.replyMarkup = value
+            this.replyMarkup = value.wrapper()
         }
 
         /**
          * @see Body.replyMarkup
          */
         public fun replyMarkup(value: ForceReply) {
-            this.replyMarkup = value
+            this.replyMarkup = value.wrapper()
         }
 
         /**
@@ -302,45 +283,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         public fun build(): SendMessageApi = create(buildBody())
     }
 
-    internal object BodyReplyMarkupSer : KSerializer<Any> {
-        // Json ONLY
-        // or throw an exception?
-        override fun deserialize(decoder: Decoder): Any {
-            // deserialize unsupported,
-            // decode to JsonObject.
-            val obj = JsonObject.serializer().deserialize(decoder)
-            // check fields
-
-            obj["force_reply"]?.also {
-                return Telegram.DefaultJson.decodeFromJsonElement(ForceReply.serializer(), obj)
-            }
-
-            obj["remove_keyboard"]?.also {
-                return Telegram.DefaultJson.decodeFromJsonElement(ReplyKeyboardRemove.serializer(), obj)
-            }
-
-            obj["inline_keyboard"]?.also {
-                return Telegram.DefaultJson.decodeFromJsonElement(InlineKeyboardMarkup.serializer(), obj)
-            }
-
-            return Telegram.DefaultJson.decodeFromJsonElement(ReplyKeyboardMarkup.serializer(), obj)
-        }
-
-        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("reply_markup")
-
-        override fun serialize(encoder: Encoder, value: Any) {
-            when (value) {
-                is ForceReply -> ForceReply.serializer().serialize(encoder, value)
-                is ReplyKeyboardRemove -> ReplyKeyboardRemove.serializer().serialize(encoder, value)
-                is InlineKeyboardMarkup -> InlineKeyboardMarkup.serializer().serialize(encoder, value)
-                is ReplyKeyboardMarkup -> ReplyKeyboardMarkup.serializer().serialize(encoder, value)
-                else -> {
-                    // Do something?
-                }
-            }
-        }
-    }
-
 }
 
 
@@ -354,9 +296,10 @@ public inline fun buildSendMessageApi(block: Builder.() -> Unit): SendMessageApi
 /**
  * [buildSendMessageApi] with required arguments.
  */
+@JvmSynthetic
 public inline fun buildSendMessageApi(
     chatId: ChatId, text: String,
-    block: Builder.() -> Unit
+    block: Builder.() -> Unit = {}
 ): SendMessageApi = buildSendMessageApi {
     this.chatId = chatId
     this.text = text

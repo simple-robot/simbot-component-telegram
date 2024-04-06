@@ -52,12 +52,39 @@ public interface TelegramMember : TelegramUser, Member {
     override val avatar: String?
         get() = null
 
+    /**
+     * Always throws [UnsupportedOperationException].
+     * Telegram bot cannot send a private message proactively
+     * without the private chat channel id.
+     *
+     * @throws UnsupportedOperationException Unsupported
+     */
     @ST
-    override suspend fun send(text: String): TelegramMessageReceipt
+    override suspend fun send(text: String): TelegramMessageReceipt = sendToMemberIsUnsupported()
 
+    /**
+     * Always throws [UnsupportedOperationException].
+     * Telegram bot cannot send a private message proactively
+     * without the private chat channel id.
+     *
+     * @throws UnsupportedOperationException Unsupported
+     */
     @ST
-    override suspend fun send(message: Message): TelegramMessageReceipt
+    override suspend fun send(message: Message): TelegramMessageReceipt = sendToMemberIsUnsupported()
 
+    /**
+     * Always throws [UnsupportedOperationException].
+     * Telegram bot cannot send a private message proactively
+     * without the private chat channel id.
+     *
+     * @throws UnsupportedOperationException Unsupported
+     */
     @ST
-    override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
+    override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt = sendToMemberIsUnsupported()
 }
+
+internal const val SEND_TO_MEMBER_IS_UNSUPPORTED = "Telegram bot cannot proactively send a message to a member " +
+        "because the private chat id is unknown."
+
+internal fun sendToMemberIsUnsupported(): Nothing =
+    throw UnsupportedOperationException(SEND_TO_MEMBER_IS_UNSUPPORTED)

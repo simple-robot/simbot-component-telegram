@@ -41,7 +41,7 @@ object P {
         override val homepage: String get() = HOMEPAGE
 
 
-        private val baseVersion = v(0, 0, 1)
+        private val baseVersion = v(0, 0, 1) - v("dev1")
 
         val snapshotVersion = baseVersion - Version.SNAPSHOT
         override val version = if (isSnapshot()) snapshotVersion else baseVersion
@@ -94,3 +94,5 @@ private fun initIsSnapshot(): Boolean {
 fun isSnapshot(): Boolean = _isSnapshot
 
 fun isSimbotLocal(): Boolean = systemProp("SIMBOT_LOCAL").toBoolean()
+
+val isLinux: Boolean = systemProp("os.name")?.contains("linux", true) ?: false

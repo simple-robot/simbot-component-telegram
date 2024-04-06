@@ -15,14 +15,25 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "simbot-component-telegram"
+package love.forte.simbot.component.telegram.message
 
-include(":internal-processors:update-events-processor")
-include(":internal-processors:stdlib-processor-extensions-processor")
-include(":internal-processors:component-events-processor")
-include(":internal-processors:include-component-message-elements-processor")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import love.forte.simbot.telegram.api.message.SendMessageApi
 
-include(":simbot-component-telegram-type")
-include(":simbot-component-telegram-api")
-include(":simbot-component-telegram-stdlib")
-include(":simbot-component-telegram-core")
+
+/**
+ *
+ * A [TelegramMessageElement] implementation that provide a [SendMessageApi.Body] directly.
+ * [body] is sent directly as a separate SendApi and is not affected by other elements.
+ *
+ * [TelegramMessageApiBodyElement] is a type used only when sending, and it is also a 'malleable' best message element.
+ *
+ * A [SendOnly] element, will not be received in event.
+ *
+ * @author ForteScarlet
+ */
+@SendOnly
+@Serializable
+@SerialName("telegram.m.message_api_body")
+public data class TelegramMessageApiBodyElement(public val body: SendMessageApi.Body) : TelegramMessageElement

@@ -15,17 +15,28 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.actor
+package love.forte.simbot.component.telegram.actor.internal
 
+import love.forte.simbot.component.telegram.actor.TelegramChannel
+import love.forte.simbot.component.telegram.bot.internal.TelegramBotImpl
 import love.forte.simbot.telegram.type.Chat
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  *
  * @author ForteScarlet
  */
-public interface TelegramChat {
-    public val source: Chat
+internal class TelegramChannelImpl(
+    override val bot: TelegramBotImpl,
+    override val source: Chat
+) : AbstractTelegramChatGroupActor(), TelegramChannel {
+    override val coroutineContext: CoroutineContext = bot.subContext
 
-
+    override fun toString(): String =
+        "TelegramChatGroup(id=${source.id}, name=${source.title}, type=${source.type})"
 }
+
+
+internal fun Chat.toTelegramChannel(bot: TelegramBotImpl): TelegramChannelImpl =
+    TelegramChannelImpl(bot, this)
