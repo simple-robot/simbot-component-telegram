@@ -15,6 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
@@ -60,7 +61,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":simbot-component-telegram-api"))
             api(project(":simbot-component-telegram-stdlib"))
-            api(libs.simbot.api)
+            compileOnly(libs.simbot.api)
             api(libs.kotlinx.coroutines.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
@@ -75,6 +76,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.simbot.api)
             implementation(libs.simbot.core)
             implementation(libs.kotlinx.coroutines.debug)
             implementation(libs.kotlinx.coroutines.test)
@@ -83,7 +85,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-//            compileOnly(libs.simbot.api) // use @Api4J annotation
             compileOnly(libs.reactor.core)
             compileOnly(libs.kotlinx.coroutines.reactive)
         }
@@ -99,11 +100,13 @@ kotlin {
         }
 
         jsMain.dependencies {
-            api(libs.ktor.client.js)
+            implementation(libs.simbot.api)
+            implementation(libs.ktor.client.js)
             implementation(libs.simbot.common.annotations)
         }
 
         nativeMain.dependencies {
+            implementation(libs.simbot.api)
             implementation(libs.simbot.common.annotations)
         }
 
@@ -115,21 +118,15 @@ kotlin {
 }
 
 
-
+// https://github.com/google/ksp/issues/963#issuecomment-1894144639
 dependencies {
-    add("kspCommonMainMetadata", project(":internal-processors:component-events-processor"))
-    add("kspCommonMainMetadata", project(":internal-processors:include-component-message-elements-processor"))
+    kspCommonMainMetadata(project(":internal-processors:component-events-processor"))
+    kspCommonMainMetadata(project(":internal-processors:include-component-message-elements-processor"))
 }
-
-// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
 kotlin.sourceSets.commonMain {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+    // solves all implicit dependency trouble and IDEs source code detection
+    // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
+    tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
 }
 
 tasks.withType<DokkaTaskPartial>().configureEach {

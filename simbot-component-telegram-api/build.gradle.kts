@@ -15,6 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
@@ -65,18 +66,20 @@ kotlin {
     // }
 
     sourceSets {
-        commonMain.dependencies {
-            api(project(":simbot-component-telegram-type"))
-            api(libs.kotlinx.coroutines.core)
-            api(libs.simbot.logger)
-            api(libs.simbot.common.suspend)
-            api(libs.simbot.common.core)
-            api(libs.simbot.common.ktor.inputfile)
-            compileOnly(libs.simbot.common.annotations)
+        commonMain {
+            dependencies {
+                api(project(":simbot-component-telegram-type"))
+                api(libs.kotlinx.coroutines.core)
+                api(libs.simbot.logger)
+                api(libs.simbot.common.suspend)
+                api(libs.simbot.common.core)
+                api(libs.simbot.common.ktor.inputfile)
+                compileOnly(libs.simbot.common.annotations)
 
-            api(libs.ktor.client.core)
-            api(libs.ktor.client.contentNegotiation)
-            api(libs.kotlinx.serialization.json)
+                api(libs.ktor.client.core)
+                api(libs.ktor.client.contentNegotiation)
+                api(libs.kotlinx.serialization.json)
+            }
         }
 
         commonTest.dependencies {
@@ -115,23 +118,29 @@ kotlin {
             implementation(libs.ktor.client.winhttp)
         }
     }
-
 }
 
+// https://github.com/google/ksp/issues/963#issuecomment-1894144639
 dependencies {
-    add("kspCommonMainMetadata", project(":internal-processors:update-events-processor"))
+    kspCommonMainMetadata(project(":internal-processors:update-events-processor"))
+    // add("kspCommonMainMetadata", project(":internal-processors:update-events-processor"))
+}
+kotlin.sourceSets.commonMain {
+    // solves all implicit dependency trouble and IDEs source code detection
+    // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
+    tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
-kotlin.sourceSets.commonMain {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-}
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if (name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
+// }
+//
+// kotlin.sourceSets.commonMain {
+//     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+// }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {

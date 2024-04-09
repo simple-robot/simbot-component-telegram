@@ -15,6 +15,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.google.devtools.ksp.gradle.KspTaskMetadata
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
@@ -111,21 +112,26 @@ kotlin {
 }
 
 
-
+// https://github.com/google/ksp/issues/963#issuecomment-1894144639
 dependencies {
-    add("kspCommonMainMetadata", project(":internal-processors:stdlib-processor-extensions-processor"))
+    kspCommonMainMetadata(project(":internal-processors:stdlib-processor-extensions-processor"))
 }
-
-// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if(name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
 kotlin.sourceSets.commonMain {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+    // solves all implicit dependency trouble and IDEs source code detection
+    // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
+    tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
 }
+
+// // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if(name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
+// }
+//
+// kotlin.sourceSets.commonMain {
+//     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+// }
 
 tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
