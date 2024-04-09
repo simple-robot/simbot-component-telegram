@@ -1,7 +1,8 @@
 build:
-  maxIssues: 1145141919 # 先不限制最大问题
+  maxIssues: 10000 # 先不限制最大问题
   excludeCorrectable: false
   weights:
+    formatting: 10000 # 代码格式的问题，一般都有 autoCorrect, 需要尽可能不出错
     # complexity: 2
     # LongParameterList: 1
     # style: 1
