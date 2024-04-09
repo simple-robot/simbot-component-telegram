@@ -18,14 +18,23 @@
 package love.forte.simbot.component.telegram.core.actor.internal
 
 import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.toInt
 import love.forte.simbot.component.telegram.core.actor.TelegramChatGroupActor
+import love.forte.simbot.component.telegram.core.actor.TelegramMember
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
+import love.forte.simbot.component.telegram.core.bot.requestDataBy
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
+import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
 import love.forte.simbot.definition.Role
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.telegram.type.Chat
+import love.forte.simbot.telegram.api.chat.GetChatMemberApi
+import love.forte.simbot.telegram.api.chat.GetChatMemberCountApi
+import love.forte.simbot.telegram.api.message.SendMessageApi
+import love.forte.simbot.telegram.stdlib.bot.requestDataBy
+import love.forte.simbot.telegram.type.*
 
 
 /**
@@ -37,22 +46,32 @@ internal abstract class AbstractTelegramChatGroupActor : TelegramChatGroupActor 
     abstract override val source: Chat
 
     override val roles: Collectable<Role>
-        get() = TODO("Not yet implemented")
+        get() = emptyCollectable() // TODO("Not yet implemented")
 
-    override suspend fun botAsMember(): love.forte.simbot.component.telegram.core.actor.TelegramMember {
-        TODO("Not yet implemented")
+    override suspend fun botAsMember(): TelegramMember {
+        return bot.queryUserInfo().toTelegramMember(bot)
     }
 
-    override suspend fun member(id: ID): love.forte.simbot.component.telegram.core.actor.TelegramMember? {
-        TODO("Not yet implemented")
+    override suspend fun member(id: ID): TelegramMember? {
+        val chatMember = GetChatMemberApi.create(ChatId(source.id), id.toInt())
+            .requestDataBy(bot)
+
+        return when (chatMember) {
+            is ChatMemberAdministrator -> chatMember.user.toTelegramMember(bot, chatMember)
+            is ChatMemberBanned -> chatMember.user.toTelegramMember(bot, chatMember)
+            is ChatMemberLeft -> chatMember.user.toTelegramMember(bot, chatMember)
+            is ChatMemberOwner -> chatMember.user.toTelegramMember(bot, chatMember)
+            is ChatMemberRestricted -> chatMember.user.toTelegramMember(bot, chatMember)
+        }
     }
 
     override suspend fun memberCount(): Int {
-        TODO("Not yet implemented")
+        return GetChatMemberCountApi.create(ChatId(source.id)).requestDataBy(bot)
     }
 
     override suspend fun send(text: String): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        val sent = SendMessageApi.create(ChatId(source.id), text).requestDataBy(bot.source)
+        return sent.toTelegramMessageReceipt(bot)
     }
 
     override suspend fun send(message: Message): TelegramMessageReceipt {

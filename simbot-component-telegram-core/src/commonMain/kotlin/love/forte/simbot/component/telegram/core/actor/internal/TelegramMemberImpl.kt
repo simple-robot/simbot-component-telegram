@@ -17,7 +17,9 @@
 
 package love.forte.simbot.component.telegram.core.actor.internal
 
+import love.forte.simbot.component.telegram.core.actor.TelegramMember
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
+import love.forte.simbot.telegram.type.ChatMember
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
@@ -29,7 +31,8 @@ import kotlin.coroutines.CoroutineContext
 internal class TelegramMemberImpl(
     private val bot: TelegramBotImpl,
     override val source: User,
-) : love.forte.simbot.component.telegram.core.actor.TelegramMember {
+    private val chatMember: ChatMember?
+) : TelegramMember {
     override val coroutineContext: CoroutineContext = bot.subContext
 
     override fun toString(): String {
@@ -55,5 +58,5 @@ internal class TelegramMemberImpl(
 
 }
 
-internal fun User.toTelegramMember(bot: TelegramBotImpl): TelegramMemberImpl =
-    TelegramMemberImpl(bot, this)
+internal fun User.toTelegramMember(bot: TelegramBotImpl, chatMember: ChatMember? = null): TelegramMemberImpl =
+    TelegramMemberImpl(bot, this, chatMember)

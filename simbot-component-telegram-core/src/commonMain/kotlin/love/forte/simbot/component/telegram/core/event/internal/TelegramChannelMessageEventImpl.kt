@@ -17,6 +17,8 @@
 
 package love.forte.simbot.component.telegram.core.event.internal
 
+import love.forte.simbot.component.telegram.core.actor.TelegramChannel
+import love.forte.simbot.component.telegram.core.actor.TelegramMember
 import love.forte.simbot.component.telegram.core.actor.internal.toTelegramChannel
 import love.forte.simbot.component.telegram.core.actor.internal.toTelegramMember
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
@@ -48,11 +50,11 @@ internal class TelegramChannelMessageEventImpl(
     override val messageContent: TelegramMessageContent = TelegramMessageContentImpl(bot, sourceContent)
 
 
-    override suspend fun content(): love.forte.simbot.component.telegram.core.actor.TelegramChannel {
+    override suspend fun content(): TelegramChannel {
         return sourceContent.chat.toTelegramChannel(bot)
     }
 
-    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember {
+    override suspend fun author(): TelegramMember {
         // TODO from!!? check senderChat?
         return sourceContent.from!!.toTelegramMember(bot)
     }
