@@ -13,3 +13,34 @@ Support platforms:
 See also:
 
 - [Telegram available types](https://core.telegram.org/bots/api#available-types)
+
+## Setup
+
+> [!note]
+> Version (`VERSION` below) goes to the [releases](https://github.com/simple-robot/simbot-component-telegram/releases) reference.
+
+### Gradle
+
+`build.gradle.kts`
+
+```kotlin
+plugins {
+    kotlin("...") version "..."
+}
+
+dependencies {
+    implementation("love.forte.simbot.component:simbot-component-telegram-type:$VERSION")
+}
+```
+
+### Maven
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-telegram-type-jvm</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```

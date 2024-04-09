@@ -3,7 +3,36 @@
 > [!caution]
 > WIP
 
+## Setup
 
+> [!note]
+> Version (`VERSION` below) goes to the [releases](https://github.com/simple-robot/simbot-component-telegram/releases) reference.
+
+### Gradle
+
+`build.gradle.kts`
+
+```kotlin
+plugins {
+    kotlin("...") version "..."
+}
+
+dependencies {
+    implementation("love.forte.simbot.component:simbot-component-telegram-stdlib:$VERSION")
+}
+```
+
+### Maven
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-telegram-stdlib-jvm</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```
 
 ## Examples
 

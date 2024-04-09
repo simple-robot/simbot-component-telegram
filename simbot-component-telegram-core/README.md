@@ -3,7 +3,88 @@
 > [!caution]
 > WIP
 
+## Setup
 
+To use the simbot component library, you first need to add the core implementation of simbot 
+(such as the core library (`simbot-core`) or Spring Boot starter (`simbot-core-spring-boot-starter`)), 
+and then add the component library dependencies of the Telegram (`simbot-component-telegram-core`).
+
+> [!note]
+> The version of simbot core implementation library (`SIMBOT_VERSION` below) goes [here](https://github.com/simple-robot/simpler-robot/releases) for reference;
+> 
+> Telegram Component library versions (`VERSION` below) go to the [releases](https://github.com/simple-robot/simbot-component-telegram/releases) reference.
+
+**With simbot core**
+
+### Gradle
+
+`build.gradle.kts`
+
+```kotlin
+plugins {
+    kotlin("...") version "..."
+}
+
+dependencies {
+    implementation("love.forte.simbot:simbot-core:${SIMBOT_VERSION}")
+    implementation("love.forte.simbot.component:simbot-component-telegram-core:$VERSION")
+}
+```
+
+### Maven
+
+`pom.xml`
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>love.forte.simbot</groupId>
+        <artifactId>simbot-core-jvm</artifactId>
+        <version>${SIMBOT_VERSION}</version>
+    </dependency>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-telegram-core-jvm</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```
+
+**With simbot spring boot starter**
+
+### Gradle
+
+`build.gradle.kts`
+
+```kotlin
+plugins {
+    kotlin("jvm") version "..."
+}
+
+dependencies {
+    implementation("love.forte.simbot:simbot-core-spring-boot-starter:${SIMBOT_VERSION}")
+    implementation("love.forte.simbot.component:simbot-component-telegram-core:$VERSION")
+}
+```
+
+### Maven
+
+`pom.xml`
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>love.forte.simbot</groupId>
+        <artifactId>simbot-core-spring-boot-starter</artifactId>
+        <version>${SIMBOT_VERSION}</version>
+    </dependency>
+    <dependency>
+        <groupId>love.forte.simbot.component</groupId>
+        <artifactId>simbot-component-telegram-core-jvm</artifactId>
+        <version>${VERSION}</version>
+    </dependency>
+</dependencies>
+```
 
 ## Examples
 
