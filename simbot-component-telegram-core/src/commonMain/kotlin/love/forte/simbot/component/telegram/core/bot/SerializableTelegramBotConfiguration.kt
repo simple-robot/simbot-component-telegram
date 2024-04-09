@@ -96,14 +96,14 @@ public data class SerializableTelegramBotConfiguration(
 
 /*
     /**
-     * Ticket.
-     */
+ * Ticket.
+ */
     public val ticket: Ticket
 
     /**
-     * The server address used by the Bot.
-     * If [BotConfiguration.server] is `null`,
-     * [Telegram.BaseServerUrl] is returned.
-     */
+ * The server address used by the Bot.
+ * If [BotConfiguration.server] is `null`,
+ * [Telegram.BaseServerUrl] is returned.
+ */
     public val server: Url
  */

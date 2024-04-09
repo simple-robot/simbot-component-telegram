@@ -40,8 +40,11 @@ public class DeleteWebhookApi private constructor(dropPendingUpdates: Boolean?) 
         private val FALSE_INSTANCE = DeleteWebhookApi(false)
 
         private fun toJsonBodyString(dropPendingUpdates: Boolean?): String =
-            if (dropPendingUpdates == null) "{}"
-            else """{"drop_pending_updates":$dropPendingUpdates}"""
+            if (dropPendingUpdates == null) {
+                "{}"
+            } else {
+                """{"drop_pending_updates":$dropPendingUpdates}"""
+            }
 
         /**
          * Create an instance of [DeleteWebhookApi].

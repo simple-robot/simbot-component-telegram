@@ -48,8 +48,8 @@ public object Telegram {
      * otherwise, return a new [Url].
      */
     @JvmStatic
-    public fun serverUrl(url: String): Url
-        = if (url == BASE_SERVER_VALUE) BaseServerUrl else Url(url)
+    public fun serverUrl(url: String): Url =
+        if (url == BASE_SERVER_VALUE) BaseServerUrl else Url(url)
 
     /**
      * A default [Json].

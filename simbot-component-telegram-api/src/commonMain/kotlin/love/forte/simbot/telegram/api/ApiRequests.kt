@@ -48,8 +48,11 @@ public suspend fun TelegramApi<*>.requestRaw(
 ): HttpResponse {
     val builder = HttpRequestBuilder()
     builder.url {
-        if (server == null) takeFrom(Telegram.BaseServerUrl)
-        else takeFrom(server)
+        if (server == null) {
+            takeFrom(Telegram.BaseServerUrl)
+        } else {
+            takeFrom(server)
+        }
 
         appendEncodedPathSegments(token, this@requestRaw.name)
     }

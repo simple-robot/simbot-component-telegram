@@ -93,7 +93,7 @@ multiplatformConfigPublishing {
 show()
 
 fun show() {
-    //// show project info
+    // // show project info
     logger.info(
         """
         |=======================================================
@@ -103,8 +103,12 @@ fun show() {
         |= project.description: {}
         |= os.name:             {}
         |=======================================================
-    """.trimIndent(),
-        group, name, version, description, systemProp("os.name")
+        """.trimIndent(),
+        group,
+        name,
+        version,
+        description,
+        systemProp("os.name")
     )
 }
 

@@ -685,7 +685,7 @@ style:
   SerialVersionUIDInSerializableClass:
     active: true
   SpacingBetweenPackageAndImports:
-    active: true
+    active: false # 开了的话，似乎多行也不行
   StringShouldBeRawString:
     active: false
     maxEscapedCharacterCount: 2

@@ -84,7 +84,7 @@ internal class TelegramSingleMessageIdReceiptImpl(
 
 
     override fun toString(): String =
-        "TelegramSingleMessageIdReceipt(id=${messageId})"
+        "TelegramSingleMessageIdReceipt(id=$messageId)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

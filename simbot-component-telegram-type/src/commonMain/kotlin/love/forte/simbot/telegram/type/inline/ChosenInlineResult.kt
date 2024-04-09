@@ -54,5 +54,4 @@ public data class ChosenInlineResult(
      * The query that was used to obtain the result
      */
     val query: String,
-
-    )
+)

@@ -19,6 +19,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.repository.Repositories
+import util.isCi
 
 plugins {
     idea
@@ -66,6 +67,9 @@ idea {
 }
 
 
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libs.versions.detekt.get()}")
+}
 
 detekt {
     source.setFrom(
@@ -77,8 +81,12 @@ detekt {
 
     config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
     baseline = file("$projectDir/config/detekt/baseline.xml")
+    buildUponDefaultConfig = true
     parallel = true
     reportsDir = rootProject.layout.buildDirectory.dir("detekt/report").get().asFile
+    if (!isCi) {
+        autoCorrect = true
+    }
 }
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
@@ -89,6 +97,3 @@ tasks.withType<Detekt>().configureEach {
     exclude("**/*Test/java/")
 }
 
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libs.versions.detekt.get()}")
-}

@@ -36,7 +36,7 @@ setup(P.ComponentTelegram)
 useK2()
 configJavaCompileWithModule("simbot.component.telegram.api")
 
-//configJsTestTasks()
+// configJsTestTasks()
 
 kotlin {
     explicitApi()
@@ -216,7 +216,8 @@ tasks.create("updateSupportListsDoc") {
 
     with(project.file("supports.md")) {
         toPath().writeText(
-            builder, Charsets.UTF_8,
+            builder,
+            Charsets.UTF_8,
             StandardOpenOption.WRITE,
             StandardOpenOption.TRUNCATE_EXISTING,
             StandardOpenOption.CREATE

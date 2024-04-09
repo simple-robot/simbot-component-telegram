@@ -34,7 +34,8 @@ import kotlin.jvm.JvmStatic
  *
  * @author ForteScarlet
  */
-public class GetMyShortDescriptionApi private constructor(languageCode: String?) : SimpleBodyTelegramApi<BotShortDescription>() {
+public class GetMyShortDescriptionApi private constructor(languageCode: String?) :
+    SimpleBodyTelegramApi<BotShortDescription>() {
     public companion object Factory {
         private const val NAME = "getMyShortDescription"
         private val SER = TelegramApiResult.serializer(BotShortDescription.serializer())
