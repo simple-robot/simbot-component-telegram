@@ -32,7 +32,7 @@ setup(P.ComponentTelegram)
 
 useK2()
 configJavaCompileWithModule("simbot.component.telegram.stdlib")
-// apply(plugin = "simbot-telegram-multiplatform-maven-publish")
+apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
 //configJsTestTasks()
 
