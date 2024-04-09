@@ -29,10 +29,7 @@ import love.forte.simbot.common.services.addProviderExceptJvm
 import love.forte.simbot.component.NoSuchComponentException
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotManagerImpl
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
-import love.forte.simbot.plugin.PluginConfigureContext
-import love.forte.simbot.plugin.PluginFactory
-import love.forte.simbot.plugin.PluginFactoryConfigurerProvider
-import love.forte.simbot.plugin.PluginFactoryProvider
+import love.forte.simbot.plugin.*
 import love.forte.simbot.telegram.stdlib.bot.Bot
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
@@ -185,3 +182,21 @@ public class TelegramBotManagerFactoryProvider : PluginFactoryProvider<TelegramB
  */
 public interface TelegramBotManagerFactoryConfigurerProvider :
     PluginFactoryConfigurerProvider<TelegramBotManagerConfiguration>
+
+/**
+ * install [TelegramBotManager] to [PluginInstaller].
+ *
+ * ```Kotlin
+ * launchApplication(...) {
+ *     useTelegramBotManager()
+ * }
+ * ```
+ *
+ */
+public fun PluginInstaller.useTelegramBotManager(configurer: ConfigurerFunction<TelegramBotManagerConfiguration>? = null) {
+    if (configurer == null) {
+        install(TelegramBotManager)
+    } else {
+        install(TelegramBotManager, configurer)
+    }
+}
