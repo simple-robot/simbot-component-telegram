@@ -122,7 +122,9 @@ public interface TelegramComponentFactoryConfigurerProvider :
  * ```
  *
  */
-public fun ComponentInstaller.useTelegramComponent(configurer: ConfigurerFunction<TelegramComponentConfiguration>? = null) {
+public fun ComponentInstaller.useTelegramComponent(
+    configurer: ConfigurerFunction<TelegramComponentConfiguration>? = null
+) {
     if (configurer == null) {
         install(TelegramComponent)
     } else {

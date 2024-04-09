@@ -126,7 +126,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         @SerialName("chat_id")
         public val chatId: ChatId, // Integer or String
         public val text: String,
-
+        // Optionals
         @SerialName("message_thread_id")
         public val messageThreadId: Int? = null,
         @SerialName("parse_mode")
@@ -140,7 +140,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         public val protectContent: Boolean? = null,
         @SerialName("reply_parameters")
         public val replyParameters: ReplyParameters? = null,
-
         @SerialName("reply_markup")
         public val replyMarkup: ReplyMarkupWrapper? = null,
     )

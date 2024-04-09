@@ -3,10 +3,10 @@ build:
   excludeCorrectable: false
   weights:
     formatting: 10000 # 代码格式的问题，一般都有 autoCorrect, 需要尽可能不出错
-    # complexity: 2
-    # LongParameterList: 1
-    # style: 1
-    # comments: 1
+    comments: 0
+    complexity: 0
+    LongParameterList: 0
+    style: 0
 
 config:
   validation: true
@@ -730,7 +730,7 @@ style:
   UntilInsteadOfRangeTo:
     active: false
   UnusedImports:
-    active: true
+    active: false
   UnusedParameter:
     active: false # 暂时不管未使用到的参数
     allowedNames: 'ignored|expected'
@@ -901,7 +901,7 @@ formatting:
     active: false
     autoCorrect: true
   NoBlankLineInList:
-    active: true
+    active: false
     autoCorrect: false
   NoBlankLinesInChainedMethodCalls:
     active: true

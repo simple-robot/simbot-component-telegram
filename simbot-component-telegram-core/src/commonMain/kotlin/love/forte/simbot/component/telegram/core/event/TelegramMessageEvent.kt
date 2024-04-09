@@ -76,7 +76,8 @@ public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroup
         get() = sourceContent.from!!.id.ID
 
     @STP
-    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember // TODO chat group member?
+    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember
+    // TODO chat group member?
 
     @ST
     override suspend fun reply(text: String): TelegramMessageReceipt
@@ -109,7 +110,8 @@ public interface TelegramChannelMessageEvent : TelegramMessageEvent, ChatGroupMe
         get() = sourceContent.from!!.id.ID
 
     @STP
-    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember // TODO chat group member?
+    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember
+    // TODO chat group member?
 
     @ST
     override suspend fun reply(text: String): TelegramMessageReceipt

@@ -83,6 +83,7 @@ public data class InputMediaAnimation(
      * type: `InputFile or String`
      */
     public val thumbnail: String? = null, // TODO InputFile or String
+
     /**
      * Optional.
      * Caption of the animation to be sent, 0-1024 characters after entities parsing

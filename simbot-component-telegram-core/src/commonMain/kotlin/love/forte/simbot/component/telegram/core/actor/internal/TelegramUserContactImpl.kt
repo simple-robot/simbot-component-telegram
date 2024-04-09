@@ -54,9 +54,14 @@ internal class TelegramUserContactImpl(
         return sent.toTelegramMessageReceipt(bot)
     }
 
-    override fun toString(): String = buildString {
-        return "TelegramUserContact(id=${source.id}, firstName=${source.firstName} username=${source.username}, chat=Chat(id=${sourceChat.id}, type=${sourceChat.type} title=${sourceChat.title}))"
-    }
+    override fun toString(): String =
+        "TelegramUserContact(" +
+            "id=${source.id}, " +
+            "firstName=${source.firstName} " +
+            "username=${source.username}, " +
+            "chat=Chat(id=${sourceChat.id}, " +
+            "type=${sourceChat.type} " +
+            "title=${sourceChat.title}))"
 }
 
 internal fun User.toTelegramUserContact(bot: TelegramBotImpl, chat: Chat): TelegramUserContactImpl =

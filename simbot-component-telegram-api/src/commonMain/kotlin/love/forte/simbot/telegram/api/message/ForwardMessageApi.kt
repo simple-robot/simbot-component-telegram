@@ -119,6 +119,7 @@ public class ForwardMessageApi private constructor(body: Body) : SimpleBodyTeleg
     @Suppress("MemberVisibilityCanBePrivate")
     public class Builder {
         // Requires
+
         /**
          * @see Body.chatId
          */

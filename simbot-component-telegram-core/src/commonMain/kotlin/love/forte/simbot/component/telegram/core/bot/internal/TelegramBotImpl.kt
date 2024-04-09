@@ -73,7 +73,7 @@ internal class TelegramBotImpl(
     private var _userInfo: User? = null
 
     override val userInfo: User
-        get() = _userInfo ?: throw IllegalStateException("`userInfo` has not been initialized yet.")
+        get() = _userInfo ?: error("`userInfo` has not been initialized yet.")
 
     override suspend fun queryUserInfo(): User {
         return GetMeApi.create().requestDataBy(source).also {
