@@ -25,7 +25,6 @@ plugins {
     `maven-publish`
 }
 
-
 setup(P.ComponentTelegram)
 
 val p = project
@@ -33,31 +32,31 @@ multiplatformConfigPublishing {
     project = P.ComponentTelegram
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
 
-    publishing {
-        publications.withType<MavenPublication> {
-            val dokkaJar = p.tasks.register("${name}DokkaJar", Jar::class) {
-                group = JavaBasePlugin.DOCUMENTATION_GROUP
-                description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
-                archiveClassifier.set("javadoc")
-                from(tasks.named("dokkaHtml"))
-
-                // Each archive name should be distinct, to avoid implicit dependency issues.
-                // We use the same format as the sources Jar tasks.
-                // https://youtrack.jetbrains.com/issue/KT-46466
-                archiveBaseName.set("${archiveBaseName.get()}-${name}")
-            }
-            artifact(dokkaJar)
-        }
-    }
-
-    // val jarJavadoc by tasks.registering(Jar::class) {
-    //     group = "documentation"
-    //     archiveClassifier.set("javadoc")
-    //     if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-    //         archiveClassifier.set("javadoc")
-    //         from(tasks.findByName("dokkaHtml"))
+    // publishing {
+    //     publications.withType<MavenPublication> {
+    //         val dokkaJar = p.tasks.register("${name}DokkaJar", Jar::class) {
+    //             group = JavaBasePlugin.DOCUMENTATION_GROUP
+    //             description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
+    //             archiveClassifier.set("javadoc")
+    //             from(tasks.named("dokkaHtml"))
+    //
+    //             // Each archive name should be distinct, to avoid implicit dependency issues.
+    //             // We use the same format as the sources Jar tasks.
+    //             // https://youtrack.jetbrains.com/issue/KT-46466
+    //             archiveBaseName.set("${archiveBaseName.get()}-${name}")
+    //         }
+    //         artifact(dokkaJar)
     //     }
     // }
+
+    val jarJavadoc by tasks.registering(Jar::class) {
+        group = "documentation"
+        archiveClassifier.set("javadoc")
+        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+            archiveClassifier.set("javadoc")
+            from(tasks.findByName("dokkaHtml"))
+        }
+    }
 
 
     // val dokkaJar = p.tasks.register("${publication.name}DokkaJar", Jar::class) {
@@ -72,7 +71,7 @@ multiplatformConfigPublishing {
     //     archiveBaseName.set("${archiveBaseName.get()}-${publication.name}")
     // }
 
-    // artifact(dokkaJar)
+    artifact(jarJavadoc)
     releasesRepository = ReleaseRepository
     snapshotRepository = SnapshotRepository
     gpg = Gpg.ofSystemPropOrNull()
@@ -86,10 +85,10 @@ multiplatformConfigPublishing {
 }
 
 // TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
-val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
-tasks.withType<PublishToMavenRepository>().configureEach {
-    mustRunAfter(signingTasks)
-}
+// val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
+// tasks.withType<PublishToMavenRepository>().configureEach {
+//     mustRunAfter(signingTasks)
+// }
 
 show()
 

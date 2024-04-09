@@ -35,7 +35,6 @@ setup(P.ComponentTelegram)
 
 useK2()
 configJavaCompileWithModule("simbot.component.telegram.api")
-apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
 //configJsTestTasks()
 
@@ -132,11 +131,11 @@ kotlin.sourceSets.commonMain {
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if (name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
+// }
 //
 // kotlin.sourceSets.commonMain {
 //     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
@@ -147,12 +146,9 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         suppressGeneratedFiles.set(false)
     }
 }
-//
-// ksp {
-//     arg("qg.api.reader.enable", (!isCi).toString())
-//     arg("qg.api.finder.api.output", rootDir.resolve("generated-docs/api-list.md").absolutePath)
-//     arg("qg.api.finder.event.output", rootDir.resolve("generated-docs/event-list.md").absolutePath)
-// }
+
+apply(plugin = "simbot-telegram-multiplatform-maven-publish")
+
 
 data class SupportListItem(val depth: Int, val name: String, val link: String, val mark: Boolean? = null)
 

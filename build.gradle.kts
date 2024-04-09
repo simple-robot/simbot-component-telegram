@@ -65,6 +65,8 @@ idea {
     }
 }
 
+
+
 detekt {
     source.setFrom(
         "simbot-component-telegram-api",
@@ -81,8 +83,12 @@ detekt {
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
 tasks.withType<Detekt>().configureEach {
-    exclude("**/resources/")
+    exclude("**/src/*/resources/")
     exclude("**/build/")
     exclude("**/*Test/kotlin/")
     exclude("**/*Test/java/")
+}
+
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libs.versions.detekt.get()}")
 }
