@@ -123,11 +123,11 @@ kotlin.sourceSets.commonMain {
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
+// tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//     if (name != "kspCommonMainKotlinMetadata") {
+//         dependsOn("kspCommonMainKotlinMetadata")
+//     }
+// }
 //
 // kotlin.sourceSets.commonMain {
 //     kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
