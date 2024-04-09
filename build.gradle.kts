@@ -16,6 +16,7 @@
  */
 
 
+import io.gitlab.arturbosch.detekt.Detekt
 import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.core.repository.Repositories
 
@@ -24,6 +25,7 @@ plugins {
     `simbot-telegram-changelog-generator`
     `simbot-telegram-dokka-multi-module`
     `simbot-telegram-nexus-publish`
+    alias(libs.plugins.detekt)
 }
 
 setup(P.ComponentTelegram)
@@ -61,4 +63,26 @@ idea {
             }
         }
     }
+}
+
+detekt {
+    source.setFrom(
+        "simbot-component-telegram-api",
+        "simbot-component-telegram-core",
+        "simbot-component-telegram-stdlib",
+        "simbot-component-telegram-type",
+    )
+
+    config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
+    baseline = file("$projectDir/config/detekt/baseline.xml")
+    parallel = true
+    reportsDir = rootProject.layout.buildDirectory.dir("detekt/report").get().asFile
+}
+
+// https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
+tasks.withType<Detekt>().configureEach {
+    exclude("**/resources/")
+    exclude("**/build/")
+    exclude("**/*Test/kotlin/")
+    exclude("**/*Test/java/")
 }
