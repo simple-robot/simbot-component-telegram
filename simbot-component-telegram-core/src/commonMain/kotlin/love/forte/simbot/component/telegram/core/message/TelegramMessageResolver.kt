@@ -19,10 +19,9 @@
 
 package love.forte.simbot.component.telegram.core.message
 
-import love.forte.simbot.telegram.api.message.CopyMessageApi
-import love.forte.simbot.telegram.api.message.ForwardMessageApi
-import love.forte.simbot.telegram.api.message.buildCopyMessageApi
-import love.forte.simbot.telegram.api.message.buildForwardMessageApi
+import love.forte.simbot.message.Message
+import love.forte.simbot.telegram.api.TelegramApi
+import love.forte.simbot.telegram.api.message.*
 import love.forte.simbot.telegram.type.ChatId
 import kotlin.jvm.JvmName
 import love.forte.simbot.telegram.type.Message as StdlibMessage
@@ -46,3 +45,27 @@ internal inline fun StdlibMessage.toForwardApi(
     }
 }
 
+internal inline fun Message.resolve() {
+    TODO("Message.resolve")
+}
+
+
+internal class MessageResolver {
+    private val apiStacks = mutableListOf<TelegramApi<*>>() // TelegramApi<Message>?
+    var builder: SendMessageApi.Builder = SendMessageApi.builder()
+        private set
+
+    fun newBuilder(): SendMessageApi.Builder {
+        apiStacks.add(builder.build())
+        return SendMessageApi.builder().also { builder = it }
+    }
+
+    inline fun checkOrNewBuilder(block: (SendMessageApi.Builder) -> Boolean): SendMessageApi.Builder {
+        val currentBuilder = builder
+        return if (block(currentBuilder)) {
+            currentBuilder
+        } else {
+            newBuilder()
+        }
+    }
+}
