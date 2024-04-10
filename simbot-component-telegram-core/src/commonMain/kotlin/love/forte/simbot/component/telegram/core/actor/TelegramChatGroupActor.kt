@@ -48,7 +48,7 @@ public interface TelegramChatAware {
 }
 
 /**
- * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value)
+ * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP] or [ChatType.SUPERGROUP])
  * or a channel ([Chat.type] == [ChatType.CHANNEL].value).
  *
  * @see TelegramChatGroup
@@ -114,8 +114,7 @@ public interface TelegramChatGroupActor : TelegramChatAware, ChatGroup {
 
 
 /**
- *
- * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP].value).
+ * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP] or [ChatType.SUPERGROUP]).
  *
  * @author ForteScarlet
  */

@@ -21,6 +21,8 @@ import love.forte.simbot.ability.DeleteFailureException
 import love.forte.simbot.ability.DeleteOption
 import love.forte.simbot.common.id.IntID
 import love.forte.simbot.common.id.IntID.Companion.ID
+import love.forte.simbot.common.id.LongID
+import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.message.*
 import love.forte.simbot.telegram.api.message.DeleteMessageApi
@@ -39,6 +41,8 @@ internal class TelegramSingleMessageSourceReceiptImpl(
     private val bot: TelegramBotImpl,
     override val message: Message
 ) : TelegramSingleMessageSourceReceipt() {
+    override val chatId: LongID
+        get() = message.chat.id.ID
 
     override suspend fun delete(vararg options: DeleteOption) {
         // TODO option ignore fail
@@ -71,15 +75,18 @@ internal class TelegramSingleMessageSourceReceiptImpl(
  */
 internal class TelegramSingleMessageIdReceiptImpl(
     private val bot: TelegramBotImpl,
-    private val chatId: Long,
+    private val chatIdValue: Long,
     private val messageId: Int
 ) : TelegramSingleMessageIdReceipt() {
     override val id: IntID
         get() = messageId.ID
 
+    override val chatId: LongID
+        get() = chatIdValue.ID
+
     override suspend fun delete(vararg options: DeleteOption) {
         // TODO option ignore fail
-        DeleteMessageApi.create(ChatId(chatId), messageId).requestDataBy(bot.source)
+        DeleteMessageApi.create(ChatId(chatIdValue), messageId).requestDataBy(bot.source)
     }
 
 
@@ -104,6 +111,19 @@ internal class TelegramSingleMessageIdReceiptImpl(
         return result
     }
 }
+
+// internal class SimpleTelegramAggregatedMessageReceiptImpl(
+//     private val bot: TelegramBotImpl,
+//     private val chatId: Long,
+//     private val receipts: List<TelegramSingleMessageReceipt>,
+// ) : TelegramAggregatedMessageReceipt() {
+//     override val ids: Collection<IntID>
+//         get() = receipts.map { it.id }
+//
+//     override fun get(index: Int): TelegramSingleMessageReceipt = receipts[index]
+//
+//     override fun iterator(): Iterator<TelegramSingleMessageReceipt> = receipts.iterator()
+// }
 
 internal class TelegramAggregatedMessageIdReceiptImpl(
     private val bot: TelegramBotImpl,
@@ -177,6 +197,7 @@ internal fun MessageId.toTelegramMessageReceipt(
     chatId: Long
 ): TelegramSingleMessageIdReceiptImpl =
     TelegramSingleMessageIdReceiptImpl(bot, chatId, messageId)
+
 
 /**
  * [this] must be >= 1

@@ -86,8 +86,9 @@ public interface TelegramMember : TelegramUser, Member {
         sendToMemberIsUnsupported()
 }
 
-internal const val SEND_TO_MEMBER_IS_UNSUPPORTED = "Telegram bot cannot proactively send a message to a member " +
-    "because the private chat id is unknown."
+internal const val SEND_TO_MEMBER_IS_UNSUPPORTED =
+    "Telegram bot cannot proactively send a message to a member " +
+        "because the private chat id is unknown."
 
 internal fun sendToMemberIsUnsupported(): Nothing =
     throw UnsupportedOperationException(SEND_TO_MEMBER_IS_UNSUPPORTED)

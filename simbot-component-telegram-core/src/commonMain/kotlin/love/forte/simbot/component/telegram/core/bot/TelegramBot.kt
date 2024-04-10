@@ -93,12 +93,12 @@ public interface TelegramBot : Bot {
 
 
     override val groupRelation: GroupRelation?
-        get() = null // TODO
+        get() = null // TODO?
 
     override val guildRelation: GuildRelation?
-        get() = null // TODO
+        get() = null // TODO?
 
     override val contactRelation: ContactRelation?
-        get() = null // TODO
+        get() = null // TODO?
 
 }

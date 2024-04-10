@@ -19,13 +19,10 @@ package love.forte.simbot.component.telegram.core.actor.internal
 
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
-import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
+import love.forte.simbot.component.telegram.core.message.send
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.telegram.api.message.SendMessageApi
-import love.forte.simbot.telegram.stdlib.bot.requestDataBy
 import love.forte.simbot.telegram.type.Chat
-import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
@@ -42,16 +39,15 @@ internal class TelegramUserContactImpl(
     override val coroutineContext: CoroutineContext = bot.subContext
 
     override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        return bot.send(messageContent, sourceChat.id)
     }
 
     override suspend fun send(message: Message): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        return bot.send(message, sourceChat.id)
     }
 
     override suspend fun send(text: String): TelegramMessageReceipt {
-        val sent = SendMessageApi.create(ChatId(sourceChat.id), text).requestDataBy(bot.source)
-        return sent.toTelegramMessageReceipt(bot)
+        return bot.send(text, sourceChat.id)
     }
 
     override fun toString(): String =

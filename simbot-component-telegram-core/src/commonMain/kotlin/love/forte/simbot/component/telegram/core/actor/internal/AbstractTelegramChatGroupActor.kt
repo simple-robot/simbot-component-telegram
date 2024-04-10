@@ -18,7 +18,6 @@
 package love.forte.simbot.component.telegram.core.actor.internal
 
 import love.forte.simbot.common.collectable.Collectable
-import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.toInt
 import love.forte.simbot.component.telegram.core.actor.TelegramChatGroupActor
@@ -26,14 +25,12 @@ import love.forte.simbot.component.telegram.core.actor.TelegramMember
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
-import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
+import love.forte.simbot.component.telegram.core.message.send
 import love.forte.simbot.definition.Role
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.telegram.api.chat.GetChatMemberApi
 import love.forte.simbot.telegram.api.chat.GetChatMemberCountApi
-import love.forte.simbot.telegram.api.message.SendMessageApi
-import love.forte.simbot.telegram.stdlib.bot.requestDataBy
 import love.forte.simbot.telegram.type.*
 
 
@@ -46,7 +43,7 @@ internal abstract class AbstractTelegramChatGroupActor : TelegramChatGroupActor 
     abstract override val source: Chat
 
     override val roles: Collectable<Role>
-        get() = emptyCollectable() // TODO("Not yet implemented")
+        get() = TODO("Not yet implemented")
 
     override suspend fun botAsMember(): TelegramMember {
         return bot.queryUserInfo().toTelegramMember(bot)
@@ -70,15 +67,14 @@ internal abstract class AbstractTelegramChatGroupActor : TelegramChatGroupActor 
     }
 
     override suspend fun send(text: String): TelegramMessageReceipt {
-        val sent = SendMessageApi.create(ChatId(source.id), text).requestDataBy(bot.source)
-        return sent.toTelegramMessageReceipt(bot)
+        return bot.send(text, source.id)
     }
 
     override suspend fun send(message: Message): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        return bot.send(message, source.id)
     }
 
     override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt {
-        TODO("Not yet implemented")
+        return bot.send(messageContent, source.id)
     }
 }

@@ -23,6 +23,7 @@ import love.forte.simbot.common.time.Timestamp
 import love.forte.simbot.component.telegram.core.actor.TelegramChannel
 import love.forte.simbot.component.telegram.core.actor.TelegramChatGroup
 import love.forte.simbot.component.telegram.core.actor.TelegramContact
+import love.forte.simbot.component.telegram.core.actor.TelegramMember
 import love.forte.simbot.component.telegram.core.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.core.time.unixDateTimestamp
@@ -76,8 +77,41 @@ public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroup
         get() = sourceContent.from!!.id.ID
 
     @STP
-    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember
+    override suspend fun author(): TelegramMember
     // TODO chat group member?
+
+    @ST
+    override suspend fun reply(text: String): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
+
+    @ST
+    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+}
+
+/**
+ * An event about [Message] from a [TelegramChatGroup] (chat.type == `"supergroup"`)
+ *
+ * @author ForteScarlet
+ */
+public interface TelegramSuperGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
+    override val messageContent: TelegramMessageContent
+
+    /**
+     * The [TelegramChatGroup].
+     */
+    @STP
+    override suspend fun content(): TelegramChatGroup
+
+    /**
+     * The [sender][Message.from]'s [id][User.id]
+     */
+    override val authorId: ID
+        get() = sourceContent.from!!.id.ID
+
+    @STP
+    override suspend fun author(): TelegramMember
 
     @ST
     override suspend fun reply(text: String): TelegramMessageReceipt
@@ -110,8 +144,7 @@ public interface TelegramChannelMessageEvent : TelegramMessageEvent, ChatGroupMe
         get() = sourceContent.from!!.id.ID
 
     @STP
-    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember
-    // TODO chat group member?
+    override suspend fun author(): TelegramMember
 
     @ST
     override suspend fun reply(text: String): TelegramMessageReceipt
