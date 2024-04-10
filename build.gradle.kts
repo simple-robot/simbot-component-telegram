@@ -73,27 +73,42 @@ dependencies {
 
 detekt {
     source.setFrom(
-        "simbot-component-telegram-api",
-        "simbot-component-telegram-core",
-        "simbot-component-telegram-stdlib",
-        "simbot-component-telegram-type",
+        subprojects
+            // internal 处理器不管
+            // .filter { "internal-processors" !in it.path }
+            .map { it.projectDir.absoluteFile }
     )
 
     config.setFrom(rootDir.resolve("config/detekt/detekt.yml"))
     baseline = file("$projectDir/config/detekt/baseline.xml")
     buildUponDefaultConfig = true
     parallel = true
-    reportsDir = rootProject.layout.buildDirectory.dir("detekt/report").get().asFile
+    reportsDir = rootProject.layout.buildDirectory.dir("reports/detekt").get().asFile
     if (!isCi) {
         autoCorrect = true
     }
+    basePath = projectDir.absolutePath
 }
 
 // https://detekt.dev/blog/2019/03/03/configure-detekt-on-root-project/
 tasks.withType<Detekt>().configureEach {
+    include("**/src/*Main/kotlin/**/*.kt")
+    include("**/src/*Main/kotlin/**/*.java")
+    include("**/src/*Main/java/**/*.kt")
+    include("**/src/*Main/java/**/*.java")
+    include("**/src/main/kotlin/**/*.kt")
+    include("**/src/main/kotlin/**/*.java")
+    include("**/src/main/java/**/*.kt")
+    include("**/src/main/java/**/*.java")
+
+    // internal 处理器不管
+    exclude("**/internal-processors/")
     exclude("**/src/*/resources/")
     exclude("**/build/")
     exclude("**/*Test/kotlin/")
     exclude("**/*Test/java/")
+    exclude("**/test/kotlin/")
+    exclude("**/test/java/")
+    exclude("**.kts")
 }
 

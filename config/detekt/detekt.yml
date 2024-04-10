@@ -1,12 +1,12 @@
 build:
   maxIssues: 10000 # 先不限制最大问题
   excludeCorrectable: false
-  weights:
-    formatting: 10000 # 代码格式的问题，一般都有 autoCorrect, 需要尽可能不出错
-    comments: 0
-    complexity: 0
-    LongParameterList: 0
-    style: 0
+#  weights:
+#    formatting: 0 # 代码格式的问题
+#    comments: 0
+#    complexity: 0
+#    LongParameterList: 0
+#    style: 0
 
 config:
   validation: true
@@ -44,12 +44,12 @@ console-reports:
 
 output-reports:
   active: true
-  exclude:
+#  exclude:
   # - 'TxtOutputReport'
   # - 'XmlOutputReport'
   # - 'HtmlOutputReport'
   # - 'MdOutputReport'
-    - 'SarifOutputReport'
+#    - 'SarifOutputReport'
 
 comments:
   active: true

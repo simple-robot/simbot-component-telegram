@@ -152,7 +152,7 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 ****************************
                 此文件内容是 **自动生成** 的
                 ****************************
-            """.trimIndent()
+                """.trimIndent()
             )
             .addType(updateValuesObject)
             .addType(dividerClass)
@@ -232,8 +232,9 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
             addKdoc(
                 "Find the first optional property that is not null based on [%T], " +
-                        "and use [block] to process the serialized name and value of this property." +
-                        "\n\n", UpdateClassName
+                    "and use [block] to process the serialized name and value of this property." +
+                    "\n\n",
+                UpdateClassName
             )
             addKdoc(
                 "@throws %T If no optional properties that are not null are found in [%T]",
@@ -257,7 +258,8 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
             addProperty(
                 PropertySpec.builder(
-                    constantName(name), STRING,
+                    constantName(name),
+                    STRING,
                     KModifier.CONST
                 )
                     .addKdoc("The serialized name constant of [%M]\n\n", member)
@@ -287,7 +289,9 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                     All optional parameters' name in [%T]
                     
                     @see %T
-                """.trimIndent(), typeName, typeName
+                    """.trimIndent(),
+                    typeName,
+                    typeName
                 )
                 .jvmField()
                 .build()
@@ -308,25 +312,27 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addParameter(nameParam)
             returns(KClass::class.asTypeName().parameterizedBy(STAR))
 
-            addCode(CodeBlock.builder().apply {
-                beginControlFlow("return when(${nameParam.name})")
+            addCode(
+                CodeBlock.builder().apply {
+                    beginControlFlow("return when(${nameParam.name})")
 
-                for ((parameter, name) in optionalPropertiesWithNames) {
+                    for ((parameter, name) in optionalPropertiesWithNames) {
+                        addStatement(
+                            "%N -> %T::class",
+                            constantName(name),
+                            parameter.type.toTypeName().copy(nullable = false)
+                        )
+
+                    }
+
                     addStatement(
-                        "%N -> %T::class",
-                        constantName(name),
-                        parameter.type.toTypeName().copy(nullable = false)
+                        "else -> throw %T(%P)",
+                        IllegalArgumentExceptionClassName,
+                        "Unknown name: \$${nameParam.name}"
                     )
-
-                }
-
-                addStatement(
-                    "else -> throw %T(%P)",
-                    IllegalArgumentExceptionClassName,
-                    "Unknown name: \$${nameParam.name}"
-                )
-                endControlFlow()
-            }.build())
+                    endControlFlow()
+                }.build()
+            )
         }.build()
 
         addFunction(getUpdateTypeFun)
@@ -366,7 +372,7 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
         name: ClassName,
         suspend: Boolean,
         optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>,
-        ): TypeSpec {
+    ): TypeSpec {
         val tv = TypeVariableName("C")
         return TypeSpec.classBuilder(name).apply {
             addTypeVariable(tv)
@@ -376,7 +382,14 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             // visitFunctions
 
             for ((property, _) in optionalPropertiesWithNames) {
-                addFunction(updateDividerEventFun(suspend, tv, property.simpleName.asString(), property.type.resolve().toTypeName()))
+                addFunction(
+                    updateDividerEventFun(
+                        suspend,
+                        tv,
+                        property.simpleName.asString(),
+                        property.type.resolve().toTypeName()
+                    )
+                )
             }
 
             addFunction(updateDividerAcceptByUpdateFun(suspend, tv, optionalPropertiesWithNames))
@@ -412,12 +425,19 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
             addCode(
                 "onMismatchUpdateEvent(%L, %L, %L, %L)",
-                DIVIDER_NAME_PARAM_NAME, DIVIDER_VALUE_PARAM_NAME, DIVIDER_UPDATE_PARAM_NAME, DIVIDER_CONTEXT_PARAM_NAME
+                DIVIDER_NAME_PARAM_NAME,
+                DIVIDER_VALUE_PARAM_NAME,
+                DIVIDER_UPDATE_PARAM_NAME,
+                DIVIDER_CONTEXT_PARAM_NAME
             )
         }.build()
     }
 
-    private fun updateDividerAcceptByUpdateFun(suspend: Boolean, tv: TypeVariableName, optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): FunSpec {
+    private fun updateDividerAcceptByUpdateFun(
+        suspend: Boolean,
+        tv: TypeVariableName,
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>
+    ): FunSpec {
         return FunSpec.builder("accept").apply {
             addModifiers(KModifier.PUBLIC, KModifier.FINAL)
             if (suspend) {
@@ -426,28 +446,36 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName)
             addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
 
-            addCode(buildCodeBlock {
-                beginControlFlow("when")
+            addCode(
+                buildCodeBlock {
+                    beginControlFlow("when")
 
-                for ((property, name) in optionalPropertiesWithNames) {
-                    val pname = property.simpleName.asString()
-                    // update.xxx != null -> onXxx
-                    add("%L.%L != null -> ", DIVIDER_UPDATE_PARAM_NAME, pname)
-                    addStatement("%L(%M, %L.%L, %L, %L)",
-                        pname.toOnFunName(),
-                        MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name)),
-                        DIVIDER_UPDATE_PARAM_NAME, pname,
-                        DIVIDER_UPDATE_PARAM_NAME,
-                        DIVIDER_CONTEXT_PARAM_NAME
-                    )
+                    for ((property, name) in optionalPropertiesWithNames) {
+                        val pname = property.simpleName.asString()
+                        // update.xxx != null -> onXxx
+                        add("%L.%L != null -> ", DIVIDER_UPDATE_PARAM_NAME, pname)
+                        addStatement(
+                            "%L(%M, %L.%L, %L, %L)",
+                            pname.toOnFunName(),
+                            MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name)),
+                            DIVIDER_UPDATE_PARAM_NAME,
+                            pname,
+                            DIVIDER_UPDATE_PARAM_NAME,
+                            DIVIDER_CONTEXT_PARAM_NAME
+                        )
+                    }
+
+                    endControlFlow()
                 }
-
-                endControlFlow()
-            })
+            )
         }.build()
     }
 
-    private fun updateDividerAcceptByNameValueFun(suspend: Boolean, tv: TypeVariableName, optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): FunSpec {
+    private fun updateDividerAcceptByNameValueFun(
+        suspend: Boolean,
+        tv: TypeVariableName,
+        optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>
+    ): FunSpec {
         return FunSpec.builder("accept").apply {
             addModifiers(KModifier.PUBLIC, KModifier.FINAL)
             if (suspend) {
@@ -457,25 +485,36 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
             addParameter(DIVIDER_VALUE_PARAM_NAME, ANY)
             addParameter(DIVIDER_UPDATE_PARAM_NAME, UpdateClassName.copy(nullable = true))
             addParameter(DIVIDER_CONTEXT_PARAM_NAME, tv)
-            addCode(buildCodeBlock {
-                beginControlFlow("when")
+            addCode(
+                buildCodeBlock {
+                    beginControlFlow("when")
 
-                for ((property, name) in optionalPropertiesWithNames) {
-                    val pname = property.simpleName.asString()
-                    // name == constant && value is xxx -> onXxx
-                    add("%L == %M ", DIVIDER_NAME_PARAM_NAME, MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name)))
-                    add("&& %L is %T -> ", DIVIDER_VALUE_PARAM_NAME, property.type.toTypeName().copy(nullable = false))
-                    addStatement("%L(%L, %L, %L, %L)",
-                        pname.toOnFunName(),
-                        DIVIDER_NAME_PARAM_NAME,
-                        DIVIDER_VALUE_PARAM_NAME,
-                        DIVIDER_UPDATE_PARAM_NAME,
-                        DIVIDER_CONTEXT_PARAM_NAME
-                    )
+                    for ((property, name) in optionalPropertiesWithNames) {
+                        val pname = property.simpleName.asString()
+                        // name == constant && value is xxx -> onXxx
+                        add(
+                            "%L == %M ",
+                            DIVIDER_NAME_PARAM_NAME,
+                            MemberName(ClassName(UPDATE_PACKAGE, UPDATE_VALUES_CLASS_NAME), constantName(name))
+                        )
+                        add(
+                            "&& %L is %T -> ",
+                            DIVIDER_VALUE_PARAM_NAME,
+                            property.type.toTypeName().copy(nullable = false)
+                        )
+                        addStatement(
+                            "%L(%L, %L, %L, %L)",
+                            pname.toOnFunName(),
+                            DIVIDER_NAME_PARAM_NAME,
+                            DIVIDER_VALUE_PARAM_NAME,
+                            DIVIDER_UPDATE_PARAM_NAME,
+                            DIVIDER_CONTEXT_PARAM_NAME
+                        )
+                    }
+
+                    endControlFlow()
                 }
-
-                endControlFlow()
-            })
+            )
         }.build()
     }
 

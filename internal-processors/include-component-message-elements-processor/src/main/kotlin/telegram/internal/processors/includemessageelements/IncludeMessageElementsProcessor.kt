@@ -97,7 +97,7 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
                 ****************************
                 此文件内容是 **自动生成** 的
                 ****************************
-            """.trimIndent()
+                """.trimIndent()
             )
 
             addFunction(function)
@@ -130,7 +130,6 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
      *```
      */
     private fun generateIncludeFunction(impls: List<KSClassDeclaration>): FunSpec {
-
         // kotlinx.serialization.modules.subclass
         val memberName = MemberName("kotlinx.serialization.modules", "subclass")
 

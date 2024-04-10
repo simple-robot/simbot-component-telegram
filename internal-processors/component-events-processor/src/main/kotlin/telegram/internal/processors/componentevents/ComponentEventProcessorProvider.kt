@@ -85,7 +85,7 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
                 ****************************
                 此文件内容是 **自动生成** 的
                 ****************************
-            """.trimIndent()
+                """.trimIndent()
             )
             indent("    ")
         }.build()
@@ -124,7 +124,11 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
      * ```
      */
     private fun generateEvents(optionalPropertiesWithNames: List<Pair<KSPropertyDeclaration, String>>): List<TypeSpec> {
-        data class TypeBasedEventData(val property: KSPropertyDeclaration, val typeName: TypeName, val typeBuilder: TypeSpec.Builder)
+        data class TypeBasedEventData(
+            val property: KSPropertyDeclaration,
+            val typeName: TypeName,
+            val typeBuilder: TypeSpec.Builder
+        )
         // val eventTypesWithTypeKey = mutableMapOf<>()
         val typeBasedEventTypes = optionalPropertiesWithNames.asSequence()
             .map { (property, _) ->
@@ -140,7 +144,8 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
                         PropertySpec.builder(
                             name = TELEGRAM_EVENT_PROPERTY_SOURCE_CONTENT_NAME,
                             type = typeName,
-                            KModifier.OVERRIDE, KModifier.PUBLIC
+                            KModifier.OVERRIDE,
+                            KModifier.PUBLIC
                         )
                             .addKdoc(
                                 "Source content with type [%T]\n\n",
@@ -180,7 +185,8 @@ private class ComponentEventProcessor(private val environment: SymbolProcessorEn
                     PropertySpec.builder(
                         name = TELEGRAM_EVENT_PROPERTY_SOURCE_CONTENT_NAME,
                         type = propertyTypeName,
-                        KModifier.OVERRIDE, KModifier.PUBLIC
+                        KModifier.OVERRIDE,
+                        KModifier.PUBLIC
                     )
                         .addKdoc(
                             "Source content from [%M] with type [%T]\n\n",

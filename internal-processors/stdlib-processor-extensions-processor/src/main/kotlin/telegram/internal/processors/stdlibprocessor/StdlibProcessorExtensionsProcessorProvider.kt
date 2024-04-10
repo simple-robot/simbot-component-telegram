@@ -102,7 +102,7 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 ****************************
                 此文件内容是 **自动生成** 的
                 ****************************
-            """.trimIndent()
+                """.trimIndent()
             )
         }.build()
 
@@ -184,8 +184,11 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                     // subscribe<Type>(NAME, sequence, processor)
                     .addStatement(
                         "%M<%T>(%M, %L, %L)",
-                        BotSubscribeExtensionMember, eventType,
-                        nameMember, SEQUENCE_PARAM_NAME, PROCESSOR_PARAM_NAME
+                        BotSubscribeExtensionMember,
+                        eventType,
+                        nameMember,
+                        SEQUENCE_PARAM_NAME,
+                        PROCESSOR_PARAM_NAME
                     )
                     .build()
             )
@@ -203,8 +206,10 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
                 
                 @see %M
                 @see %M
-            """.trimIndent(),
-                eventType, nameMember, propertyName,
+                """.trimIndent(),
+                eventType,
+                nameMember,
+                propertyName,
                 BotSubscribeExtensionMember,
                 MemberName(UpdateClassName, propertyName)
             )
