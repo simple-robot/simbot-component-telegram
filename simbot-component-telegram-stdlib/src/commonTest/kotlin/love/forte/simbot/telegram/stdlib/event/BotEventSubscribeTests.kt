@@ -20,6 +20,7 @@ import kotlin.test.assertNotNull
 class BotEventSubscribeTests {
     private suspend fun botAndStart(): Bot {
         return BotFactory.create("TOKEN") {
+            // coroutineContext = Dispatchers.Default
             apiClientEngine = MockEngine {
                 respondOk()
             }
@@ -32,16 +33,15 @@ class BotEventSubscribeTests {
     fun messageWithTextTest() = runTest {
         val bot = botAndStart()
         val onMessaged = Job()
-        val onMessaged2 = Job()
 
         bot.onMessage { _, _ ->
             onMessaged.complete()
+            bot.cancel()
         }
 
         bot.pushRawUpdate(MESSAGE_WITH_TEXT)
 
         onMessaged.join()
-        onMessaged2.join()
     }
 
     @Test
@@ -54,7 +54,6 @@ class BotEventSubscribeTests {
             assertIs<MessageOriginUser>(message.forwardOrigin)
             onMessaged.complete()
         }
-
         bot.pushRawUpdate(FORWARDED_MESSAGE)
 
         onMessaged.join()

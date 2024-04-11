@@ -17,9 +17,13 @@
 
 package love.forte.simbot.component.telegram.core.message.internal
 
+import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.telegram.core.message.StdlibMessage
+import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.MessagesBuilder
+import love.forte.simbot.telegram.type.MessageEntity
+import love.forte.simbot.telegram.type.MessageEntityType
 
 /**
  *
@@ -33,9 +37,72 @@ internal fun StdlibMessage.toMessages(): Messages {
     // TODO replyToStory: Story ..?
     // TODO hasProtectedContent: Boolean ..?
 
-    text?.also { builder.add(it) }
+    text?.also { text ->
+        if (entities.isNullOrEmpty()) {
+            builder.add(text)
+            return@also
+        }
 
-    // TODO entities ..?
+        var lastOffset = 0
+
+        entities?.forEach { entity ->
+            if (lastOffset != entity.offset) {
+                // 上一次与当前中间夹着字符串
+                builder.add(text.substring(lastOffset, entity.offset))
+            }
+            lastOffset = entity.offset + entity.length
+            val messageEntity = when (entity.type.uppercase()) {
+                MessageEntityType.TEXT_LINK.name -> {
+                    TelegramMessageEntity.TextLink(
+                        text = text.substring(entity),
+                        url = entity.url,
+                        entity
+                    )
+                }
+
+                MessageEntityType.TEXT_MENTION.name -> {
+                    TelegramMessageEntity.TextMention(
+                        text = text.substring(entity),
+                        user = entity.user,
+                        entity
+                    )
+                }
+
+                MessageEntityType.PRE.name -> {
+                    TelegramMessageEntity.Pre(
+                        text = text.substring(entity),
+                        language = entity.language,
+                        entity
+                    )
+                }
+
+                MessageEntityType.CUSTOM_EMOJI.name -> {
+                    TelegramMessageEntity.CustomEmoji(
+                        text = text.substring(entity),
+                        customEmojiId = entity.customEmojiId?.ID,
+                        entity
+                    )
+                }
+
+                // simple
+                else -> {
+                    TelegramMessageEntity.Simple(
+                        text = text.substring(entity),
+                        type = entity.type,
+                        entity
+                    )
+                }
+            }
+            builder.add(messageEntity)
+        }
+
+        if (lastOffset != text.length) {
+            // 字符串有残留
+            builder.add(text.substring(lastOffset, text.length))
+        }
+
+
+    }
 
     // TODO linkPreviewOptions: LinkPreviewOptions
     // TODO animation: Animation
@@ -60,3 +127,7 @@ internal fun StdlibMessage.toMessages(): Messages {
 
     return builder.build()
 }
+
+
+private fun String.substring(entity: MessageEntity): String =
+    substring(entity.offset, entity.offset + entity.length)

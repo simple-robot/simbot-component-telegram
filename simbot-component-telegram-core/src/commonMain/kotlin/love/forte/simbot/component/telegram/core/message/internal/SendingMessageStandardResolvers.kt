@@ -17,21 +17,93 @@
 
 package love.forte.simbot.component.telegram.core.message.internal
 
+import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.telegram.core.message.SendingMessageResolver
 import love.forte.simbot.component.telegram.core.message.SendingMessageResolverContext
+import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
+import love.forte.simbot.component.telegram.core.message.TelegramTextParseMode
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.PlainText
+import love.forte.simbot.telegram.type.MessageEntity
 
-internal object PlainTextResolver : SendingMessageResolver {
+internal object TextSendingResolver : SendingMessageResolver {
     override suspend fun resolve(
         index: Int,
         element: Message.Element,
         source: Message,
         context: SendingMessageResolverContext
     ) {
-        if (element is PlainText) {
-            context.builder.text(element.text)
+        with(context.builder) {
+            when (element) {
+                is TelegramTextParseMode -> {
+                    parseMode = element.parseMode
+                }
+
+                is PlainText -> {
+                    val textValue = element.text
+                    if (element is TelegramMessageEntity) {
+                        val entityType = element.type
+                        when (element) {
+                            is TelegramMessageEntity.Simple -> {
+                                addEntity(
+                                    MessageEntity(
+                                        type = entityType,
+                                        offset = textOffset,
+                                        length = textValue.length
+                                    )
+                                )
+                            }
+
+                            is TelegramMessageEntity.TextLink -> {
+                                addEntity(
+                                    MessageEntity(
+                                        type = entityType,
+                                        offset = textOffset,
+                                        length = textValue.length,
+                                        url = element.url
+                                    )
+                                )
+                            }
+
+                            is TelegramMessageEntity.TextMention -> {
+                                addEntity(
+                                    MessageEntity(
+                                        type = entityType,
+                                        offset = textOffset,
+                                        length = textValue.length,
+                                        user = element.user
+                                    )
+                                )
+                            }
+
+                            is TelegramMessageEntity.Pre -> {
+                                addEntity(
+                                    MessageEntity(
+                                        type = entityType,
+                                        offset = textOffset,
+                                        length = textValue.length,
+                                        language = element.language
+                                    )
+                                )
+                            }
+
+                            is TelegramMessageEntity.CustomEmoji -> {
+                                addEntity(
+                                    MessageEntity(
+                                        type = entityType,
+                                        offset = textOffset,
+                                        length = textValue.length,
+                                        customEmojiId = element.customEmojiId?.literal
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    appendText(textValue)
+                }
+
+            }
         }
-        // TODO TelegramText? (can with parse mode option)
     }
 }
+

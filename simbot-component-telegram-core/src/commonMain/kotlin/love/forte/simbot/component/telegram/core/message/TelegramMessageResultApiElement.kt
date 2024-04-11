@@ -73,7 +73,6 @@ internal object TelegramMessageResultApiElementSendingResolver : SendingMessageR
         context: SendingMessageResolverContext
     ) {
         if (element is TelegramMessageResultApiElement) {
-            context.archiveCurrent()
             when (element) {
                 is MessageIdResult -> {
                     context.addToStackMsgId { element.api }

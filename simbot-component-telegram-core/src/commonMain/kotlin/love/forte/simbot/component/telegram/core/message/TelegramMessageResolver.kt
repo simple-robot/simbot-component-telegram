@@ -21,8 +21,8 @@ package love.forte.simbot.component.telegram.core.message
 
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
-import love.forte.simbot.component.telegram.core.message.internal.PlainTextResolver
 import love.forte.simbot.component.telegram.core.message.internal.TelegramAggregatedMessageIdReceiptImpl
+import love.forte.simbot.component.telegram.core.message.internal.TextSendingResolver
 import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
 import love.forte.simbot.message.*
 import love.forte.simbot.telegram.api.TelegramApi
@@ -80,7 +80,13 @@ internal suspend fun TelegramBotImpl.send(
     chatId: Long,
     builderFactory: BuilderFactory = DefaultBuilderFactory
 ): TelegramMessageReceipt {
-    val funcList = message.resolve(builderFactory)
+    val funcList = message.resolve {
+        builderFactory().also {
+            if (it.chatId == null) {
+                it.chatId = ChatId(chatId)
+            }
+        }
+    }
 
     fun toReceipt(result: Any): TelegramSingleMessageReceipt {
         return when (result) {
@@ -192,7 +198,7 @@ internal fun interface SendingMessageResolver {
 }
 
 private val sendingResolvers = listOf(
-    PlainTextResolver,
+    TextSendingResolver,
     TelegramMessageResultApiElementSendingResolver,
 )
 
@@ -205,7 +211,14 @@ internal typealias SendingMessageResolvedFunction = () -> TelegramApi<*> // * �
 internal class SendingMessageResolverContext(
     private val builderFactory: BuilderFactory,
 ) {
-    val apiStacks = mutableListOf<SendingMessageResolvedFunction>() // TelegramApi<Message>?
+    private val apiStacks = mutableListOf<SendingMessageResolvedFunction>() // TelegramApi<Message>?
+
+    /**
+     * SendMessageApi 应当尽可能只有最终的一个。
+     * 如果有冲突的属性，后者覆盖前者。
+     * 如果有其他API，则根据 [_builder] 是否初始化为准，
+     * 追加到之前或之后。
+     */
     private var _builder: SendMessageApi.Builder? = null
 
     fun addToStackMsg(api: () -> TelegramApi<StdlibMessage>) {
@@ -216,50 +229,16 @@ internal class SendingMessageResolverContext(
         apiStacks.add(api)
     }
 
-    val builderOrNull: SendMessageApi.Builder?
-        get() = _builder
-
-    /**
-     * 如果当前builder存在，记录并消除。
-     */
-    fun archiveCurrent() {
-        _builder?.also { b ->
-            apiStacks.add { b.build() }
-            _builder = null
-        }
-    }
-
     private val builderOrNew: SendMessageApi.Builder
-        get() = _builder ?: builderFactory().also { _builder = it }
+        get() = _builder ?: builderFactory().also {
+            _builder = it
+            addToStackMsg { it.build() }
+        }
 
     val builder: SendMessageApi.Builder
         get() = builderOrNew
 
-    fun newBuilder(): SendMessageApi.Builder {
-        archiveCurrent()
-        return builderFactory().also { _builder = it }
-    }
-
-    inline fun builderOrNew(createNew: (SendMessageApi.Builder) -> Boolean): SendMessageApi.Builder {
-        val current = builderOrNew
-        return if (createNew(current)) {
-            newBuilder()
-        } else {
-            current
-        }
-    }
-
-    inline fun builderOrNullOrNew(createNew: (SendMessageApi.Builder?) -> Boolean): SendMessageApi.Builder? {
-        val current = builderOrNull
-        return if (createNew(builderOrNull)) {
-            newBuilder()
-        } else {
-            current
-        }
-    }
-
     fun end(): List<SendingMessageResolvedFunction> {
-        archiveCurrent()
         return apiStacks
     }
 }
