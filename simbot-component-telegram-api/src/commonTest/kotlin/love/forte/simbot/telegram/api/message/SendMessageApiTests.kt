@@ -37,7 +37,7 @@ class SendMessageApiTests {
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.builder().apply {
                 chatId(1)
-                text("forte")
+                appendText("forte")
                 replyMarkup(
                     ForceReply(
                         forceReply = true,
@@ -57,7 +57,7 @@ class SendMessageApiTests {
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.builder().apply {
                 chatId(1)
-                text("forte")
+                appendText("forte")
                 replyMarkup(
                     ReplyKeyboardMarkup(
                         keyboard = listOf(listOf(KeyboardButton(text = "button"))),
@@ -80,7 +80,7 @@ class SendMessageApiTests {
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.builder().apply {
                 chatId(1)
-                text("forte")
+                appendText("forte")
                 replyMarkup(
                     ReplyKeyboardRemove(
                         removeKeyboard = true,
@@ -99,7 +99,7 @@ class SendMessageApiTests {
         with(Telegram.DefaultJson) {
             val body = SendMessageApi.builder().apply {
                 chatId(1)
-                text("forte")
+                appendText("forte")
                 replyMarkup(
                     InlineKeyboardMarkup(
                         inlineKeyboard = listOf(listOf(

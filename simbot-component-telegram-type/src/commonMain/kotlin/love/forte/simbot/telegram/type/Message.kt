@@ -705,13 +705,25 @@ public data class MessageAutoDeleteTimerChanged(
 public data class MessageEntity(
     /**
      * Type of the entity.
-     * Currently, can be “mention” (@username), “hashtag” (#hashtag), “cashtag” ($USD),
-     * “bot_command” (/start@jobs_bot), “url” (https://telegram.org), “email”
-     * (do-not-reply@telegram.org), “phone_number” (+1-212-555-0123), “bold” (bold text), “italic”
-     * (italic text), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler”
-     * (spoiler message), “blockquote” (block quotation), “code” (monowidth string), “pre” (monowidth
-     * block), “text_link” (for clickable text URLs), “text_mention” (for users without usernames),
-     * “custom_emoji” (for inline custom emoji stickers)
+     * Currently, can be
+     * - “mention” (@username),
+     * - “hashtag” (#hashtag),
+     * - “cashtag” ($USD),
+     * - “bot_command” (/start@jobs_bot),
+     * - “url” (https://telegram.org),
+     * - “email” (do-not-reply@telegram.org),
+     * - “phone_number” (+1-212-555-0123),
+     * - “bold” (bold text),
+     * - “italic” (italic text),
+     * - “underline” (underlined text),
+     * - “strikethrough” (strikethrough text),
+     * - “spoiler” (spoiler message),
+     * - “blockquote” (block quotation),
+     * - “code” (monowidth string),
+     * - “pre” (monowidth block),
+     * - “text_link” (for clickable text URLs),
+     * - “text_mention” (for users without usernames),
+     * - “custom_emoji” (for inline custom emoji stickers)
      *
      * type: `String`
      */
@@ -759,6 +771,38 @@ public data class MessageEntity(
     @SerialName("custom_emoji_id")
     public val customEmojiId: String? = null,
 )
+
+/**
+ * The type (uppercase) of [MessageEntity.type].
+ */
+@Serializable
+public enum class MessageEntityType {
+    MENTION,
+    HASHTAG,
+    CASHTAG,
+    BOT_COMMAND,
+    URL,
+    EMAIL,
+    PHONE_NUMBER,
+    BOLD,
+    ITALIC,
+    UNDERLINE,
+    STRIKETHROUGH,
+    SPOILER,
+    BLOCKQUOTE,
+    CODE,
+    PRE,
+    TEXT_LINK,
+    TEXT_MENTION,
+    CUSTOM_EMOJI,
+    ;
+
+    /**
+     * The lowercase value of name.
+     */
+    public val typeValue: String
+        get() = name.lowercase()
+}
 
 /**
  * [MessageId](https://core.telegram.org/bots/api#messageid)

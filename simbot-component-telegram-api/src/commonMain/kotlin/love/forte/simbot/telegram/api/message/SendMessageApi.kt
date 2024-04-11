@@ -19,7 +19,6 @@ package love.forte.simbot.telegram.api.message
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationStrategy
 import love.forte.simbot.telegram.api.SimpleBodyTelegramApi
 import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.api.message.ReplyMarkupWrapper.Companion.wrapper
@@ -77,9 +76,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         get() = NAME
 
     override val body: Any = body
-
-    override val bodySerializationStrategy: SerializationStrategy<Any>?
-        get() = super.bodySerializationStrategy
 
     override val responseDeserializer: DeserializationStrategy<Message>
         get() = Message.serializer()
@@ -174,10 +170,13 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
          * @see Body.text
          */
         public var text: StringBuilder? = null
+            private set
 
-        public fun text(append: CharSequence) {
-            val apd = text ?: StringBuilder().also { text = it }
-            apd.append(append)
+        public val textOffset: Int
+            get() = text?.length ?: 0
+
+        public fun appendText(append: CharSequence) {
+            text?.append(append) ?: StringBuilder(append).also { text = it }
         }
 
         // Optional
@@ -202,7 +201,20 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         /**
          * @see Body.entities
          */
-        public var entities: Collection<MessageEntity>? = null
+        public var entities: MutableCollection<MessageEntity>? = null
+            private set
+
+        /**
+         * @see Body.entities
+         */
+        public fun addEntity(entity: MessageEntity) {
+            val c = entities
+                ?: mutableListOf<MessageEntity>().also {
+                    entities = it
+                }
+
+            c.add(entity)
+        }
 
         /**
          * @see Body.linkPreviewOptions
@@ -306,6 +318,6 @@ public inline fun buildSendMessageApi(
     block: Builder.() -> Unit = {}
 ): SendMessageApi = buildSendMessageApi {
     this.chatId = chatId
-    this.text = StringBuilder(text)
+    appendText(text)
     block()
 }
