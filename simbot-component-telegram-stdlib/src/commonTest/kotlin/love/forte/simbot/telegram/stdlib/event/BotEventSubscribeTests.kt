@@ -1,10 +1,8 @@
 package love.forte.simbot.telegram.stdlib.event
 
 import io.ktor.client.engine.mock.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import love.forte.simbot.telegram.stdlib.*
 import love.forte.simbot.telegram.stdlib.bot.*
 import love.forte.simbot.telegram.type.MessageOriginChannel
@@ -22,7 +20,7 @@ import kotlin.test.assertNotNull
 class BotEventSubscribeTests {
     private suspend fun botAndStart(): Bot {
         return BotFactory.create("TOKEN") {
-            coroutineContext = Dispatchers.Default
+            // coroutineContext = Dispatchers.Default
             apiClientEngine = MockEngine {
                 respondOk()
             }
@@ -35,19 +33,15 @@ class BotEventSubscribeTests {
     fun messageWithTextTest() = runTest {
         val bot = botAndStart()
         val onMessaged = Job()
-        val onMessaged2 = Job()
 
         bot.onMessage { _, _ ->
             onMessaged.complete()
+            bot.cancel()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(MESSAGE_WITH_TEXT)
+        bot.pushRawUpdate(MESSAGE_WITH_TEXT)
 
-            onMessaged.join()
-            onMessaged2.join()
-        }
-
+        onMessaged.join()
     }
 
     @Test
@@ -60,11 +54,9 @@ class BotEventSubscribeTests {
             assertIs<MessageOriginUser>(message.forwardOrigin)
             onMessaged.complete()
         }
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(FORWARDED_MESSAGE)
+        bot.pushRawUpdate(FORWARDED_MESSAGE)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -78,11 +70,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(FORWARDED_CHANNEL_MESSAGE)
+        bot.pushRawUpdate(FORWARDED_CHANNEL_MESSAGE)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -95,11 +85,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(MESSAGE_WITH_A_REPLY)
+        bot.pushRawUpdate(MESSAGE_WITH_A_REPLY)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -115,11 +103,9 @@ class BotEventSubscribeTests {
             onMessaged.completeExceptionally(IllegalStateException("NOT onMessage"))
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(EDITED_MESSAGE)
+        bot.pushRawUpdate(EDITED_MESSAGE)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -134,11 +120,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(MESSAGE_WITH_ENTITIES)
+        bot.pushRawUpdate(MESSAGE_WITH_ENTITIES)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -151,11 +135,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(MESSAGE_WITH_AUDIO)
+        bot.pushRawUpdate(MESSAGE_WITH_AUDIO)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -168,11 +150,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(VOICE_MESSAGE)
+        bot.pushRawUpdate(VOICE_MESSAGE)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -185,11 +165,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(MESSAGE_WITH_A_DOCUMENT)
+        bot.pushRawUpdate(MESSAGE_WITH_A_DOCUMENT)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -201,11 +179,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(INLINE_QUERY)
+        bot.pushRawUpdate(INLINE_QUERY)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -217,11 +193,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(CHOSEN_INLINE_QUERY)
+        bot.pushRawUpdate(CHOSEN_INLINE_QUERY)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
     @Test
@@ -233,11 +207,9 @@ class BotEventSubscribeTests {
             onMessaged.complete()
         }
 
-        withContext(Dispatchers.Default) {
-            bot.pushRawUpdate(CALLBACK_QUERY)
+        bot.pushRawUpdate(CALLBACK_QUERY)
 
-            onMessaged.join()
-        }
+        onMessaged.join()
     }
 
 }
