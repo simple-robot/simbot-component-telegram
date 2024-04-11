@@ -3,13 +3,10 @@ package love.forte.simbot.telegram.stdlib.event
 import io.ktor.client.engine.mock.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
-import love.forte.simbot.telegram.api.Telegram
-import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.stdlib.*
 import love.forte.simbot.telegram.stdlib.bot.*
 import love.forte.simbot.telegram.type.MessageOriginChannel
 import love.forte.simbot.telegram.type.MessageOriginUser
-import love.forte.simbot.telegram.type.User
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -219,20 +216,3 @@ class BotEventSubscribeTests {
 }
 
 
-private fun getMeHandler(): MockRequestHandler = {
-    this.respondOk(
-        Telegram.DefaultJson.encodeToString(
-            TelegramApiResult.serializer(User.serializer()),
-            TelegramApiResult(
-                ok = true,
-                result = User(
-                    id = 10000,
-                    isBot = true,
-                    firstName = "Forte",
-                    lastName = "Scarlet",
-                    username = "ForteScarlet_username"
-                )
-            )
-        )
-    )
-}

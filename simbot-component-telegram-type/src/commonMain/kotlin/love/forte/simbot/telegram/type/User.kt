@@ -46,7 +46,7 @@ public data class User(
      * type: `Boolean`
      */
     @SerialName("is_bot")
-    public val isBot: Boolean,
+    public val isBot: Boolean = false,
     /**
      * User's or bot's first name
      *
