@@ -25,7 +25,6 @@ import love.forte.simbot.component.telegram.core.bot.requestDataBy
 import love.forte.simbot.component.telegram.core.message.StdlibMessage
 import love.forte.simbot.component.telegram.core.message.TelegramMessageContent
 import love.forte.simbot.message.Messages
-import love.forte.simbot.message.emptyMessages
 import love.forte.simbot.telegram.api.message.DeleteMessageApi
 import love.forte.simbot.telegram.type.ChatId
 
@@ -39,11 +38,12 @@ internal class TelegramMessageContentImpl(
     override val source: StdlibMessage
 ) : TelegramMessageContent {
 
-    override val messages: Messages
-        get() = emptyMessages() // TODO("Not yet implemented")
+    override val messages: Messages by lazy {
+        source.toMessages()
+    }
 
     override val plainText: String?
-        get() = source.text // TODO entries?
+        get() = source.text
 
     override suspend fun delete(vararg options: DeleteOption) {
         kotlin.runCatching {

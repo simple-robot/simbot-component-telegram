@@ -58,7 +58,7 @@ import kotlin.jvm.JvmName
  *
  */
 public fun <C> C.useTelegram(block: ConfigurerFunction<TelegramUsageBuilder>? = null)
-        where C : ComponentInstaller, C : PluginInstaller {
+    where C : ComponentInstaller, C : PluginInstaller {
     val builder = TelegramUsageBuilder().invokeBy(block)
     install(TelegramComponent) {
         builder.componentConfigurers.forEach { it.invokeWith(this) }

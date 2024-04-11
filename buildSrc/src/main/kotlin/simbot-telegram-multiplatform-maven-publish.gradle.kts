@@ -25,13 +25,29 @@ plugins {
     `maven-publish`
 }
 
-
 setup(P.ComponentTelegram)
 
 val p = project
 multiplatformConfigPublishing {
     project = P.ComponentTelegram
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+
+    // publishing {
+    //     publications.withType<MavenPublication> {
+    //         val dokkaJar = p.tasks.register("${name}DokkaJar", Jar::class) {
+    //             group = JavaBasePlugin.DOCUMENTATION_GROUP
+    //             description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
+    //             archiveClassifier.set("javadoc")
+    //             from(tasks.named("dokkaHtml"))
+    //
+    //             // Each archive name should be distinct, to avoid implicit dependency issues.
+    //             // We use the same format as the sources Jar tasks.
+    //             // https://youtrack.jetbrains.com/issue/KT-46466
+    //             archiveBaseName.set("${archiveBaseName.get()}-${name}")
+    //         }
+    //         artifact(dokkaJar)
+    //     }
+    // }
 
     val jarJavadoc by tasks.registering(Jar::class) {
         group = "documentation"
@@ -41,6 +57,19 @@ multiplatformConfigPublishing {
             from(tasks.findByName("dokkaHtml"))
         }
     }
+
+
+    // val dokkaJar = p.tasks.register("${publication.name}DokkaJar", Jar::class) {
+    //     group = JavaBasePlugin.DOCUMENTATION_GROUP
+    //     description = "Assembles Kotlin docs with Dokka into a Javadoc jar"
+    //     archiveClassifier.set("javadoc")
+    //     from(tasks.named("dokkaHtml"))
+    //
+    //     // Each archive name should be distinct, to avoid implicit dependency issues.
+    //     // We use the same format as the sources Jar tasks.
+    //     // https://youtrack.jetbrains.com/issue/KT-46466
+    //     archiveBaseName.set("${archiveBaseName.get()}-${publication.name}")
+    // }
 
     artifact(jarJavadoc)
     releasesRepository = ReleaseRepository
@@ -60,11 +89,29 @@ val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
 tasks.withType<PublishToMavenRepository>().configureEach {
     mustRunAfter(signingTasks)
 }
+// TODO see https://github.com/gradle/gradle/issues/26132
+// Resolves issues with .asc task output of the sign task of native targets.
+// See: https://github.com/gradle/gradle/issues/26132
+// And: https://youtrack.jetbrains.com/issue/KT-46466
+tasks.withType<Sign>().configureEach {
+    val pubName = name.removePrefix("sign").removeSuffix("Publication")
+
+    // These tasks only exist for native targets, hence findByName() to avoid trying to find them for other targets
+
+    // Task ':linkDebugTest<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
+    tasks.findByName("linkDebugTest$pubName")?.let {
+        mustRunAfter(it)
+    }
+    // Task ':compileTestKotlin<platform>' uses this output of task ':sign<platform>Publication' without declaring an explicit or implicit dependency
+    tasks.findByName("compileTestKotlin$pubName")?.let {
+        mustRunAfter(it)
+    }
+}
 
 show()
 
 fun show() {
-    //// show project info
+    // // show project info
     logger.info(
         """
         |=======================================================
@@ -74,8 +121,12 @@ fun show() {
         |= project.description: {}
         |= os.name:             {}
         |=======================================================
-    """.trimIndent(),
-        group, name, version, description, systemProp("os.name")
+        """.trimIndent(),
+        group,
+        name,
+        version,
+        description,
+        systemProp("os.name")
     )
 }
 

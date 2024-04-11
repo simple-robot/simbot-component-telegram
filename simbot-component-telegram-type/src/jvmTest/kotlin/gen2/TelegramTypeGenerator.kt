@@ -242,10 +242,10 @@ class TelegramTypeGenerator {
                     else -> {
                         val array = arrayRegex.matchEntire(raw)
                         if (array == null) {
-                            return ClassName(DEF_PACKAGE, raw)
+                            ClassName(DEF_PACKAGE, raw)
                         } else {
                             val arrayType = array.groupValues[1]
-                            return LIST.parameterizedBy(resolveType(arrayType))
+                            LIST.parameterizedBy(resolveType(arrayType))
                         }
                     }
                 }
@@ -256,7 +256,11 @@ class TelegramTypeGenerator {
                     if (index == 0) {
                         append(s)
                     } else {
-                        append(s.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() })
+                        append(
+                            s.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+                            }
+                        )
                     }
                 }
             }

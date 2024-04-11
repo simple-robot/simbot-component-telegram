@@ -35,9 +35,8 @@ setup(P.ComponentTelegram)
 
 useK2()
 configJavaCompileWithModule("simbot.component.telegram.api")
-apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
-//configJsTestTasks()
+// configJsTestTasks()
 
 kotlin {
     explicitApi()
@@ -147,12 +146,9 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         suppressGeneratedFiles.set(false)
     }
 }
-//
-// ksp {
-//     arg("qg.api.reader.enable", (!isCi).toString())
-//     arg("qg.api.finder.api.output", rootDir.resolve("generated-docs/api-list.md").absolutePath)
-//     arg("qg.api.finder.event.output", rootDir.resolve("generated-docs/event-list.md").absolutePath)
-// }
+
+apply(plugin = "simbot-telegram-multiplatform-maven-publish")
+
 
 data class SupportListItem(val depth: Int, val name: String, val link: String, val mark: Boolean? = null)
 
@@ -220,7 +216,8 @@ tasks.create("updateSupportListsDoc") {
 
     with(project.file("supports.md")) {
         toPath().writeText(
-            builder, Charsets.UTF_8,
+            builder,
+            Charsets.UTF_8,
             StandardOpenOption.WRITE,
             StandardOpenOption.TRUNCATE_EXISTING,
             StandardOpenOption.CREATE

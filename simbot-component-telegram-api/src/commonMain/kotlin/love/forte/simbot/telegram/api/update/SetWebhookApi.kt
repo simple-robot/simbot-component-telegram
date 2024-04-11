@@ -56,20 +56,26 @@ public class SetWebhookApi private constructor(params: Params) : FormBodyTelegra
     public companion object Factory {
         private const val NAME = "setWebhook"
         private fun Params.toForm(): MultiPartFormDataContent {
-            return MultiPartFormDataContent(formData {
-                append("url", url)
-                ipAddress?.also { append("ip_address", it) }
-                maxConnections?.also { append("max_connections", it) }
-                allowedUpdates?.also { append("allowed_updates", it) }
-                dropPendingUpdates?.also { append("drop_pending_updates", it) }
-                secretToken?.also { append("secret_token", it) }
+            return MultiPartFormDataContent(
+                formData {
+                    append("url", url)
+                    ipAddress?.also { append("ip_address", it) }
+                    maxConnections?.also { append("max_connections", it) }
+                    allowedUpdates?.also { append("allowed_updates", it) }
+                    dropPendingUpdates?.also { append("drop_pending_updates", it) }
+                    secretToken?.also { append("secret_token", it) }
 
-                // upload file
-                certificate?.includeTo("certificate", headers {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=\"file\"")
-                }, this)
-            })
+                    // upload file
+                    certificate?.includeTo(
+                        "certificate",
+                        headers {
+                            append(HttpHeaders.ContentType, "image/png")
+                            append(HttpHeaders.ContentDisposition, "filename=\"file\"")
+                        },
+                        this
+                    )
+                }
+            )
         }
 
     }

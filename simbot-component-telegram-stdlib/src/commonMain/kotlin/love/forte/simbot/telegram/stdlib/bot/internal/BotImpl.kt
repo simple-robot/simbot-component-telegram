@@ -81,9 +81,11 @@ internal class BotImpl(
 
         val engine = configuration.apiClientEngine
         val engineFactory = configuration.apiClientEngineFactory
-        if (engine != null && engineFactory != null) {
-            throw IllegalArgumentException("`apiClientEngine` and `apiClientEngineFactory` can only have one that is not null.")
+        // 不能二者都有
+        require(!(engine != null && engineFactory != null)) {
+            "`apiClientEngine` and `apiClientEngineFactory` can only have one that is not null."
         }
+
 
         return when {
             engine == null && engineFactory == null -> HttpClient {
@@ -102,7 +104,7 @@ internal class BotImpl(
             }
 
             else ->
-                throw IllegalArgumentException()
+                throw IllegalArgumentException("`engine` and `engineFactory` only need one.")
         }
     }
 
@@ -134,7 +136,7 @@ internal class BotImpl(
 
     override suspend fun pushUpdate(update: Update, raw: String?) {
         job.ensureActive()
-        val channel = eventChannel ?: throw IllegalStateException("Bot not started yet")
+        val channel = eventChannel ?: error("Bot not started yet")
         val event = update.resolveToEvent(raw)
 
         channel.send(event)
@@ -238,13 +240,21 @@ internal class BotImpl(
                         if (retry.isDelayMillisMultiplyByRetryTimes) {
                             delayMillis { retryTimes ->
                                 (retry.delayMillis * retryTimes).also { millis ->
-                                    eventLogger.debug("LongPolling next retry delay millis {} in retry {}", millis, retryTimes)
+                                    eventLogger.debug(
+                                        "LongPolling next retry delay millis {} in retry {}",
+                                        millis,
+                                        retryTimes
+                                    )
                                 }
                             }
                         } else {
                             delayMillis { retryTimes ->
                                 retry.delayMillis.also { millis ->
-                                    eventLogger.debug("LongPolling next retry delay millis {} in retry {}", millis, retryTimes)
+                                    eventLogger.debug(
+                                        "LongPolling next retry delay millis {} in retry {}",
+                                        millis,
+                                        retryTimes
+                                    )
                                 }
                             }
                         }
@@ -319,7 +329,8 @@ internal class BotImpl(
                 }
 
                 emptyList()
-            }) { api ->
+            }
+        ) { api ->
             api.requestData(client, token, server)
         }.collect { update ->
             pushUpdate(update)

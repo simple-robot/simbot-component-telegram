@@ -35,7 +35,7 @@ useK2()
 configJavaCompileWithModule("simbot.component.telegram.stdlib")
 apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
-//configJsTestTasks()
+// configJsTestTasks()
 
 kotlin {
     explicitApi()
@@ -122,9 +122,9 @@ kotlin.sourceSets.commonMain {
     tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
 }
 
-// // see https://github.com/google/ksp/issues/567#issuecomment-1510477456
+// see https://github.com/google/ksp/issues/567#issuecomment-1510477456
 // tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-//     if(name != "kspCommonMainKotlinMetadata") {
+//     if (name != "kspCommonMainKotlinMetadata") {
 //         dependsOn("kspCommonMainKotlinMetadata")
 //     }
 // }

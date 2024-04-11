@@ -15,15 +15,22 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.core.repository.Repositories
 import love.forte.gradle.common.core.repository.SimpleCredentials
+import love.forte.gradle.common.publication.SonatypeContact
 import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger("Sonatype Userinfo")
 
 private val sonatypeUserInfo by lazy {
     val userInfo = love.forte.gradle.common.publication.sonatypeUserInfoOrNull
-    
+
+    val username = systemProp(SonatypeContact.SONATYPE_USERNAME) ?: return@lazy null
+    val password = systemProp(SonatypeContact.SONATYPE_PASSWORD) ?: return@lazy null
+    logger.info("sonatype.username: {}", username)
+    logger.info("sonatype.password: {}", password)
+
     if (userInfo == null) {
         logger.warn("sonatype.username or sonatype.password is null, cannot config nexus publishing.")
     }

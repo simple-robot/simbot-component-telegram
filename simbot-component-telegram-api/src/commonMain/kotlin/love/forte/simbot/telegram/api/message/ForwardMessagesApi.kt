@@ -123,6 +123,7 @@ public class ForwardMessagesApi private constructor(body: Body) : SimpleBodyTele
     @Suppress("MemberVisibilityCanBePrivate")
     public class Builder {
         // Requires
+
         /**
          * @see Body.chatId
          */

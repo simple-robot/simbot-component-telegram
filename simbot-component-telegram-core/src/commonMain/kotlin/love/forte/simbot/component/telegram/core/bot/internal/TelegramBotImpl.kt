@@ -35,6 +35,7 @@ import love.forte.simbot.component.telegram.core.event.TelegramUnsupportedEvent
 import love.forte.simbot.component.telegram.core.event.internal.TelegramChannelMessageEventImpl
 import love.forte.simbot.component.telegram.core.event.internal.TelegramChatGroupMessageEventImpl
 import love.forte.simbot.component.telegram.core.event.internal.TelegramPrivateMessageEventImpl
+import love.forte.simbot.component.telegram.core.event.internal.TelegramSuperGroupMessageEventImpl
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.onEachError
@@ -73,7 +74,7 @@ internal class TelegramBotImpl(
     private var _userInfo: User? = null
 
     override val userInfo: User
-        get() = _userInfo ?: throw IllegalStateException("`userInfo` has not been initialized yet.")
+        get() = _userInfo ?: error("`userInfo` has not been initialized yet.")
 
     override suspend fun queryUserInfo(): User {
         return GetMeApi.create().requestDataBy(source).also {
@@ -170,8 +171,16 @@ internal fun subscribeInternalProcessor(
                 }
 
                 // supergroup?
+                ChatType.SUPERGROUP -> {
+                    pushEvent(
+                        TelegramSuperGroupMessageEventImpl(
+                            bot = bot,
+                            sourceEvent = context,
+                            sourceContent = value
+                        )
+                    )
+                }
 
-                // TODO others
                 else -> onMismatchUpdateEvent(name, value, update, context)
             }
         }

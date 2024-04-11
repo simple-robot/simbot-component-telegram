@@ -55,13 +55,14 @@ public class CopyMessagesApi private constructor(body: Body) : SimpleBodyTelegra
          * Create a [CopyMessagesApi] based only on required.
          */
         @JvmStatic
-        public fun create(chatId: ChatId, fromChatId: ChatId, messageIds: Collection<Int>): CopyMessagesApi = CopyMessagesApi(
-            Body(
-                chatId = chatId,
-                fromChatId = fromChatId,
-                messageIds = messageIds
+        public fun create(chatId: ChatId, fromChatId: ChatId, messageIds: Collection<Int>): CopyMessagesApi =
+            CopyMessagesApi(
+                Body(
+                    chatId = chatId,
+                    fromChatId = fromChatId,
+                    messageIds = messageIds
+                )
             )
-        )
 
         /**
          * Create a [Builder].
@@ -123,7 +124,8 @@ public class CopyMessagesApi private constructor(body: Body) : SimpleBodyTelegra
      */
     @Suppress("MemberVisibilityCanBePrivate")
     public class Builder {
-        // Requires
+        // Region Requires
+
         /**
          * @see Body.chatId
          */

@@ -19,6 +19,7 @@ package love.forte.simbot.component.telegram.core.message
 
 import love.forte.simbot.common.id.IntID
 import love.forte.simbot.common.id.IntID.Companion.ID
+import love.forte.simbot.common.id.LongID
 import love.forte.simbot.message.AggregatedMessageReceipt
 import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.message.SingleMessageReceipt
@@ -34,6 +35,7 @@ public interface TelegramMessageSourceAware {
 
 public abstract class TelegramSingleMessageReceipt : TelegramMessageReceipt, SingleMessageReceipt() {
     abstract override val id: IntID
+    public abstract val chatId: LongID
 }
 
 

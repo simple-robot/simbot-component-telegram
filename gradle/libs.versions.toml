@@ -19,6 +19,8 @@ ksp = "1.9.22-1.0.17"
 kotlinPoet = "1.16.0"
 # https://mockk.io/
 mockk = "1.13.10"
+# https://detekt.dev/docs/intro
+detekt = "1.23.3"
 
 [libraries]
 # simbot
@@ -125,6 +127,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [bundles]
 gradle-common = ["gradle-common-core", "gradle-common-multiplatform", "gradle-common-publication"]

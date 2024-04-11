@@ -17,11 +17,13 @@
 
 package love.forte.simbot.component.telegram.core.event.internal
 
-import love.forte.simbot.component.telegram.core.actor.internal.toTelegramUserContact
+import love.forte.simbot.component.telegram.core.actor.internal.toTelegramChatGroup
+import love.forte.simbot.component.telegram.core.actor.internal.toTelegramMember
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
 import love.forte.simbot.component.telegram.core.event.StdlibEvent
-import love.forte.simbot.component.telegram.core.event.TelegramPrivateMessageEvent
+import love.forte.simbot.component.telegram.core.event.TelegramChatGroupMessageEvent
+import love.forte.simbot.component.telegram.core.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.core.message.internal.TelegramMessageContentImpl
 import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
@@ -38,22 +40,27 @@ import love.forte.simbot.telegram.type.ReplyParameters
  *
  * @author ForteScarlet
  */
-internal class TelegramPrivateMessageEventImpl(
+internal class TelegramSuperGroupMessageEventImpl(
     override val bot: TelegramBotImpl,
     override val sourceEvent: StdlibEvent,
+    // 记得确保 chat.type == SUPERGROUP
     override val sourceContent: Message
-) : TelegramPrivateMessageEvent {
-    override val messageContent: MessageContent = TelegramMessageContentImpl(bot, sourceContent)
+) : TelegramChatGroupMessageEvent {
+    override val messageContent: TelegramMessageContent = TelegramMessageContentImpl(bot, sourceContent)
 
-    override suspend fun content(): love.forte.simbot.component.telegram.core.actor.TelegramContact {
-        return sourceContent.from!!.toTelegramUserContact(bot, sourceContent.chat)
+    override suspend fun content(): love.forte.simbot.component.telegram.core.actor.TelegramChatGroup {
+        return sourceContent.chat.toTelegramChatGroup(bot)
+    }
+
+    override suspend fun author(): love.forte.simbot.component.telegram.core.actor.TelegramMember {
+        // TODO from!!? check senderChat?
+        return sourceContent.from!!.toTelegramMember(bot)
     }
 
     override suspend fun reply(text: String): TelegramMessageReceipt {
         return buildSendMessageApi(ChatId(sourceContent.chat.id), text) {
             replyParameters = ReplyParameters(sourceContent.messageId)
         }.requestDataBy(bot).toTelegramMessageReceipt(bot)
-
     }
 
     override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt {
@@ -80,6 +87,6 @@ internal class TelegramPrivateMessageEventImpl(
     }
 
     override fun toString(): String {
-        return "TelegramPrivateMessageEvent(name=${sourceEvent.name})"
+        return "TelegramSuperGroupMessageEvent(name=${sourceEvent.name})"
     }
 }

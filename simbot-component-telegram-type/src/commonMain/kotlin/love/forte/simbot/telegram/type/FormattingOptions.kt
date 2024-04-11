@@ -61,5 +61,4 @@ public enum class FormattingOption(public val value: String) {
      * [Markdown style](https://core.telegram.org/bots/api#markdown-style)
      */
     MARKDOWN(FORMATTING_OPTION_MARKDOWN_STYLE),
-    ;
 }

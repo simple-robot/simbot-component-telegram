@@ -55,12 +55,15 @@ public sealed class ReplyMarkupWrapper {
         @JvmStatic
         @JvmName("valueOf")
         public fun InlineKeyboardMarkup.wrapper(): ReplyMarkupWrapper = InlineKeyboardMarkupWrapper(this)
+
         @JvmStatic
         @JvmName("valueOf")
         public fun ReplyKeyboardMarkup.wrapper(): ReplyMarkupWrapper = ReplyKeyboardMarkupWrapper(this)
+
         @JvmStatic
         @JvmName("valueOf")
         public fun ReplyKeyboardRemove.wrapper(): ReplyMarkupWrapper = ReplyKeyboardRemoveWrapper(this)
+
         @JvmStatic
         @JvmName("valueOf")
         public fun ForceReply.wrapper(): ReplyMarkupWrapper = ForceReplyWrapper(this)
@@ -68,13 +71,14 @@ public sealed class ReplyMarkupWrapper {
 }
 
 
-private data class InlineKeyboardMarkupWrapper(override val value: InlineKeyboardMarkup): ReplyMarkupWrapper()
-private data class ReplyKeyboardMarkupWrapper(override val value: ReplyKeyboardMarkup): ReplyMarkupWrapper()
-private data class ReplyKeyboardRemoveWrapper(override val value: ReplyKeyboardRemove): ReplyMarkupWrapper()
-private data class ForceReplyWrapper(override val value: ForceReply): ReplyMarkupWrapper()
+private data class InlineKeyboardMarkupWrapper(override val value: InlineKeyboardMarkup) : ReplyMarkupWrapper()
+private data class ReplyKeyboardMarkupWrapper(override val value: ReplyKeyboardMarkup) : ReplyMarkupWrapper()
+private data class ReplyKeyboardRemoveWrapper(override val value: ReplyKeyboardRemove) : ReplyMarkupWrapper()
+private data class ForceReplyWrapper(override val value: ForceReply) : ReplyMarkupWrapper()
 
 
 internal object ReplyMarkupWrapperSerializer : KSerializer<ReplyMarkupWrapper> {
+    @Suppress("ReturnCount")
     override fun deserialize(decoder: Decoder): ReplyMarkupWrapper {
         // deserialize unsupported,
         // decode to JsonObject.

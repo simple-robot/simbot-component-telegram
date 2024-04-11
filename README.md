@@ -59,7 +59,7 @@ Serialization and network requests are based on [Kotlin serialization](https://g
 Provides definitions for most types in Telegram and supports serialization based on
 [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization).
 
-👉 [Go to Modules](simbot-component-telegram-type) to learn more.
+👉 [Go to the module](simbot-component-telegram-type) to learn more.
 
 ### ⭐ API module
 
@@ -71,7 +71,7 @@ is a simple, efficient and lightweight API implementation module.
 This module provides very little extra implementation.
 The goal is to preserve the feel of the original API as much as possible without overwrapping it.
 
-👉 [Go to Modules](simbot-component-telegram-api) to learn more.
+👉 [Go to the module](simbot-component-telegram-api) to learn more.
 
 ### ⭐ Stdlib module
 
@@ -83,7 +83,7 @@ including the ability to subscribe to events.
 
 Again, the goal is to provide as much of the feel of the original API as possible without overwrapping it.
 
-👉 [Go to Modules](simbot-component-telegram-stdlib) to learn more.
+👉 [Go to the module](simbot-component-telegram-stdlib) to learn more.
 
 ### ⭐ Core Component module
 

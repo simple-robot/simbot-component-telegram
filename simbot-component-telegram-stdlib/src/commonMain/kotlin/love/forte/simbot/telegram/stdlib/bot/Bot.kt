@@ -350,7 +350,7 @@ public enum class SubscribeSequence {
      * The normal sequence level.
      * Always executes asynchronously after [PRE].
      */
-    NORMAL;
+    NORMAL
 }
 
 /**

@@ -126,7 +126,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         @SerialName("chat_id")
         public val chatId: ChatId, // Integer or String
         public val text: String,
-
+        // Optionals
         @SerialName("message_thread_id")
         public val messageThreadId: Int? = null,
         @SerialName("parse_mode")
@@ -140,7 +140,6 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         public val protectContent: Boolean? = null,
         @SerialName("reply_parameters")
         public val replyParameters: ReplyParameters? = null,
-
         @SerialName("reply_markup")
         public val replyMarkup: ReplyMarkupWrapper? = null,
     )
@@ -174,7 +173,12 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
         /**
          * @see Body.text
          */
-        public var text: String? = null
+        public var text: StringBuilder? = null
+
+        public fun text(append: CharSequence) {
+            val apd = text ?: StringBuilder().also { text = it }
+            apd.append(append)
+        }
 
         // Optional
 
@@ -265,7 +269,7 @@ public class SendMessageApi private constructor(body: Body) : SimpleBodyTelegram
 
             return Body(
                 chatId = chatId,
-                text = text,
+                text = text.toString(),
                 messageThreadId = messageThreadId,
                 parseMode = parseMode,
                 entities = entities,
@@ -302,6 +306,6 @@ public inline fun buildSendMessageApi(
     block: Builder.() -> Unit = {}
 ): SendMessageApi = buildSendMessageApi {
     this.chatId = chatId
-    this.text = text
+    this.text = StringBuilder(text)
     block()
 }

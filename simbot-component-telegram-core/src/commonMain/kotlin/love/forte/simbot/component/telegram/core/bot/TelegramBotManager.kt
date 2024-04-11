@@ -61,7 +61,7 @@ public interface TelegramBotManager : BotManager {
         if (configuration !is SerializableTelegramBotConfiguration) {
             throw UnsupportedBotConfigurationException(
                 "Expect: love.forte.simbot.component.telegram.bot.SerializableTelegramBotConfiguration, " +
-                        "but $configuration(${configuration::class})"
+                    "but $configuration(${configuration::class})"
             )
         }
 
@@ -134,7 +134,10 @@ public interface TelegramBotManager : BotManager {
             configurer: ConfigurerFunction<TelegramBotManagerConfiguration>
         ): TelegramBotManager {
             val component = context.components.find { it is TelegramComponent } as? TelegramComponent
-                ?: throw NoSuchComponentException("TelegramComponent(id=${TelegramComponent.ID_VALUE}) not found in current context. Maybe you didn't install it in application?")
+                ?: throw NoSuchComponentException(
+                    "TelegramComponent(id=${TelegramComponent.ID_VALUE}) not found in current context. " +
+                        "Maybe you didn't install it in application?"
+                )
 
             val configuration = TelegramBotManagerConfiguration().invokeBy(configurer)
             val coroutineContext = configuration.coroutineContext
@@ -193,7 +196,9 @@ public interface TelegramBotManagerFactoryConfigurerProvider :
  * ```
  *
  */
-public fun PluginInstaller.useTelegramBotManager(configurer: ConfigurerFunction<TelegramBotManagerConfiguration>? = null) {
+public fun PluginInstaller.useTelegramBotManager(
+    configurer: ConfigurerFunction<TelegramBotManagerConfiguration>? = null
+) {
     if (configurer == null) {
         install(TelegramBotManager)
     } else {

@@ -140,7 +140,8 @@ public class CopyMessageApi private constructor(body: Body) : SimpleBodyTelegram
      */
     @Suppress("MemberVisibilityCanBePrivate")
     public class Builder {
-        // Requires
+        //region Requires
+
         /**
          * @see Body.chatId
          */
@@ -181,6 +182,7 @@ public class CopyMessageApi private constructor(body: Body) : SimpleBodyTelegram
         }
 
         public var messageId: Int? = null
+        //endregion
 
         // Optionals
         public var messageThreadId: Int? = null
