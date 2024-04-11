@@ -31,6 +31,7 @@
 > [Feel free to share](https://github.com/simple-robot/simbot-component-telegram/issues)
 > or join the [communities](https://simbot.forte.love/communities.html).
 
+> [!warning]
 > This content is machine-translated.
 
 This is a [**Telegram Bot**][telegram bot doc] API/SDK Kotlin multi-platform library based on 
