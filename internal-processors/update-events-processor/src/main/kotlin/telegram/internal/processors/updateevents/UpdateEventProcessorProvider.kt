@@ -147,6 +147,11 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
         val updateValuesFile = FileSpec.builder(UPDATE_PACKAGE, FILE_NAME)
             .jvmMultifileClass()
             .jvmName(FILE_JVM_NAME)
+            .addAnnotation(
+                AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S, %S", "ALL", "unused")
+                    .build()
+            )
             .addFileComment(
                 """
                 ****************************

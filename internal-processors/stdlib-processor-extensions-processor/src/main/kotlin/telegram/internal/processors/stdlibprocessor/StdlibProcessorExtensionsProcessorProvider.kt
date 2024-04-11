@@ -96,6 +96,11 @@ private class UpdateEventProcessor(private val environment: SymbolProcessorEnvir
 
         val file = FileSpec.builder(BOT_CLASS_PACKAGE, FILE_NAME).apply {
             functions.forEach { addFunction(it) }
+            addAnnotation(
+                AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S, %S", "ALL", "unused")
+                    .build()
+            )
             indent("    ")
             addFileComment(
                 """

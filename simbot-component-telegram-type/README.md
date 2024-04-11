@@ -53,5 +53,3 @@ When officials modify/extend a type (such as adding fields), binary compatibilit
 (the parameters of the constructor have changed).
 
 This change usually increments the `minor` version number.
-
-(There are also plans to find a version to rewrite them into a more compatible form (such as the common class).)
