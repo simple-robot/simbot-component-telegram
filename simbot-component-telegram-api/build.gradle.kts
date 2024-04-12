@@ -87,6 +87,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             // https://ktor.io/docs/http-client-testing.html
             implementation(libs.ktor.client.mock)
+            implementation(libs.kotlinx.serialization.properties)
         }
 
         jvmMain.dependencies {

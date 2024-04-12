@@ -20,10 +20,16 @@ package love.forte.simbot.telegram.api.update
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.common.ktor.inputfile.InputFile
 import love.forte.simbot.telegram.api.FormBodyTelegramApi
+import love.forte.simbot.telegram.api.Telegram
 import love.forte.simbot.telegram.api.TelegramApiResult
+import love.forte.simbot.telegram.api.utils.FormParamHeaderHandler
+import love.forte.simbot.telegram.api.utils.KtorFormSerializer
+import kotlin.jvm.JvmStatic
 
 
 /**
@@ -55,27 +61,37 @@ import love.forte.simbot.telegram.api.TelegramApiResult
 public class SetWebhookApi private constructor(params: Params) : FormBodyTelegramApi<Boolean>() {
     public companion object Factory {
         private const val NAME = "setWebhook"
+        private val formSerializer = KtorFormSerializer(
+            Params.serializer(),
+            Telegram.DefaultJson,
+            FormParamHeaderHandler.isInputFileAndNotStringValueInputFileWithoutParams {
+                headers {
+                    append(HttpHeaders.ContentType, "image/png")
+                    append(HttpHeaders.ContentDisposition, "filename=\"file\"")
+                }
+            }
+        )
+
         private fun Params.toForm(): MultiPartFormDataContent {
             return MultiPartFormDataContent(
-                formData {
-                    append("url", url)
-                    ipAddress?.also { append("ip_address", it) }
-                    maxConnections?.also { append("max_connections", it) }
-                    allowedUpdates?.also { append("allowed_updates", it) }
-                    dropPendingUpdates?.also { append("drop_pending_updates", it) }
-                    secretToken?.also { append("secret_token", it) }
-
-                    // upload file
-                    certificate?.includeTo(
-                        "certificate",
-                        headers {
-                            append(HttpHeaders.ContentType, "image/png")
-                            append(HttpHeaders.ContentDisposition, "filename=\"file\"")
-                        },
-                        this
-                    )
-                }
+                formData(values = formSerializer.serialize(this).toTypedArray())
             )
+        }
+
+        /**
+         * Create [SetWebhookApi].
+         */
+        @JvmStatic
+        public fun create(params: Params): SetWebhookApi {
+            return SetWebhookApi(params)
+        }
+
+        /**
+         * Create [SetWebhookApi].
+         */
+        @JvmStatic
+        public fun create(url: String): SetWebhookApi {
+            return create(Params(url = url))
         }
 
     }
@@ -124,13 +140,19 @@ public class SetWebhookApi private constructor(params: Params) : FormBodyTelegra
      * The header is useful to ensure that the request comes from a webhook set by you.
      *
      */
+    @Serializable
     public data class Params(
         var url: String,
         var certificate: InputFile? = null,
+        @SerialName("ip_address")
         var ipAddress: String? = null,
+        @SerialName("max_connections")
         var maxConnections: Int? = null,
+        @SerialName("allowed_updates")
         var allowedUpdates: Collection<String>? = null,
+        @SerialName("drop_pending_updates")
         var dropPendingUpdates: String? = null,
+        @SerialName("secret_token")
         var secretToken: String? = null,
     ) {
         public constructor(urlValue: String) : this(url = urlValue)
