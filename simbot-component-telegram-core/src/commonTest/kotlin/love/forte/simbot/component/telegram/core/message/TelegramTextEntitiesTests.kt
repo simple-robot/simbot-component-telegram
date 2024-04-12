@@ -41,10 +41,8 @@ class TelegramTextEntitiesTests {
             preCode,
             customEmoji,
             simple
-        ).toMessages().resolve {
-            SendMessageApi.builder().apply {
-                chatId = ChatId(10000)
-            }
+        ).toMessages().resolve(ChatId(10000)) {
+            SendMessageApi.builder().also { it.chatId = ChatId(10000) }
         }
 
         val body = resolved.first()().body
@@ -119,10 +117,8 @@ class TelegramTextEntitiesTests {
             preCode,
             customEmoji,
             simple
-        ).toMessages().resolve {
-            SendMessageApi.builder().apply {
-                chatId = ChatId(10000)
-            }
+        ).toMessages().resolve(ChatId(10000)) {
+            SendMessageApi.builder().also { it.chatId = ChatId(10000) }
         }
 
         val body = resolved.first()().body

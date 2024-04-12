@@ -28,6 +28,9 @@ module simbot.component.telegram.core {
     requires transitive simbot.component.telegram.type;
     requires transitive simbot.component.telegram.api;
     requires transitive simbot.component.telegram.stdlib;
+    requires simbot.common.ktor.inputfile;
+    requires io.ktor.io;
+    requires io.ktor.client.core;
 
 
     exports love.forte.simbot.component.telegram.core;

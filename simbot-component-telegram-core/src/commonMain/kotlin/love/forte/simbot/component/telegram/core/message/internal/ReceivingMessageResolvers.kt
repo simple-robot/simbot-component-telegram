@@ -20,6 +20,7 @@ package love.forte.simbot.component.telegram.core.message.internal
 import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.component.telegram.core.message.StdlibMessage
 import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
+import love.forte.simbot.component.telegram.core.message.TelegramPhotoSizesImage
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.MessagesBuilder
 import love.forte.simbot.telegram.type.MessageEntity
@@ -108,7 +109,9 @@ internal fun StdlibMessage.toMessages(): Messages {
     // TODO animation: Animation
     // TODO audio: Audio
     // TODO document: Document
-    // TODO photo: List<PhotoSize>
+    // photo: List<PhotoSize>
+    builder.resolveImage(this)
+
     // TODO sticker: Sticker
     // TODO story: Story
     // TODO video: Video
@@ -126,6 +129,15 @@ internal fun StdlibMessage.toMessages(): Messages {
     // TODO location: Location
 
     return builder.build()
+}
+
+/**
+ * 解析 photo 到 [TelegramPhotoSizesImage].
+ */
+private fun MessagesBuilder.resolveImage(source: StdlibMessage) {
+    source.photo?.also { photo ->
+        add(TelegramPhotoSizesImage(photo))
+    }
 }
 
 

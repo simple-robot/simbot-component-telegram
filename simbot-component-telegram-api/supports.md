@@ -26,6 +26,7 @@
   -  [x] [ForwardMessageApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/message/ForwardMessageApi.kt)
   -  [x] [ForwardMessagesApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/message/ForwardMessagesApi.kt)
   -  [x] [SendMessageApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/message/SendMessageApi.kt)
+  -  [x] [SendPhotoApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/message/SendPhotoApi.kt)
 -  [x] [TelegramApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/TelegramApi.kt)
 - [update](src/commonMain/kotlin/love/forte/simbot/telegram/api/update)
   -  [x] [DeleteWebhookApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/update/DeleteWebhookApi.kt)
