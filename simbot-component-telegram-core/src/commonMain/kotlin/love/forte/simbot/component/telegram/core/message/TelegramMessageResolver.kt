@@ -21,6 +21,7 @@ package love.forte.simbot.component.telegram.core.message
 
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
+import love.forte.simbot.component.telegram.core.message.internal.ImageSendingResolver
 import love.forte.simbot.component.telegram.core.message.internal.TelegramAggregatedMessageIdReceiptImpl
 import love.forte.simbot.component.telegram.core.message.internal.TextSendingResolver
 import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
@@ -80,10 +81,11 @@ internal suspend fun TelegramBotImpl.send(
     chatId: Long,
     builderFactory: BuilderFactory = DefaultBuilderFactory
 ): TelegramMessageReceipt {
-    val funcList = message.resolve {
+    val cid = ChatId(chatId)
+    val funcList = message.resolve(cid) {
         builderFactory().also {
             if (it.chatId == null) {
-                it.chatId = ChatId(chatId)
+                it.chatId = cid
             }
         }
     }
@@ -159,13 +161,14 @@ private const val MESSAGE_ID_MARK = 0b10
 private const val MESSAGE_ALL_MARK = MESSAGE_MARK or MESSAGE_ID_MARK
 
 internal suspend fun Message.resolve(
+    chatId: ChatId,
     builderFactory: BuilderFactory = DefaultBuilderFactory
 ): List<SendingMessageResolvedFunction> {
     return when (val m = this) {
         is Message.Element -> {
             val context = SendingMessageResolverContext(builderFactory)
             for (resolver in sendingResolvers) {
-                resolver.resolve(0, m, this, context)
+                resolver.resolve(chatId, 0, m, this, context)
             }
 
             context.end()
@@ -179,7 +182,7 @@ internal suspend fun Message.resolve(
             val context = SendingMessageResolverContext(builderFactory)
             m.forEachIndexed { index, element ->
                 for (resolver in sendingResolvers) {
-                    resolver.resolve(index, element, this, context)
+                    resolver.resolve(chatId, index, element, this, context)
                 }
             }
 
@@ -190,6 +193,7 @@ internal suspend fun Message.resolve(
 
 internal fun interface SendingMessageResolver {
     suspend fun resolve(
+        chatId: ChatId,
         index: Int,
         element: Message.Element,
         source: Message,
@@ -199,6 +203,7 @@ internal fun interface SendingMessageResolver {
 
 private val sendingResolvers = listOf(
     TextSendingResolver,
+    ImageSendingResolver,
     TelegramMessageResultApiElementSendingResolver,
 )
 

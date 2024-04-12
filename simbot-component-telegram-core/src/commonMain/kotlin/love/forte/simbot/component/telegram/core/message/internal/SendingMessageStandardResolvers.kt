@@ -18,16 +18,23 @@
 package love.forte.simbot.component.telegram.core.message.internal
 
 import love.forte.simbot.common.id.literal
+import love.forte.simbot.common.ktor.inputfile.InputFile
 import love.forte.simbot.component.telegram.core.message.SendingMessageResolver
 import love.forte.simbot.component.telegram.core.message.SendingMessageResolverContext
 import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
 import love.forte.simbot.component.telegram.core.message.TelegramTextParseMode
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.PlainText
+import love.forte.simbot.message.*
+import love.forte.simbot.resource.ByteArrayResource
+import love.forte.simbot.resource.StringResource
+import love.forte.simbot.telegram.api.message.SendPhotoApi
+import love.forte.simbot.telegram.api.message.buildSendPhotoApi
+import love.forte.simbot.telegram.api.utils.StringValueInputFile
+import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.MessageEntity
 
 internal object TextSendingResolver : SendingMessageResolver {
     override suspend fun resolve(
+        chatId: ChatId,
         index: Int,
         element: Message.Element,
         source: Message,
@@ -107,3 +114,71 @@ internal object TextSendingResolver : SendingMessageResolver {
     }
 }
 
+/**
+ * 解析发送图片的内容，将它们解析为 [SendPhotoApi].
+ */
+internal object ImageSendingResolver : SendingMessageResolver {
+    override suspend fun resolve(
+        chatId: ChatId,
+        index: Int,
+        element: Message.Element,
+        source: Message,
+        context: SendingMessageResolverContext
+    ) {
+        if (element is Image) {
+            when (element) {
+                // 包括 TelegramPhotoImage
+                is RemoteImage -> {
+                    context.addToStackMsg {
+                        buildSendPhotoApi {
+                            this.chatId = chatId
+                            this.photo = StringValueInputFile.create(element.id.literal)
+                            // TODO 可共享的状态元素?
+                        }
+                    }
+                }
+
+                is OfflineImage -> {
+                    context.addToStackMsg {
+                        buildSendPhotoApi {
+                            this.chatId = chatId
+                            element.toInputFileCommon()?.also { inputFile ->
+                                this.photo = inputFile
+                            }
+                            // TODO null warning?
+                            // TODO 可共享的状态元素?
+                        }
+                    }
+                }
+
+                is IDAwareImage -> {
+                    // with a log?
+                    context.addToStackMsg {
+                        buildSendPhotoApi {
+                            this.chatId = chatId
+                            this.photo = StringValueInputFile.create(element.id.literal)
+                            // TODO 可共享的状态元素?
+                        }
+                    }
+                }
+                // other: ignore.
+            }
+        }
+    }
+}
+
+
+internal expect fun OfflineImage.toInputFile(): InputFile?
+
+
+internal fun OfflineImage.toInputFileCommon(): InputFile? {
+    return when (val img = this) {
+        is OfflineByteArrayImage -> InputFile(img.data())
+        is OfflineResourceImage -> when (val resource = img.resource) {
+            is ByteArrayResource, is StringResource -> InputFile(resource.data())
+            else -> toInputFile()
+        }
+
+        else -> toInputFile()
+    }
+}
