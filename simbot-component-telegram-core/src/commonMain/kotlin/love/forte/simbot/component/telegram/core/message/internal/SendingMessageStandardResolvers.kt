@@ -19,18 +19,37 @@ package love.forte.simbot.component.telegram.core.message.internal
 
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.common.ktor.inputfile.InputFile
-import love.forte.simbot.component.telegram.core.message.SendingMessageResolver
-import love.forte.simbot.component.telegram.core.message.SendingMessageResolverContext
-import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
-import love.forte.simbot.component.telegram.core.message.TelegramTextParseMode
+import love.forte.simbot.component.telegram.core.message.*
 import love.forte.simbot.message.*
 import love.forte.simbot.resource.ByteArrayResource
+import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.StringResource
+import love.forte.simbot.telegram.api.message.SendAudioApi
 import love.forte.simbot.telegram.api.message.SendPhotoApi
+import love.forte.simbot.telegram.api.message.buildSendAudioApi
 import love.forte.simbot.telegram.api.message.buildSendPhotoApi
 import love.forte.simbot.telegram.api.utils.StringValueInputFile
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.MessageEntity
+
+internal object SendingMarksResolver : SendingMessageResolver {
+    override suspend fun resolve(
+        chatId: ChatId,
+        index: Int,
+        element: Message.Element,
+        source: Message,
+        context: SendingMessageResolverContext
+    ) {
+        when (element) {
+            is TelegramProtectContent -> {
+                context.markProtectContent()
+            }
+            is TelegramDisableNotification -> {
+                context.markDisableNotification()
+            }
+        }
+    }
+}
 
 internal object TextSendingResolver : SendingMessageResolver {
     override suspend fun resolve(
@@ -125,39 +144,47 @@ internal object ImageSendingResolver : SendingMessageResolver {
         source: Message,
         context: SendingMessageResolverContext
     ) {
+        fun SendPhotoApi.Body.mark(marks: SendingMarks) {
+            if (marks.isProtectContent) {
+                protectContent = true
+            }
+            if (marks.isDisableNotification) {
+                disableNotification = true
+            }
+        }
+
         if (element is Image) {
             when (element) {
                 // 包括 TelegramPhotoImage
                 is RemoteImage -> {
-                    context.addToStackMsg {
+                    context.addToStackMsg { m ->
                         buildSendPhotoApi {
                             this.chatId = chatId
                             this.photo = StringValueInputFile.create(element.id.literal)
-                            // TODO 可共享的状态元素?
+                            mark(m)
                         }
                     }
                 }
 
                 is OfflineImage -> {
-                    context.addToStackMsg {
+                    context.addToStackMsg { m ->
                         buildSendPhotoApi {
                             this.chatId = chatId
-                            element.toInputFileCommon()?.also { inputFile ->
-                                this.photo = inputFile
-                            }
-                            // TODO null warning?
-                            // TODO 可共享的状态元素?
+                            this.photo = element.toInputFileCommon()
+                            mark(m)
+
                         }
                     }
                 }
 
                 is IDAwareImage -> {
                     // with a log?
-                    context.addToStackMsg {
+                    context.addToStackMsg { m ->
                         buildSendPhotoApi {
                             this.chatId = chatId
                             this.photo = StringValueInputFile.create(element.id.literal)
-                            // TODO 可共享的状态元素?
+                            mark(m)
+
                         }
                     }
                 }
@@ -167,18 +194,90 @@ internal object ImageSendingResolver : SendingMessageResolver {
     }
 }
 
+internal object TelegramAudioSendingResolver : SendingMessageResolver {
+    override suspend fun resolve(
+        chatId: ChatId,
+        index: Int,
+        element: Message.Element,
+        source: Message,
+        context: SendingMessageResolverContext
+    ) {
+        fun SendAudioApi.Body.mark(marks: SendingMarks) {
+            if (marks.isProtectContent) {
+                protectContent = true
+            }
+            if (marks.isDisableNotification) {
+                disableNotification = true
+            }
+        }
+
+        when (element) {
+            is TelegramAudio -> {
+                context.addToStackMsg { m ->
+                    buildSendAudioApi {
+                        this.chatId = chatId
+                        this.audio = StringValueInputFile.create(element.source.fileId)
+                        mark(m)
+                    }
+                }
+            }
+
+            is SendOnlyTelegramAudio -> when (element) {
+                is SendOnlyTelegramAudio.FileIdAudio -> {
+                    context.addToStackMsg { m ->
+                        buildSendAudioApi {
+                            this.chatId = chatId
+                            this.audio = StringValueInputFile.create(element.id.literal)
+                            mark(m)
+                        }
+                    }
+                }
+
+                is SendOnlyTelegramAudio.InputFileAudio -> {
+                    context.addToStackMsg { m ->
+                        buildSendAudioApi {
+                            this.chatId = chatId
+                            this.audio = element.inputFile
+                            mark(m)
+                        }
+                    }
+                }
+
+                is SendOnlyTelegramAudio.ResourceAudio -> {
+                    context.addToStackMsg { m ->
+                        buildSendAudioApi {
+                            this.chatId = chatId
+                            this.audio = element.resource.toInputFileCommon()
+                            mark(m)
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
+
 
 internal expect fun OfflineImage.toInputFile(): InputFile?
 
-
-internal fun OfflineImage.toInputFileCommon(): InputFile? {
+internal fun OfflineImage.toInputFileCommon(): InputFile {
     return when (val img = this) {
         is OfflineByteArrayImage -> InputFile(img.data())
         is OfflineResourceImage -> when (val resource = img.resource) {
             is ByteArrayResource, is StringResource -> InputFile(resource.data())
-            else -> toInputFile()
+            else -> toInputFile() ?: InputFile(img.data())
         }
 
-        else -> toInputFile()
+        else -> toInputFile() ?: InputFile(img.data())
+    }
+}
+
+internal expect fun Resource.toInputFile(): InputFile?
+
+internal fun Resource.toInputFileCommon(): InputFile {
+    return when (val res = this) {
+        is ByteArrayResource, is StringResource -> InputFile(res.data())
+        else -> toInputFile() ?: InputFile(res.data())
     }
 }

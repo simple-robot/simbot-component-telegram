@@ -78,7 +78,7 @@ private val DefaultFormParamHeaderHandler: FormParamHeaderHandler =
  *
  * @author ForteScarlet
  */
-internal class KtorFormSerializer<T>(
+internal open class KtorFormSerializer<T>(
     private val serializer: KSerializer<T>,
     private val structFormat: StringFormat,
     private val headerHandler: FormParamHeaderHandler = DefaultFormParamHeaderHandler

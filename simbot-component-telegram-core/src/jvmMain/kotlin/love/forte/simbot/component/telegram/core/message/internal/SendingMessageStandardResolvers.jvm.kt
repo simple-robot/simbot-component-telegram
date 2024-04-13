@@ -23,6 +23,7 @@ import love.forte.simbot.common.ktor.inputfile.InputFile
 import love.forte.simbot.message.*
 import love.forte.simbot.resource.FileResource
 import love.forte.simbot.resource.PathResource
+import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.URIResource
 import kotlin.io.path.toPath
 
@@ -60,6 +61,27 @@ internal actual fun OfflineImage.toInputFile(): InputFile? {
             }
 
             else -> null
+        }
+
+        else -> null
+    }
+}
+
+internal actual fun Resource.toInputFile(): InputFile? {
+    return when (val resource = this) {
+        is PathResource -> InputFile(resource.path)
+        is FileResource -> InputFile(resource.file)
+        is URIResource -> {
+            val uri = resource.uri
+            if (uri.scheme == "file") {
+                InputFile(uri.toPath())
+            } else {
+                InputFile(
+                    InputProvider {
+                        uri.toURL().openStream().asInput()
+                    }
+                )
+            }
         }
 
         else -> null

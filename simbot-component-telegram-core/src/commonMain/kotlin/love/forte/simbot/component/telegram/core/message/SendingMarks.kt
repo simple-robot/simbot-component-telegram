@@ -15,11 +15,20 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.core.message.internal
+package love.forte.simbot.component.telegram.core.message
 
-import love.forte.simbot.common.ktor.inputfile.InputFile
-import love.forte.simbot.message.OfflineImage
-import love.forte.simbot.resource.Resource
+internal const val PROTECT_CONTENT_MARK: Int = 1 shl 0
+internal const val DISABLE_NOTIFICATION_MARK: Int = 1 shl 1
 
-internal actual fun OfflineImage.toInputFile(): InputFile? = null
-internal actual fun Resource.toInputFile(): InputFile? = null
+
+internal class SendingMarks(
+    private val value: Int,
+) {
+    val isProtectContent: Boolean
+        get() = value and PROTECT_CONTENT_MARK != 0
+
+    val isDisableNotification: Boolean
+        get() = value and DISABLE_NOTIFICATION_MARK != 0
+
+
+}

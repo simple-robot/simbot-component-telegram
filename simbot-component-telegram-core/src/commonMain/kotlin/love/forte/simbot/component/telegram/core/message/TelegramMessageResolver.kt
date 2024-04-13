@@ -21,10 +21,7 @@ package love.forte.simbot.component.telegram.core.message
 
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
-import love.forte.simbot.component.telegram.core.message.internal.ImageSendingResolver
-import love.forte.simbot.component.telegram.core.message.internal.TelegramAggregatedMessageIdReceiptImpl
-import love.forte.simbot.component.telegram.core.message.internal.TextSendingResolver
-import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
+import love.forte.simbot.component.telegram.core.message.internal.*
 import love.forte.simbot.message.*
 import love.forte.simbot.telegram.api.TelegramApi
 import love.forte.simbot.telegram.api.message.*
@@ -76,13 +73,21 @@ internal suspend inline fun TelegramBotImpl.send(
     return send(messageContent.messages, chatId) { builderFactory() }
 }
 
-internal suspend fun TelegramBotImpl.send(
+internal fun TelegramBotImpl.toReceipt(chatId: Long, result: Any): TelegramSingleMessageReceipt {
+    return when (result) {
+        is StdlibMessage -> result.toTelegramMessageReceipt(this)
+        is MessageId -> result.toTelegramMessageReceipt(this, chatId)
+        else -> error("Unexpected result type: $result")
+    }
+}
+
+internal suspend inline fun TelegramBotImpl.send(
     message: Message,
     chatId: Long,
-    builderFactory: BuilderFactory = DefaultBuilderFactory
+    crossinline builderFactory: BuilderFactory = { SendMessageApi.builder() }
 ): TelegramMessageReceipt {
     val cid = ChatId(chatId)
-    val funcList = message.resolve(cid) {
+    val (funcList, marks) = message.resolve(cid) {
         builderFactory().also {
             if (it.chatId == null) {
                 it.chatId = cid
@@ -90,21 +95,13 @@ internal suspend fun TelegramBotImpl.send(
         }
     }
 
-    fun toReceipt(result: Any): TelegramSingleMessageReceipt {
-        return when (result) {
-            is StdlibMessage -> result.toTelegramMessageReceipt(this)
-            is MessageId -> result.toTelegramMessageReceipt(this, chatId)
-            else -> error("Unexpected result type: $result")
-        }
-    }
-
     when {
         funcList.isEmpty() -> error("Nothing to send, the message element list is empty.")
         funcList.size == 1 -> {
-            val result = funcList.first()().requestDataBy(this)
+            val result = funcList.first()(marks).requestDataBy(this)
             return when (result) {
-                is StdlibMessage -> toReceipt(result)
-                is MessageId -> toReceipt(result)
+                is StdlibMessage -> toReceipt(chatId, result)
+                is MessageId -> toReceipt(chatId, result)
                 else -> error("Unexpected result type: $result")
             }
         }
@@ -116,7 +113,7 @@ internal suspend fun TelegramBotImpl.send(
             // 11 -> 混杂的
             var messageTypeMark = 0
             val resultList = funcList.map {
-                val result = it.invoke().requestDataBy(this)
+                val result = it.invoke(marks).requestDataBy(this)
                 when (result) {
                     is StdlibMessage -> messageTypeMark = messageTypeMark or MESSAGE_MARK
                     is MessageId -> messageTypeMark = messageTypeMark or MESSAGE_ID_MARK
@@ -160,33 +157,39 @@ private const val MESSAGE_MARK = 0b01
 private const val MESSAGE_ID_MARK = 0b10
 private const val MESSAGE_ALL_MARK = MESSAGE_MARK or MESSAGE_ID_MARK
 
-internal suspend fun Message.resolve(
+internal data class ResolveResult(
+    val list: List<SendingMessageResolvedFunction>,
+    val marks: SendingMarks
+)
+
+internal suspend inline fun Message.resolve(
     chatId: ChatId,
-    builderFactory: BuilderFactory = DefaultBuilderFactory
-): List<SendingMessageResolvedFunction> {
+    crossinline builderFactory: BuilderFactory = { SendMessageApi.builder() }
+): ResolveResult {
     return when (val m = this) {
         is Message.Element -> {
-            val context = SendingMessageResolverContext(builderFactory)
+            val context = SendingMessageResolverContext { builderFactory() }
             for (resolver in sendingResolvers) {
                 resolver.resolve(chatId, 0, m, this, context)
             }
 
-            context.end()
+            val list = context.end()
+            ResolveResult(list, SendingMarks(context.marks))
         }
 
         is Messages -> {
             if (m.isEmpty()) {
-                return emptyList()
+                return ResolveResult(emptyList(), SendingMarks(0))
             }
 
-            val context = SendingMessageResolverContext(builderFactory)
+            val context = SendingMessageResolverContext { builderFactory() }
             m.forEachIndexed { index, element ->
                 for (resolver in sendingResolvers) {
                     resolver.resolve(chatId, index, element, this, context)
                 }
             }
 
-            context.end()
+            ResolveResult(context.end(), SendingMarks(context.marks))
         }
     }
 }
@@ -202,20 +205,30 @@ internal fun interface SendingMessageResolver {
 }
 
 private val sendingResolvers = listOf(
+    SendingMarksResolver,
     TextSendingResolver,
     ImageSendingResolver,
+    TelegramAudioSendingResolver,
     TelegramMessageResultApiElementSendingResolver,
 )
 
 internal typealias BuilderFactory = () -> SendMessageApi.Builder
 
-internal val DefaultBuilderFactory: BuilderFactory = { SendMessageApi.builder() }
-
-internal typealias SendingMessageResolvedFunction = () -> TelegramApi<*> // * 只能是 Message 或 MessageId
+internal typealias SendingMessageResolvedFunction = (SendingMarks) -> TelegramApi<*> // * 只能是 Message 或 MessageId
 
 internal class SendingMessageResolverContext(
     private val builderFactory: BuilderFactory,
 ) {
+    internal var marks = 0
+
+    fun markProtectContent() {
+        marks = marks or PROTECT_CONTENT_MARK
+    }
+
+    fun markDisableNotification() {
+        marks = marks or DISABLE_NOTIFICATION_MARK
+    }
+
     private val apiStacks = mutableListOf<SendingMessageResolvedFunction>() // TelegramApi<Message>?
 
     /**
@@ -226,18 +239,26 @@ internal class SendingMessageResolverContext(
      */
     private var _builder: SendMessageApi.Builder? = null
 
-    fun addToStackMsg(api: () -> TelegramApi<StdlibMessage>) {
+    fun addToStackMsg(api: (SendingMarks) -> TelegramApi<StdlibMessage>) {
         apiStacks.add(api)
     }
 
-    fun addToStackMsgId(api: () -> TelegramApi<MessageId>) {
+    fun addToStackMsgId(api: (SendingMarks) -> TelegramApi<MessageId>) {
         apiStacks.add(api)
     }
 
     private val builderOrNew: SendMessageApi.Builder
         get() = _builder ?: builderFactory().also {
             _builder = it
-            addToStackMsg { it.build() }
+            addToStackMsg { m ->
+                if (m.isProtectContent) {
+                    it.protectContent = true
+                }
+                if (m.isDisableNotification) {
+                    it.disableNotification = true
+                }
+                it.build()
+            }
         }
 
     val builder: SendMessageApi.Builder

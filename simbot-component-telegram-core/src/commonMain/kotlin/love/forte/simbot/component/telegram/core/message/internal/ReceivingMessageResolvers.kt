@@ -18,9 +18,7 @@
 package love.forte.simbot.component.telegram.core.message.internal
 
 import love.forte.simbot.common.id.StringID.Companion.ID
-import love.forte.simbot.component.telegram.core.message.StdlibMessage
-import love.forte.simbot.component.telegram.core.message.TelegramMessageEntity
-import love.forte.simbot.component.telegram.core.message.TelegramPhotoSizesImage
+import love.forte.simbot.component.telegram.core.message.*
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.MessagesBuilder
 import love.forte.simbot.telegram.type.MessageEntity
@@ -36,7 +34,11 @@ internal fun StdlibMessage.toMessages(): Messages {
     // TODO externalReply: ExternalReplyInfo ..?
     // TODO quote: TextQuote
     // TODO replyToStory: Story ..?
-    // TODO hasProtectedContent: Boolean ..?
+
+    // hasProtectedContent
+    if (hasProtectedContent == true) {
+        builder.add(TelegramProtectContent)
+    }
 
     text?.also { text ->
         if (entities.isNullOrEmpty()) {
@@ -105,13 +107,15 @@ internal fun StdlibMessage.toMessages(): Messages {
 
     }
 
-    // TODO linkPreviewOptions: LinkPreviewOptions
-    // TODO animation: Animation
-    // TODO audio: Audio
-    // TODO document: Document
+
+    // audio: Audio
+    builder.resolveAudio(this)
     // photo: List<PhotoSize>
     builder.resolveImage(this)
 
+    // TODO linkPreviewOptions: LinkPreviewOptions
+    // TODO animation: Animation
+    // TODO document: Document
     // TODO sticker: Sticker
     // TODO story: Story
     // TODO video: Video
@@ -137,6 +141,15 @@ internal fun StdlibMessage.toMessages(): Messages {
 private fun MessagesBuilder.resolveImage(source: StdlibMessage) {
     source.photo?.also { photo ->
         add(TelegramPhotoSizesImage(photo))
+    }
+}
+
+/**
+ * 解析 audio 到 [TelegramAudioImpl].
+ */
+private fun MessagesBuilder.resolveAudio(source: StdlibMessage) {
+    source.audio?.also { photo ->
+        add(TelegramAudioImpl(photo))
     }
 }
 
