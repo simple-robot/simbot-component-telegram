@@ -15,25 +15,34 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.core.message
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-import love.forte.simbot.telegram.type.LinkPreviewOptions
+plugins {
+    kotlin("jvm")
+}
 
-internal const val PROTECT_CONTENT_MARK: Int = 1 shl 0
-internal const val DISABLE_NOTIFICATION_MARK: Int = 1 shl 1
+repositories {
+    mavenCentral()
+}
 
-
-internal class SendingMarks(
-    private val value: Int = 0,
-    val linkPreviewOptions: LinkPreviewOptions? = null
-) {
-    val isProtectContent: Boolean
-        get() = value and PROTECT_CONTENT_MARK != 0
-
-    val isDisableNotification: Boolean
-        get() = value and DISABLE_NOTIFICATION_MARK != 0
-
-    companion object {
-        val Default = SendingMarks()
+kotlin {
+    jvmToolchain(11)
+    compilerOptions {
+        javaParameters = true
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
+
+configJavaCompileWithModule()
+
+dependencies {
+//    implementation(project(":annotations"))
+    api(libs.ksp)
+    api(libs.kotlinPoet.ksp)
+    testImplementation(kotlin("test-junit5"))
+}
+
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+}
+

@@ -19,6 +19,7 @@ package love.forte.simbot.telegram.type
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmOverloads
 
 /**
  * [LinkPreviewOptions](https://core.telegram.org/bots/api#linkpreviewoptions)
@@ -74,3 +75,80 @@ public data class LinkPreviewOptions(
     @SerialName("show_above_text")
     public val showAboveText: Boolean? = null,
 )
+
+
+/**
+ * A simple builder for [LinkPreviewOptions].
+ */
+public class LinkPreviewOptionsBuilder {
+    /**
+     * @see LinkPreviewOptions.isDisabled
+     */
+    public var isDisabled: Boolean? = null
+
+    /**
+     * @see isDisabled
+     */
+    @JvmOverloads
+    public fun disable(value: Boolean = true): LinkPreviewOptionsBuilder = apply {
+        isDisabled = value
+    }
+
+    /**
+     * @see LinkPreviewOptions.url
+     */
+    public var url: String? = null
+
+    /**
+     * @see LinkPreviewOptions.preferSmallMedia
+     */
+    public var preferSmallMedia: Boolean? = null
+
+    /**
+     * @see preferSmallMedia
+     */
+    @JvmOverloads
+    public fun preferSmallMedia(value: Boolean = true): LinkPreviewOptionsBuilder = apply {
+        preferSmallMedia = value
+    }
+
+    /**
+     * @see LinkPreviewOptions.preferLargeMedia
+     */
+    public var preferLargeMedia: Boolean? = null
+
+    /**
+     * @see preferLargeMedia
+     */
+    @JvmOverloads
+    public fun preferLargeMedia(value: Boolean = true): LinkPreviewOptionsBuilder = apply {
+        preferLargeMedia = value
+    }
+
+    /**
+     * @see LinkPreviewOptions.showAboveText
+     */
+    public var showAboveText: Boolean? = null
+
+    /**
+     * @see showAboveText
+     */
+    @JvmOverloads
+    public fun showAboveText(value: Boolean = true): LinkPreviewOptionsBuilder = apply {
+        showAboveText = value
+    }
+
+    /**
+     * Build a [LinkPreviewOptions].
+     */
+    public fun build(): LinkPreviewOptions =
+        LinkPreviewOptions(
+            isDisabled = isDisabled,
+            url = url,
+            preferSmallMedia = preferSmallMedia,
+            preferLargeMedia = preferLargeMedia,
+            showAboveText = showAboveText,
+        )
+
+
+}

@@ -21,6 +21,7 @@ include(":internal-processors:update-events-processor")
 include(":internal-processors:stdlib-processor-extensions-processor")
 include(":internal-processors:component-events-processor")
 include(":internal-processors:include-component-message-elements-processor")
+include(":internal-processors:component-sending-resolvers-processor")
 
 include(":simbot-component-telegram-type")
 include(":simbot-component-telegram-api")
