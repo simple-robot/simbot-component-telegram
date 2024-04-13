@@ -27,7 +27,6 @@ import love.forte.simbot.telegram.api.TelegramApi
 import love.forte.simbot.telegram.api.message.*
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.MessageId
-import kotlin.jvm.JvmInline
 import kotlin.jvm.JvmName
 import love.forte.simbot.telegram.type.Message as StdlibMessage
 
@@ -74,10 +73,18 @@ internal suspend inline fun TelegramBotImpl.send(
     return send(messageContent.messages, chatId) { builderFactory() }
 }
 
-internal suspend fun TelegramBotImpl.send(
+internal fun TelegramBotImpl.toReceipt(chatId: Long, result: Any): TelegramSingleMessageReceipt {
+    return when (result) {
+        is StdlibMessage -> result.toTelegramMessageReceipt(this)
+        is MessageId -> result.toTelegramMessageReceipt(this, chatId)
+        else -> error("Unexpected result type: $result")
+    }
+}
+
+internal suspend inline fun TelegramBotImpl.send(
     message: Message,
     chatId: Long,
-    builderFactory: BuilderFactory = DefaultBuilderFactory
+    crossinline builderFactory: BuilderFactory = { SendMessageApi.builder() }
 ): TelegramMessageReceipt {
     val cid = ChatId(chatId)
     val (funcList, marks) = message.resolve(cid) {
@@ -88,21 +95,13 @@ internal suspend fun TelegramBotImpl.send(
         }
     }
 
-    fun toReceipt(result: Any): TelegramSingleMessageReceipt {
-        return when (result) {
-            is StdlibMessage -> result.toTelegramMessageReceipt(this)
-            is MessageId -> result.toTelegramMessageReceipt(this, chatId)
-            else -> error("Unexpected result type: $result")
-        }
-    }
-
     when {
         funcList.isEmpty() -> error("Nothing to send, the message element list is empty.")
         funcList.size == 1 -> {
             val result = funcList.first()(marks).requestDataBy(this)
             return when (result) {
-                is StdlibMessage -> toReceipt(result)
-                is MessageId -> toReceipt(result)
+                is StdlibMessage -> toReceipt(chatId, result)
+                is MessageId -> toReceipt(chatId, result)
                 else -> error("Unexpected result type: $result")
             }
         }
@@ -163,13 +162,13 @@ internal data class ResolveResult(
     val marks: SendingMarks
 )
 
-internal suspend fun Message.resolve(
+internal suspend inline fun Message.resolve(
     chatId: ChatId,
-    builderFactory: BuilderFactory = DefaultBuilderFactory
+    crossinline builderFactory: BuilderFactory = { SendMessageApi.builder() }
 ): ResolveResult {
     return when (val m = this) {
         is Message.Element -> {
-            val context = SendingMessageResolverContext(builderFactory)
+            val context = SendingMessageResolverContext { builderFactory() }
             for (resolver in sendingResolvers) {
                 resolver.resolve(chatId, 0, m, this, context)
             }
@@ -183,7 +182,7 @@ internal suspend fun Message.resolve(
                 return ResolveResult(emptyList(), SendingMarks(0))
             }
 
-            val context = SendingMessageResolverContext(builderFactory)
+            val context = SendingMessageResolverContext { builderFactory() }
             m.forEachIndexed { index, element ->
                 for (resolver in sendingResolvers) {
                     resolver.resolve(chatId, index, element, this, context)
@@ -215,21 +214,7 @@ private val sendingResolvers = listOf(
 
 internal typealias BuilderFactory = () -> SendMessageApi.Builder
 
-internal val DefaultBuilderFactory: BuilderFactory = { SendMessageApi.builder() }
-
 internal typealias SendingMessageResolvedFunction = (SendingMarks) -> TelegramApi<*> // * 只能是 Message 或 MessageId
-
-private const val PROTECT_CONTENT_MARK = 1 shl 0
-private const val DISABLE_NOTIFICATION_MARK = 1 shl 1
-
-
-@JvmInline
-internal value class SendingMarks(internal val value: Int) {
-    val isProtectContent: Boolean
-        get() = value and PROTECT_CONTENT_MARK != 0
-    val isDisableNotification: Boolean
-        get() = value and DISABLE_NOTIFICATION_MARK != 0
-}
 
 internal class SendingMessageResolverContext(
     private val builderFactory: BuilderFactory,

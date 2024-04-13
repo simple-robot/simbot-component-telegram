@@ -34,7 +34,7 @@ class TelegramTextEntitiesTests {
         assertIs<TelegramMessageEntity.CustomEmoji>(customEmoji)
         assertIs<TelegramMessageEntity.Simple>(simple)
 
-        val resolved = listOf(
+        val (resolved, marks) = listOf(
             textLink,
             textMention,
             Text { "Hello" },
@@ -45,7 +45,7 @@ class TelegramTextEntitiesTests {
             SendMessageApi.builder().also { it.chatId = ChatId(10000) }
         }
 
-        val body = resolved.first()().body
+        val body = resolved.first()(marks).body
         assertIs<SendMessageApi.Body>(body)
         val text = body.text
         assertEquals("GitHub@forteHelloCODEEMOJI1=1", text)
@@ -110,7 +110,7 @@ class TelegramTextEntitiesTests {
         val customEmoji = TelegramMessageEntity.createCustomEmoji("EMOJI", "EMOJI".ID)
         val simple = TelegramMessageEntity.create("1=1", MessageEntityType.CODE)
 
-        val resolved = listOf(
+        val (resolved, marks) = listOf(
             textLink,
             textMention,
             Text { "Hello" },
@@ -121,7 +121,7 @@ class TelegramTextEntitiesTests {
             SendMessageApi.builder().also { it.chatId = ChatId(10000) }
         }
 
-        val body = resolved.first()().body
+        val body = resolved.first()(marks).body
         assertIs<SendMessageApi.Body>(body)
         val bodyText = body.text
         assertEquals("GitHub@forteHelloCODEEMOJI1=1", bodyText)
