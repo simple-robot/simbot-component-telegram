@@ -15,11 +15,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.core.message.internal
+package love.forte.simbot.component.telegram.core.message
 
-import love.forte.simbot.common.ktor.inputfile.InputFile
-import love.forte.simbot.message.OfflineImage
-import love.forte.simbot.resource.Resource
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal actual fun OfflineImage.toInputFile(): InputFile? = null
-internal actual fun Resource.toInputFile(): InputFile? = null
+/**
+ * Mark the `disable_notification` in sending messages to `true`.
+ *
+ * For example:
+ * ```Kotlin
+ * send(
+ *     text, img, text, audio, TelegramDisableNotification,
+ * )
+ * // All `disable_notification` (if supported) in these send APIs will be set to `true`
+ * ```
+ *
+ */
+@Serializable
+@SerialName("telegram.m.disable_notification")
+public object TelegramDisableNotification : TelegramMessageElement

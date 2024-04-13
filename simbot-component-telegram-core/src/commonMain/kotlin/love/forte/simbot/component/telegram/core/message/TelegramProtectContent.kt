@@ -15,11 +15,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.component.telegram.core.message.internal
+package love.forte.simbot.component.telegram.core.message
 
-import love.forte.simbot.common.ktor.inputfile.InputFile
-import love.forte.simbot.message.OfflineImage
-import love.forte.simbot.resource.Resource
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-internal actual fun OfflineImage.toInputFile(): InputFile? = null
-internal actual fun Resource.toInputFile(): InputFile? = null
+/**
+ * Mark the `protect_content` in sending messages to `true`.
+ *
+ * For example:
+ * ```Kotlin
+ * send(
+ *     text, img, text, audio, TelegramProtectContent,
+ * )
+ * // All `protect_content` (if supported) in these send APIs will be set to `true`
+ * ```
+ *
+ */
+@Serializable
+@SerialName("telegram.m.protect_content")
+public object TelegramProtectContent : TelegramMessageElement

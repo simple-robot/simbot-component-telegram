@@ -19,5 +19,7 @@ package love.forte.simbot.component.telegram.core.message.internal
 
 import love.forte.simbot.common.ktor.inputfile.InputFile
 import love.forte.simbot.message.OfflineImage
+import love.forte.simbot.resource.Resource
 
 internal actual fun OfflineImage.toInputFile(): InputFile? = null
+internal actual fun Resource.toInputFile(): InputFile? = null

@@ -24,7 +24,7 @@ import love.forte.simbot.plugin.PluginFactoryProvider;
 
 module simbot.component.telegram.core {
     requires kotlin.stdlib;
-    requires static simbot.api;
+    requires transitive simbot.api;
     requires transitive simbot.component.telegram.type;
     requires transitive simbot.component.telegram.api;
     requires transitive simbot.component.telegram.stdlib;

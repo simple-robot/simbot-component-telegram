@@ -32,61 +32,61 @@ import love.forte.simbot.telegram.type.Message
 import love.forte.simbot.telegram.type.MessageEntity
 import love.forte.simbot.telegram.type.ReplyParameters
 import kotlin.jvm.JvmStatic
+import kotlin.time.Duration
 
 
 /**
- * [sendPhoto](https://core.telegram.org/bots/api#sendphoto)
+ * [sendAudio](https://core.telegram.org/bots/api#sendaudio)
  *
  * @author ForteScarlet
  */
-public class SendPhotoApi private constructor(body: Body) : FormBodyTelegramApi<Message>() {
+public class SendAudioApi private constructor(body: Body) : FormBodyTelegramApi<Message>() {
     public companion object Factory {
-        private const val NAME = "sendPhoto"
+        private const val NAME = "sendAudio"
         private val RES = TelegramApiResult.serializer(Message.serializer())
         private val formSerializer = FormApiSerializer(
             Body.serializer()
         )
 
         /**
-         * Create [SendPhotoApi].
+         * Create [SendAudioApi].
          */
         @JvmStatic
-        public fun create(body: Body): SendPhotoApi =
-            SendPhotoApi(body)
+        public fun create(body: Body): SendAudioApi =
+            SendAudioApi(body)
 
         /**
-         * Create [SendPhotoApi] with only required params.
+         * Create [SendAudioApi] with only required params.
          *
          * @param chatId The chat id.
-         * @param photo The photo you want to send.
+         * @param audio The Audio you want to send.
          */
         @JvmStatic
-        public fun create(chatId: ChatId, photo: InputFile): SendPhotoApi =
-            SendPhotoApi(
+        public fun create(chatId: ChatId, audio: InputFile): SendAudioApi =
+            SendAudioApi(
                 Body().also {
                     it.chatId = chatId
-                    it.photo = photo
+                    it.audio = audio
                 }
             )
-
     }
 
     override val name: String
         get() = NAME
-
     override val body: MultiPartFormDataContent =
         MultiPartFormDataContent(
-            formData(values = formSerializer.serialize(body).toTypedArray())
+            formData(
+                values = formSerializer.serialize(body)
+                    .toTypedArray()
+            )
         )
-
     override val responseDeserializer: DeserializationStrategy<Message>
         get() = Message.serializer()
-
     override val resultDeserializer: DeserializationStrategy<TelegramApiResult<Message>>
         get() = RES
 
     /**
-     * The request body for [SendPhotoApi]
+     * The request body (params) for [SendAudioApi].
      */
     @Serializable
     public class Body {
@@ -113,15 +113,15 @@ public class SendPhotoApi private constructor(body: Body) : FormBodyTelegramApi<
 
         /**
          * Required.
-         * Photo to send.
-         * (See [the documentation](https://core.telegram.org/bots/api#sendphoto)).
+         * Audio to send.
+         * (See [the documentation](https://core.telegram.org/bots/api#sendaudio)).
          *
          * See also [StringValueInputFile] for send a photo with type of [String].
          *
          * @see StringValueInputFile
          */
         @Required
-        public lateinit var photo: InputFile
+        public lateinit var audio: InputFile
 
         /**
          * Optional.
@@ -153,10 +153,42 @@ public class SendPhotoApi private constructor(body: Body) : FormBodyTelegramApi<
 
         /**
          * Optional.
-         * Pass True if the photo needs to be covered with a spoiler animation
+         * Duration of the audio in seconds
          */
-        @SerialName("has_spoiler")
-        public var hasSpoiler: Boolean? = null
+        public var duration: Int? = null
+
+        /**
+         * Duration of the audio
+         *
+         * @see duration
+         */
+        public fun duration(duration: Duration) {
+            this.duration = duration.inWholeSeconds.toInt()
+        }
+
+        /**
+         * Optional.
+         * Performer
+         */
+        public var performer: String? = null
+
+        /**
+         * Optional.
+         * Track name
+         */
+        public var title: String? = null
+
+        /**
+         * Optional.
+         * Thumbnail of the file sent;
+         *
+         * (See [the documentation](https://core.telegram.org/bots/api#sendaudio)).
+         *
+         * See also [StringValueInputFile] for send a photo with type of [String].
+         *
+         * @see StringValueInputFile
+         */
+        public var thumbnail: InputFile? = null
 
         /**
          * Optional.
@@ -189,11 +221,10 @@ public class SendPhotoApi private constructor(body: Body) : FormBodyTelegramApi<
         @SerialName("reply_markup")
         public var replyMarkup: ReplyMarkupWrapper? = null
     }
-
 }
 
 /**
- * Create [SendPhotoApi].
+ * Create [SendAudioApi].
  */
-public inline fun buildSendPhotoApi(block: SendPhotoApi.Body.() -> Unit): SendPhotoApi =
-    SendPhotoApi.create(SendPhotoApi.Body().apply(block))
+public inline fun buildSendAudioApi(block: SendAudioApi.Body.() -> Unit): SendAudioApi =
+    SendAudioApi.create(SendAudioApi.Body().apply(block))
