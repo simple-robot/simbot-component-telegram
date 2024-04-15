@@ -77,6 +77,8 @@ Kotlin 多平台库，异步高效、Java友好。
 
 基于 [API模块](simbot-component-telegram-api) 针对 bot 的鉴权、事件订阅等功能的实现。
 
+stdlib模块可以被看作是一个轻量级的 SDK 实现库。
+
 同样的，其目标为在提供封装的情况下尽可能地保留原始API的使用手感，不做过多的封装。
 
 👉 [前往模块](simbot-component-telegram-stdlib) 了解更多。

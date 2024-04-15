@@ -99,7 +99,11 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
                 ****************************
                 """.trimIndent()
             )
-
+            addAnnotation(
+                AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S, %S", "ALL", "unused")
+                    .build()
+            )
             addFunction(function)
             indent("    ")
         }.build()

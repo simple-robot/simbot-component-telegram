@@ -38,13 +38,12 @@ import kotlin.coroutines.CoroutineContext
 
 
 /**
+ * A type that is aware of [Chat].
  *
  * @author ForteScarlet
  */
 public interface TelegramChatAware {
     public val source: Chat
-
-
 }
 
 /**
@@ -112,14 +111,22 @@ public interface TelegramChatGroupActor : TelegramChatAware, ChatGroup {
     override suspend fun send(messageContent: MessageContent): TelegramMessageReceipt
 }
 
+/**
+ * A Telegram [Chat] representing a group or a channel.
+ *
+ * @see TelegramChatGroup
+ * @see TelegramChannel
+ */
+public interface TelegramGroup : TelegramChatGroupActor
+
+// TODO SuperGroup?
 
 /**
  * A Telegram [Chat] representing a group ([Chat.type] == [ChatType.GROUP] or [ChatType.SUPERGROUP]).
  *
  * @author ForteScarlet
  */
-public interface TelegramChatGroup : TelegramChatGroupActor
-
+public interface TelegramChatGroup : TelegramGroup
 
 /**
  *
@@ -129,4 +136,4 @@ public interface TelegramChatGroup : TelegramChatGroupActor
  *
  * @author ForteScarlet
  */
-public interface TelegramChannel : TelegramChatGroupActor
+public interface TelegramChannel : TelegramGroup

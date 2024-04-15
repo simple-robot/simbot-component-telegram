@@ -54,18 +54,18 @@ jobs:
           java-version: 21
 
       # setup Gradle
+      - uses: gradle/actions/setup-gradle@v3
+
       - name: Gradle test and publish snapshot
-        uses: gradle/actions/setup-gradle@v3
+        run: gradle allTests publishToSonatype closeAndReleaseStagingRepository --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
         with:
-          gradle-version: 8.5
-          arguments: |
-            allTests 
-            publishToSonatype
-            closeAndReleaseStagingRepository
-            --info
-            --warning-mode all
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.daemon=false
+          name: test-reports-${{ runner.os }}
+          path: '**/build/reports/tests'
+          retention-days: 7
 
   deploy-doc:
     name: Deploy-doc
@@ -86,19 +86,9 @@ jobs:
           java-version: 21
 
       # setup Gradle
-      - name: Gradle generate documentation
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.5
-          arguments: |
-            -Porg.gradle.jvmargs="-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.daemon=false
-            -DisSnapshot=false
-            --info 
-            --warning-mode all
-            -x test
-            --build-cache
-            dokkaHtmlMultiModule
+      - uses: gradle/actions/setup-gradle@v3
+
+      - run: gradle dokkaHtmlMultiModule "-Porg.gradle.jvmargs='-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8'" "-Porg.gradle.daemon=false" "-DisSnapshot=false" --info --warning-mode all -x test --build-cache
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3

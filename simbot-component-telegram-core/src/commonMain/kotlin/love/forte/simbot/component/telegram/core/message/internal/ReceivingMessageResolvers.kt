@@ -17,9 +17,12 @@
 
 package love.forte.simbot.component.telegram.core.message.internal
 
-import love.forte.simbot.component.telegram.core.message.StdlibMessage
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.component.telegram.core.message.*
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.MessagesBuilder
+import love.forte.simbot.telegram.type.MessageEntity
+import love.forte.simbot.telegram.type.MessageEntityType
 
 /**
  *
@@ -31,17 +34,91 @@ internal fun StdlibMessage.toMessages(): Messages {
     // TODO externalReply: ExternalReplyInfo ..?
     // TODO quote: TextQuote
     // TODO replyToStory: Story ..?
-    // TODO hasProtectedContent: Boolean ..?
 
-    text?.also { builder.add(it) }
+    // hasProtectedContent
+    if (hasProtectedContent == true) {
+        builder.add(TelegramProtectContent)
+    }
+    // linkPreviewOptions: LinkPreviewOptions
+    builder.resolveLinkPreviewOptions(this)
 
-    // TODO entities ..?
+    text?.also { text ->
+        if (entities.isNullOrEmpty()) {
+            builder.add(text)
+            return@also
+        }
 
-    // TODO linkPreviewOptions: LinkPreviewOptions
+        var lastOffset = 0
+
+        entities?.forEach { entity ->
+            if (lastOffset != entity.offset) {
+                // 上一次与当前中间夹着字符串
+                builder.add(text.substring(lastOffset, entity.offset))
+            }
+            lastOffset = entity.offset + entity.length
+            val messageEntity = when (entity.type.uppercase()) {
+                MessageEntityType.TEXT_LINK.name -> {
+                    TelegramMessageEntity.TextLink(
+                        text = text.substring(entity),
+                        url = entity.url,
+                        entity
+                    )
+                }
+
+                MessageEntityType.TEXT_MENTION.name -> {
+                    TelegramMessageEntity.TextMention(
+                        text = text.substring(entity),
+                        user = entity.user,
+                        entity
+                    )
+                }
+
+                MessageEntityType.PRE.name -> {
+                    TelegramMessageEntity.Pre(
+                        text = text.substring(entity),
+                        language = entity.language,
+                        entity
+                    )
+                }
+
+                MessageEntityType.CUSTOM_EMOJI.name -> {
+                    TelegramMessageEntity.CustomEmoji(
+                        text = text.substring(entity),
+                        customEmojiId = entity.customEmojiId?.ID,
+                        entity
+                    )
+                }
+
+                // simple
+                else -> {
+                    TelegramMessageEntity.Simple(
+                        text = text.substring(entity),
+                        type = entity.type,
+                        entity
+                    )
+                }
+            }
+            builder.add(messageEntity)
+        }
+
+        if (lastOffset != text.length) {
+            // 字符串有残留
+            builder.add(text.substring(lastOffset, text.length))
+        }
+
+
+    }
+
+
+    // audio: Audio
+    builder.resolveAudio(this)
+    // photo: List<PhotoSize>
+    builder.resolveImage(this)
+    // document: Document
+    builder.resolveDocument(this)
+
+
     // TODO animation: Animation
-    // TODO audio: Audio
-    // TODO document: Document
-    // TODO photo: List<PhotoSize>
     // TODO sticker: Sticker
     // TODO story: Story
     // TODO video: Video
@@ -60,3 +137,43 @@ internal fun StdlibMessage.toMessages(): Messages {
 
     return builder.build()
 }
+
+/**
+ * 解析 linkPreviewOptions 到 [TelegramLinkPreviewOptions].
+ */
+private fun MessagesBuilder.resolveLinkPreviewOptions(source: StdlibMessage) {
+    source.linkPreviewOptions?.also { options ->
+        add(TelegramLinkPreviewOptions(options))
+    }
+}
+
+/**
+ * 解析 photo 到 [TelegramPhotoSizesImage].
+ */
+private fun MessagesBuilder.resolveImage(source: StdlibMessage) {
+    source.photo?.also { photo ->
+        add(TelegramPhotoSizesImage(photo))
+    }
+}
+
+/**
+ * 解析 audio 到 [TelegramAudioImpl].
+ */
+private fun MessagesBuilder.resolveAudio(source: StdlibMessage) {
+    source.audio?.also { audio ->
+        add(TelegramAudioImpl(audio))
+    }
+}
+
+/**
+ * 解析 document 到 [TelegramDocumentImpl].
+ */
+private fun MessagesBuilder.resolveDocument(source: StdlibMessage) {
+    source.document?.also { doc ->
+        add(TelegramDocumentImpl(doc))
+    }
+}
+
+
+private fun String.substring(entity: MessageEntity): String =
+    substring(entity.offset, entity.offset + entity.length)

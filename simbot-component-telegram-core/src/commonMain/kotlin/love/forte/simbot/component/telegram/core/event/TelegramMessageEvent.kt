@@ -20,10 +20,7 @@ package love.forte.simbot.component.telegram.core.event
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.time.Timestamp
-import love.forte.simbot.component.telegram.core.actor.TelegramChannel
-import love.forte.simbot.component.telegram.core.actor.TelegramChatGroup
-import love.forte.simbot.component.telegram.core.actor.TelegramContact
-import love.forte.simbot.component.telegram.core.actor.TelegramMember
+import love.forte.simbot.component.telegram.core.actor.*
 import love.forte.simbot.component.telegram.core.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.core.time.unixDateTimestamp
@@ -57,18 +54,22 @@ public interface TelegramMessageRelatedEvent : TelegramEvent, TypeBasedTelegramM
 public interface TelegramMessageEvent : TelegramMessageRelatedEvent, BasicTelegramMessageEvent
 
 /**
- * An event about [Message] from a [TelegramChatGroup] (chat.type == `"group"`)
+ * An event about [Message] from [TelegramChannel] or [TelegramChatGroup].
+ *
+ * @see TelegramChatGroupMessageEvent
+ * @see TelegramSuperGroupMessageEvent
+ * @see TelegramChannelMessageEvent
  *
  * @author ForteScarlet
  */
-public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
+public interface TelegramGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
     override val messageContent: TelegramMessageContent
 
     /**
-     * The [TelegramChatGroup].
+     * The [TelegramGroup].
      */
     @STP
-    override suspend fun content(): TelegramChatGroup
+    override suspend fun content(): TelegramGroup
 
     /**
      * The [sender][Message.from]'s [id][User.id]
@@ -78,16 +79,38 @@ public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroup
 
     @STP
     override suspend fun author(): TelegramMember
-    // TODO chat group member?
 
+    /**
+     * Reply to this message with [text].
+     */
     @ST
     override suspend fun reply(text: String): TelegramMessageReceipt
 
+    /**
+     * Reply to this message with [message].
+     */
     @ST
     override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
 
+    /**
+     * Reply to this message with [messageContent].
+     */
     @ST
     override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+}
+
+/**
+ * An event about [Message] from a [TelegramChatGroup] (chat.type == `"group"`)
+ *
+ * @author ForteScarlet
+ */
+public interface TelegramChatGroupMessageEvent : TelegramGroupMessageEvent {
+    /**
+     * The [TelegramChatGroup].
+     */
+    @STP
+    override suspend fun content(): TelegramChatGroup
+
 }
 
 /**
@@ -95,32 +118,12 @@ public interface TelegramChatGroupMessageEvent : TelegramMessageEvent, ChatGroup
  *
  * @author ForteScarlet
  */
-public interface TelegramSuperGroupMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
-    override val messageContent: TelegramMessageContent
-
+public interface TelegramSuperGroupMessageEvent : TelegramGroupMessageEvent {
     /**
-     * The [TelegramChatGroup].
+     * The [TelegramGroup].
      */
     @STP
-    override suspend fun content(): TelegramChatGroup
-
-    /**
-     * The [sender][Message.from]'s [id][User.id]
-     */
-    override val authorId: ID
-        get() = sourceContent.from!!.id.ID
-
-    @STP
-    override suspend fun author(): TelegramMember
-
-    @ST
-    override suspend fun reply(text: String): TelegramMessageReceipt
-
-    @ST
-    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
-
-    @ST
-    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
+    override suspend fun content(): TelegramGroup
 }
 
 /**
@@ -128,32 +131,12 @@ public interface TelegramSuperGroupMessageEvent : TelegramMessageEvent, ChatGrou
  *
  * @author ForteScarlet
  */
-public interface TelegramChannelMessageEvent : TelegramMessageEvent, ChatGroupMessageEvent {
-    override val messageContent: TelegramMessageContent
-
+public interface TelegramChannelMessageEvent : TelegramGroupMessageEvent {
     /**
      * The [TelegramChannel].
      */
     @STP
     override suspend fun content(): TelegramChannel
-
-    /**
-     * The [sender][Message.from]'s [id][User.id]
-     */
-    override val authorId: ID
-        get() = sourceContent.from!!.id.ID
-
-    @STP
-    override suspend fun author(): TelegramMember
-
-    @ST
-    override suspend fun reply(text: String): TelegramMessageReceipt
-
-    @ST
-    override suspend fun reply(message: love.forte.simbot.message.Message): TelegramMessageReceipt
-
-    @ST
-    override suspend fun reply(messageContent: MessageContent): TelegramMessageReceipt
 }
 
 /**
@@ -162,6 +145,8 @@ public interface TelegramChannelMessageEvent : TelegramMessageEvent, ChatGroupMe
  * @author ForteScarlet
  */
 public interface TelegramPrivateMessageEvent : TelegramMessageEvent, ContactMessageEvent {
+    override val messageContent: TelegramMessageContent
+
     /**
      * The [TelegramContact].
      */

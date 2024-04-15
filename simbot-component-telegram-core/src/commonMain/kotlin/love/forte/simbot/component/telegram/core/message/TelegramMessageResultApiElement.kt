@@ -21,6 +21,7 @@ import love.forte.simbot.telegram.api.TelegramApi
 import love.forte.simbot.telegram.api.message.CopyMessageApi
 import love.forte.simbot.telegram.api.message.ForwardMessageApi
 import love.forte.simbot.telegram.api.message.SendMessageApi
+import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.Message
 import love.forte.simbot.telegram.type.MessageId
 import kotlin.jvm.JvmStatic
@@ -67,13 +68,13 @@ internal data class MessageIdResult(override val api: TelegramApi<MessageId>) : 
 
 internal object TelegramMessageResultApiElementSendingResolver : SendingMessageResolver {
     override suspend fun resolve(
+        chatId: ChatId,
         index: Int,
         element: love.forte.simbot.message.Message.Element,
         source: love.forte.simbot.message.Message,
         context: SendingMessageResolverContext
     ) {
         if (element is TelegramMessageResultApiElement) {
-            context.archiveCurrent()
             when (element) {
                 is MessageIdResult -> {
                     context.addToStackMsgId { element.api }

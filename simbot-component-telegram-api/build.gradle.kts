@@ -29,6 +29,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.ksp)
     `simbot-telegram-dokka-partial-configure`
+    `simbot-telegram-suspend-transform-configure`
 }
 
 setup(P.ComponentTelegram)
@@ -87,6 +88,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             // https://ktor.io/docs/http-client-testing.html
             implementation(libs.ktor.client.mock)
+            implementation(libs.kotlinx.serialization.properties)
         }
 
         jvmMain.dependencies {
@@ -125,9 +127,13 @@ dependencies {
     // add("kspCommonMainMetadata", project(":internal-processors:update-events-processor"))
 }
 kotlin.sourceSets.commonMain {
+    // kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
     // solves all implicit dependency trouble and IDEs source code detection
     // see https://github.com/google/ksp/issues/963#issuecomment-1894144639
-    tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) }
+    tasks.withType<KspTaskMetadata> {
+        kotlin.srcDir(destinationDirectory)
+    }
+    // 这似乎没有把 `kotlin` 这层目录放进去?
 }
 
 // see https://github.com/google/ksp/issues/567#issuecomment-1510477456

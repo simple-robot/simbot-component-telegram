@@ -22,6 +22,7 @@ import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
 import love.forte.simbot.component.telegram.core.event.StdlibEvent
 import love.forte.simbot.component.telegram.core.event.TelegramPrivateMessageEvent
+import love.forte.simbot.component.telegram.core.message.TelegramMessageContent
 import love.forte.simbot.component.telegram.core.message.TelegramMessageReceipt
 import love.forte.simbot.component.telegram.core.message.internal.TelegramMessageContentImpl
 import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
@@ -43,7 +44,7 @@ internal class TelegramPrivateMessageEventImpl(
     override val sourceEvent: StdlibEvent,
     override val sourceContent: Message
 ) : TelegramPrivateMessageEvent {
-    override val messageContent: MessageContent = TelegramMessageContentImpl(bot, sourceContent)
+    override val messageContent: TelegramMessageContent = TelegramMessageContentImpl(bot, sourceContent)
 
     override suspend fun content(): love.forte.simbot.component.telegram.core.actor.TelegramContact {
         return sourceContent.from!!.toTelegramUserContact(bot, sourceContent.chat)

@@ -31,6 +31,7 @@
 > [Feel free to share](https://github.com/simple-robot/simbot-component-telegram/issues)
 > or join the [communities](https://simbot.forte.love/communities.html).
 
+> [!warning]
 > This content is machine-translated.
 
 This is a [**Telegram Bot**][telegram bot doc] API/SDK Kotlin multi-platform library based on 
@@ -77,6 +78,8 @@ The goal is to preserve the feel of the original API as much as possible without
 
 Based on [API module](simbot-component-telegram-api), 
 for the implementation of authentication, subscription events and other related functions in bot.
+
+The `stdlib` module can be thought of as a lightweight SDK implementation library.
 
 This module provides an implementation of event-related functionality based on the API module, 
 including the ability to subscribe to events.

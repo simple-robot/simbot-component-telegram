@@ -29,7 +29,7 @@ repositories {
 }
 
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
-    moduleName.set("Simple Robot 组件 | Discord")
+    moduleName.set("Simple Robot 组件 | Telegram")
     outputDirectory.set(rootProject.file("build/dokka/$format"))
 }
 

@@ -28,7 +28,9 @@ plugins {
 tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
         version = P.ComponentTelegram.version.toString()
-        documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
+        documentedVisibilities.set(
+            listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED)
+        )
         fun checkModule(projectFileName: String): Boolean {
             val moduleMdFile = project.file(projectFileName)
             if (moduleMdFile.exists()) {
@@ -57,7 +59,7 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-            remoteUrl.set(URI.create("${P.ComponentTelegram.HOMEPAGE}/tree/main/$relativeTo/src/").toURL())
+            remoteUrl.set(URI.create("${P.ComponentTelegram.HOMEPAGE}/tree/dev/main/$relativeTo/src/").toURL())
             remoteLineSuffix.set("#L")
         }
 

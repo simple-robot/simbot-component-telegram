@@ -33,7 +33,10 @@ object P {
 
     object ComponentTelegram : ProjectDetail() {
         const val GROUP = "love.forte.simbot.component"
-        const val DESCRIPTION = "Kotlin coroutines based Telegram bot API/SDK Kotlin multiplatform library, is also a Simple Robot Component library"
+        const val DESCRIPTION =
+            "Kotlin coroutines based Telegram bot API/SDK Kotlin multiplatform library, " +
+                "is also a Simple Robot Component library"
+
         const val HOMEPAGE = "https://github.com/simple-robot/simbot-component-telegram"
 
         override val group: String get() = GROUP
@@ -41,7 +44,7 @@ object P {
         override val homepage: String get() = HOMEPAGE
 
 
-        private val baseVersion = v(0, 0, 1) - v("dev1")
+        private val baseVersion = v(0, 0, 1) - v("dev2")
 
         val snapshotVersion = baseVersion - Version.SNAPSHOT
         override val version = if (isSnapshot()) snapshotVersion else baseVersion
