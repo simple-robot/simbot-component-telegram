@@ -39,15 +39,17 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.5
-          arguments: |
-            assemble
-            build
-            allTests
-            --info 
-            --warning-mode all
-            --build-cache
-            -Porg.gradle.daemon=false
-            -Porg.gradle.jvmargs="-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
+
+      - run: | 
+          ./gradlew
+          assemble
+          build
+          allTests
+          --info 
+          --warning-mode all
+          --build-cache
+          -Porg.gradle.daemon=false
+          -Porg.gradle.jvmargs="-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -72,7 +74,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.5
-          arguments: detekt
+
+      - run: ./gradlew detekt
+
       - name: Upload detekt reports
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
