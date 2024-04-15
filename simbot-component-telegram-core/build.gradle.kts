@@ -27,6 +27,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.ksp)
     `simbot-telegram-dokka-partial-configure`
+    `simbot-telegram-suspend-transform-configure`
 }
 
 setup(P.ComponentTelegram)
