@@ -38,10 +38,10 @@ jobs:
       - name: Set up gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: 8.5
+          add-job-summary-as-pr-comment: on-failure # Valid values are 'never' (default), 'always', and 'on-failure'
 
       - name: Run All Tests
-        run: gradle assemble build allTests --info --warning-mode all --build-cache -Porg.gradle.jvmargs='-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'
+        run: gradle assemble allTests -Porg.gradle.jvmargs='-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' --scan --info --warning-mode all --build-cache
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -62,12 +62,14 @@ jobs:
           java-version: 21
           cache: 'gradle'
 
-      - name: Run All Tests
+      - name: Set up gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: 8.5
+          add-job-summary-as-pr-comment: on-failure # Valid values are 'never' (default), 'always', and 'on-failure'
 
-      - run: gradle detekt
+
+      - name: Run detekt
+        run: gradle detekt
 
       - name: Upload detekt reports
         uses: actions/upload-artifact@v4
