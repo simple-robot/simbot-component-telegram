@@ -43,7 +43,7 @@ jobs:
       - run: gradle build --scan
 
       - name: Run All Tests
-        run: gradle assemble allTests -Porg.gradle.jvmargs='-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8' --info --warning-mode all --build-cache
+        run: ./gradlew assemble allTests "-Porg.gradle.jvmargs='-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'" --info --warning-mode all --build-cache
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
