@@ -24,10 +24,7 @@ import love.forte.simbot.message.*
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.StringResource
-import love.forte.simbot.telegram.api.message.SendAudioApi
-import love.forte.simbot.telegram.api.message.SendPhotoApi
-import love.forte.simbot.telegram.api.message.buildSendAudioApi
-import love.forte.simbot.telegram.api.message.buildSendPhotoApi
+import love.forte.simbot.telegram.api.message.*
 import love.forte.simbot.telegram.api.utils.StringValueInputFile
 import love.forte.simbot.telegram.type.ChatId
 import love.forte.simbot.telegram.type.MessageEntity
@@ -194,6 +191,20 @@ internal object ImageSendingResolver : SendingMessageResolver {
     }
 }
 
+internal object TelegramLinkPreviewOptionsResolver : SendingMessageResolver {
+    override suspend fun resolve(
+        chatId: ChatId,
+        index: Int,
+        element: Message.Element,
+        source: Message,
+        context: SendingMessageResolverContext
+    ) {
+        if (element is TelegramLinkPreviewOptions) {
+            context.linkPreviewOptions(element.source)
+        }
+    }
+}
+
 internal object TelegramAudioSendingResolver : SendingMessageResolver {
     override suspend fun resolve(
         chatId: ChatId,
@@ -253,6 +264,69 @@ internal object TelegramAudioSendingResolver : SendingMessageResolver {
                     }
                 }
 
+            }
+        }
+    }
+}
+
+internal object TelegramDocumentSendingResolver : SendingMessageResolver {
+    override suspend fun resolve(
+        chatId: ChatId,
+        index: Int,
+        element: Message.Element,
+        source: Message,
+        context: SendingMessageResolverContext
+    ) {
+        fun SendDocumentApi.Body.mark(marks: SendingMarks) {
+            if (marks.isProtectContent) {
+                protectContent = true
+            }
+            if (marks.isDisableNotification) {
+                disableNotification = true
+            }
+        }
+
+        when (element) {
+            is TelegramDocument -> {
+                context.addToStackMsg { m ->
+                    buildSendDocumentApi {
+                        this.chatId = chatId
+                        this.document = StringValueInputFile.create(element.source.fileId)
+                        mark(m)
+                    }
+                }
+            }
+
+            is SendOnlyTelegramDocument -> when (element) {
+                is SendOnlyTelegramDocument.FileIdDocument -> {
+                    context.addToStackMsg { m ->
+                        buildSendDocumentApi {
+                            this.chatId = chatId
+                            this.document = StringValueInputFile.create(element.id.literal)
+                            mark(m)
+                        }
+                    }
+                }
+
+                is SendOnlyTelegramDocument.InputFileDocument -> {
+                    context.addToStackMsg { m ->
+                        buildSendDocumentApi {
+                            this.chatId = chatId
+                            this.document = element.inputFile
+                            mark(m)
+                        }
+                    }
+                }
+
+                is SendOnlyTelegramDocument.ResourceDocument -> {
+                    context.addToStackMsg { m ->
+                        buildSendDocumentApi {
+                            this.chatId = chatId
+                            this.document = element.resource.toInputFileCommon()
+                            mark(m)
+                        }
+                    }
+                }
             }
         }
     }

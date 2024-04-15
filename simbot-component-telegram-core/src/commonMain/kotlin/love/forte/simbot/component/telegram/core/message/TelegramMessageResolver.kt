@@ -21,11 +21,13 @@ package love.forte.simbot.component.telegram.core.message
 
 import love.forte.simbot.component.telegram.core.bot.internal.TelegramBotImpl
 import love.forte.simbot.component.telegram.core.bot.requestDataBy
-import love.forte.simbot.component.telegram.core.message.internal.*
+import love.forte.simbot.component.telegram.core.message.internal.TelegramAggregatedMessageIdReceiptImpl
+import love.forte.simbot.component.telegram.core.message.internal.toTelegramMessageReceipt
 import love.forte.simbot.message.*
 import love.forte.simbot.telegram.api.TelegramApi
 import love.forte.simbot.telegram.api.message.*
 import love.forte.simbot.telegram.type.ChatId
+import love.forte.simbot.telegram.type.LinkPreviewOptions
 import love.forte.simbot.telegram.type.MessageId
 import kotlin.jvm.JvmName
 import love.forte.simbot.telegram.type.Message as StdlibMessage
@@ -174,12 +176,12 @@ internal suspend inline fun Message.resolve(
             }
 
             val list = context.end()
-            ResolveResult(list, SendingMarks(context.marks))
+            ResolveResult(list, context.marks())
         }
 
         is Messages -> {
             if (m.isEmpty()) {
-                return ResolveResult(emptyList(), SendingMarks(0))
+                return ResolveResult(emptyList(), SendingMarks.Default)
             }
 
             val context = SendingMessageResolverContext { builderFactory() }
@@ -189,7 +191,7 @@ internal suspend inline fun Message.resolve(
                 }
             }
 
-            ResolveResult(context.end(), SendingMarks(context.marks))
+            ResolveResult(context.end(), context.marks())
         }
     }
 }
@@ -204,13 +206,8 @@ internal fun interface SendingMessageResolver {
     )
 }
 
-private val sendingResolvers = listOf(
-    SendingMarksResolver,
-    TextSendingResolver,
-    ImageSendingResolver,
-    TelegramAudioSendingResolver,
-    TelegramMessageResultApiElementSendingResolver,
-)
+private val sendingResolvers
+    get() = allSendingResolvers
 
 internal typealias BuilderFactory = () -> SendMessageApi.Builder
 
@@ -219,6 +216,7 @@ internal typealias SendingMessageResolvedFunction = (SendingMarks) -> TelegramAp
 internal class SendingMessageResolverContext(
     private val builderFactory: BuilderFactory,
 ) {
+    internal var linkPreviewOptions: LinkPreviewOptions? = null
     internal var marks = 0
 
     fun markProtectContent() {
@@ -228,6 +226,15 @@ internal class SendingMessageResolverContext(
     fun markDisableNotification() {
         marks = marks or DISABLE_NOTIFICATION_MARK
     }
+
+    fun linkPreviewOptions(linkPreviewOptions: LinkPreviewOptions?) {
+        this.linkPreviewOptions = linkPreviewOptions
+    }
+
+    fun marks(): SendingMarks = SendingMarks(
+        marks,
+        linkPreviewOptions
+    )
 
     private val apiStacks = mutableListOf<SendingMessageResolvedFunction>() // TelegramApi<Message>?
 
@@ -256,6 +263,9 @@ internal class SendingMessageResolverContext(
                 }
                 if (m.isDisableNotification) {
                     it.disableNotification = true
+                }
+                m.linkPreviewOptions?.also { opts ->
+                    it.linkPreviewOptions = opts
                 }
                 it.build()
             }

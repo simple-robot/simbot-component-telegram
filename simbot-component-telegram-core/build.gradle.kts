@@ -27,6 +27,7 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.ksp)
     `simbot-telegram-dokka-partial-configure`
+    `simbot-telegram-suspend-transform-configure`
 }
 
 setup(P.ComponentTelegram)
@@ -122,6 +123,7 @@ kotlin {
 dependencies {
     kspCommonMainMetadata(project(":internal-processors:component-events-processor"))
     kspCommonMainMetadata(project(":internal-processors:include-component-message-elements-processor"))
+    kspCommonMainMetadata(project(":internal-processors:component-sending-resolvers-processor"))
 }
 kotlin.sourceSets.commonMain {
     // solves all implicit dependency trouble and IDEs source code detection

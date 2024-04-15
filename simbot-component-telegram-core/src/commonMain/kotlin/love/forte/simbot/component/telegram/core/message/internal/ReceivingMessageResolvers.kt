@@ -39,6 +39,8 @@ internal fun StdlibMessage.toMessages(): Messages {
     if (hasProtectedContent == true) {
         builder.add(TelegramProtectContent)
     }
+    // linkPreviewOptions: LinkPreviewOptions
+    builder.resolveLinkPreviewOptions(this)
 
     text?.also { text ->
         if (entities.isNullOrEmpty()) {
@@ -112,10 +114,11 @@ internal fun StdlibMessage.toMessages(): Messages {
     builder.resolveAudio(this)
     // photo: List<PhotoSize>
     builder.resolveImage(this)
+    // document: Document
+    builder.resolveDocument(this)
 
-    // TODO linkPreviewOptions: LinkPreviewOptions
+
     // TODO animation: Animation
-    // TODO document: Document
     // TODO sticker: Sticker
     // TODO story: Story
     // TODO video: Video
@@ -136,6 +139,15 @@ internal fun StdlibMessage.toMessages(): Messages {
 }
 
 /**
+ * 解析 linkPreviewOptions 到 [TelegramLinkPreviewOptions].
+ */
+private fun MessagesBuilder.resolveLinkPreviewOptions(source: StdlibMessage) {
+    source.linkPreviewOptions?.also { options ->
+        add(TelegramLinkPreviewOptions(options))
+    }
+}
+
+/**
  * 解析 photo 到 [TelegramPhotoSizesImage].
  */
 private fun MessagesBuilder.resolveImage(source: StdlibMessage) {
@@ -148,8 +160,17 @@ private fun MessagesBuilder.resolveImage(source: StdlibMessage) {
  * 解析 audio 到 [TelegramAudioImpl].
  */
 private fun MessagesBuilder.resolveAudio(source: StdlibMessage) {
-    source.audio?.also { photo ->
-        add(TelegramAudioImpl(photo))
+    source.audio?.also { audio ->
+        add(TelegramAudioImpl(audio))
+    }
+}
+
+/**
+ * 解析 document 到 [TelegramDocumentImpl].
+ */
+private fun MessagesBuilder.resolveDocument(source: StdlibMessage) {
+    source.document?.also { doc ->
+        add(TelegramDocumentImpl(doc))
     }
 }
 
