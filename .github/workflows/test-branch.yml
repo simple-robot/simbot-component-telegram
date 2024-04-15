@@ -40,7 +40,7 @@ jobs:
         with:
           add-job-summary-as-pr-comment: on-failure # Valid values are 'never' (default), 'always', and 'on-failure'
 
-      - run: gradle build --scan
+      - run: chmod +x gradlew
 
       - name: Run All Tests
         run: ./gradlew assemble allTests "-Porg.gradle.jvmargs='-Xmx4g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'" --info --warning-mode all --build-cache
@@ -69,9 +69,10 @@ jobs:
         with:
           add-job-summary-as-pr-comment: on-failure # Valid values are 'never' (default), 'always', and 'on-failure'
 
+      - run: chmod +x gradlew
 
       - name: Run detekt
-        run: gradle detekt
+        run: ./gradlew detekt
 
       - name: Upload detekt reports
         uses: actions/upload-artifact@v4
