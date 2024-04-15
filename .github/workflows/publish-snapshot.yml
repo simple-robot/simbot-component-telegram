@@ -55,10 +55,9 @@ jobs:
 
       # setup Gradle
       - uses: gradle/actions/setup-gradle@v3
-      - run: chmod +x gradlew
 
       - name: Gradle test and publish snapshot
-        run: ./gradlew allTests publishToSonatype closeAndReleaseStagingRepository --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
+        run: gradle allTests publishToSonatype closeAndReleaseStagingRepository --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -88,9 +87,8 @@ jobs:
 
       # setup Gradle
       - uses: gradle/actions/setup-gradle@v3
-      - run: chmod +x gradlew
 
-      - run: ./gradlew dokkaHtmlMultiModule "-Porg.gradle.jvmargs='-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8'" "-Porg.gradle.daemon=false" "-DisSnapshot=false" --info --warning-mode all -x test --build-cache
+      - run: gradle dokkaHtmlMultiModule "-Porg.gradle.jvmargs='-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8'" "-Porg.gradle.daemon=false" "-DisSnapshot=false" --info --warning-mode all -x test --build-cache
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3
