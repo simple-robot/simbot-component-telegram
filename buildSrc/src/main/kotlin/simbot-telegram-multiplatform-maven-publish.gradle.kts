@@ -31,6 +31,9 @@ val p = project
 multiplatformConfigPublishing {
     project = P.ComponentTelegram
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+    releasesRepository = ReleaseRepository
+    snapshotRepository = SnapshotRepository
+    gpg = Gpg.ofSystemPropOrNull()
 
     // publishing {
     //     publications.withType<MavenPublication> {
@@ -53,8 +56,9 @@ multiplatformConfigPublishing {
         group = "documentation"
         archiveClassifier.set("javadoc")
         if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
-            archiveClassifier.set("javadoc")
-            from(tasks.findByName("dokkaHtml"))
+            dependsOn(tasks.dokkaHtml)
+            from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+            // from(tasks.findByName("dokkaHtml"))
         }
     }
 
@@ -72,11 +76,9 @@ multiplatformConfigPublishing {
     // }
 
     artifact(jarJavadoc)
-    releasesRepository = ReleaseRepository
-    snapshotRepository = SnapshotRepository
-    gpg = Gpg.ofSystemPropOrNull()
 
     if (isSimbotLocal()) {
+        logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
         mainHost = null
     }
 
@@ -95,6 +97,7 @@ tasks.withType<PublishToMavenRepository>().configureEach {
 // And: https://youtrack.jetbrains.com/issue/KT-46466
 tasks.withType<Sign>().configureEach {
     val pubName = name.removePrefix("sign").removeSuffix("Publication")
+    logger.info("config Sign with pubName {}", pubName)
 
     // These tasks only exist for native targets, hence findByName() to avoid trying to find them for other targets
 
@@ -106,6 +109,9 @@ tasks.withType<Sign>().configureEach {
     tasks.findByName("compileTestKotlin$pubName")?.let {
         mustRunAfter(it)
     }
+
+    logger.info("linkDebugTest{}", pubName)
+    logger.info("compileTestKotlin{}", pubName)
 }
 
 show()
