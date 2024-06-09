@@ -62,13 +62,15 @@ kotlin {
         commonMain.dependencies {
             api(project(":simbot-component-telegram-api"))
             api(project(":simbot-component-telegram-stdlib"))
-            compileOnly(libs.simbot.api)
+
+            implementation(libs.simbot.api)
+            implementation(libs.simbot.common.annotations)
+
             api(libs.kotlinx.coroutines.core)
             api(libs.simbot.logger)
             api(libs.simbot.common.suspend)
             api(libs.simbot.common.atomic)
             api(libs.simbot.common.core)
-            compileOnly(libs.simbot.common.annotations)
 
             api(libs.ktor.client.core)
             // api(libs.ktor.client.contentNegotiation)
@@ -86,29 +88,20 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            compileOnly(libs.simbot.common.annotations)
             compileOnly(libs.reactor.core)
             compileOnly(libs.kotlinx.coroutines.reactive)
         }
 
         jvmTest.dependencies {
             implementation(libs.ktor.client.cio)
-            // implementation(libs.log4j.api)
-            // implementation(libs.log4j.core)
-            // implementation(libs.log4j.slf4j2)
             implementation(libs.simbot.logger.slf4jimpl)
             implementation(libs.kotlinx.coroutines.reactor)
             implementation(libs.reactor.core)
         }
 
         jsMain.dependencies {
-            implementation(libs.simbot.api)
             implementation(libs.ktor.client.js)
-            implementation(libs.simbot.common.annotations)
-        }
-
-        nativeMain.dependencies {
-            implementation(libs.simbot.api)
-            implementation(libs.simbot.common.annotations)
         }
 
         mingwTest.dependencies {

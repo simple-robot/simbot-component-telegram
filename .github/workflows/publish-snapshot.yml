@@ -57,7 +57,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - name: Gradle test and publish snapshot
-        run: gradle allTests publishToSonatype closeAndReleaseStagingRepository --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
+        run: gradle allTests publishToSonatype closeAndReleaseStagingRepositories --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4

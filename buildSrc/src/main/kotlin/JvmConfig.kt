@@ -23,6 +23,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.withType
 import org.gradle.process.CommandLineArgumentProvider
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -30,13 +31,14 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 inline fun KotlinJvmTarget.configJava(crossinline block: KotlinJvmTarget.() -> Unit = {}) {
     withJava()
-    compilations.all {
-        kotlinOptions {
-            javaParameters = true
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
-        }
+    compilerOptions {
+        javaParameters = true
+        freeCompilerArgs.addAll(
+            "-Xjvm-default=all"
+        )
     }
 
     testRuns["test"].executionTask.configure {
@@ -68,8 +70,7 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
     compilerOptions {
         javaParameters = true
         jvmTarget.set(JvmTarget.fromTarget(jdkVersion.toString()))
-        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
-        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
+        freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
     }
     block()
 }
@@ -85,10 +86,12 @@ inline fun Project.configJavaCompileWithModule(
         targetCompatibility = jvmVersion
 
         if (moduleName != null) {
-            options.compilerArgumentProviders.add(CommandLineArgumentProvider {
-                // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
-                listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
-            })
+            options.compilerArgumentProviders.add(
+                CommandLineArgumentProvider {
+                    // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
+                    listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")
+                }
+            )
         }
 
         block()
