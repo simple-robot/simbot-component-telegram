@@ -43,11 +43,6 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    sourceSets.configureEach {
-        languageSettings {
-        }
-    }
-
     configKotlinJvm()
 
     js(IR) {
@@ -58,13 +53,6 @@ kotlin {
     applyTier2()
     applyTier3(supportKtorClient = true)
 
-    // withKotlinTargets { target ->
-    //     targets.findByName(target.name)?.compilations?.all {
-    //         // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. You can use -Xexpect-actual-classes flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
-    //         kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
-    //     }
-    // }
-
     sourceSets {
         commonMain {
             dependencies {
@@ -74,7 +62,8 @@ kotlin {
                 api(libs.simbot.common.suspend)
                 api(libs.simbot.common.core)
                 api(libs.simbot.common.ktor.inputfile)
-                compileOnly(libs.simbot.common.annotations)
+
+                implementation(libs.simbot.common.annotations)
 
                 api(libs.ktor.client.core)
                 api(libs.ktor.client.contentNegotiation)
@@ -92,7 +81,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
-//            compileOnly(libs.simbot.api) // use @Api4J annotation
+            compileOnly(libs.simbot.common.annotations)
         }
 
         jvmTest.dependencies {
@@ -107,12 +96,7 @@ kotlin {
         }
 
         jsMain.dependencies {
-            api(libs.ktor.client.js)
-            implementation(libs.simbot.common.annotations)
-        }
-
-        nativeMain.dependencies {
-            implementation(libs.simbot.common.annotations)
+            implementation(libs.ktor.client.js)
         }
 
         mingwTest.dependencies {
