@@ -18,6 +18,7 @@
 package love.forte.simbot.component.telegram.core.actor.internal
 
 import love.forte.simbot.common.collectable.Collectable
+import love.forte.simbot.common.collectable.emptyCollectable
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.toInt
 import love.forte.simbot.component.telegram.core.actor.TelegramChatGroupActor
@@ -43,7 +44,7 @@ internal abstract class AbstractTelegramChatGroupActor : TelegramChatGroupActor 
     abstract override val source: Chat
 
     override val roles: Collectable<Role>
-        get() = TODO("Not yet implemented")
+        get() = emptyCollectable() // TODO("Not yet implemented")
 
     override suspend fun botAsMember(): TelegramMember {
         return bot.queryUserInfo().toTelegramMember(bot)

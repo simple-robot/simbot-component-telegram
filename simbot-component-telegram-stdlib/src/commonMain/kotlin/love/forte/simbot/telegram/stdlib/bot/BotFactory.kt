@@ -22,8 +22,6 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
-// TODO Doc
-
 /**
  * A [Bot] factory.
  */
