@@ -177,3 +177,22 @@ class MyHandles {
     }
 }
 ```
+The configuration file `*.bot.json`
+
+> Comments are not supported. 
+> Remember to clean them up when you use them.
+
+```json5
+{
+    "ticket": {
+        "token": "Your Bot Token"
+    },
+    // config and its properties are optional and default to `null`.
+    "config": {
+        "server": null,
+        "proxy": null,
+        "longPolling": null
+    }
+}
+```
+
