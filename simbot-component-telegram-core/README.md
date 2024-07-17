@@ -184,6 +184,7 @@ The configuration file `*.bot.json`
 
 ```json5
 {
+    "componet": "simbot.telegram",
     "ticket": {
         "token": "Your Bot Token"
     },
