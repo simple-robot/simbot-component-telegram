@@ -21,6 +21,9 @@ on:
   workflow_dispatch:
 
 env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+  GRADLE_VERSION: 8.5
   IS_CI: true
   GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
   GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
@@ -35,12 +38,36 @@ env:
 
 
 jobs:
-  publish-snapshot:
-    name: Publish snapshot
+  run-test:
+    name: Run all tests
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
+    steps:
+      # 检出仓库代码
+      - uses: actions/checkout@v4
+      # setup Java
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+      # setup Gradle
+      # https://github.com/gradle/actions/blob/main/docs/setup-gradle.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Run all tests
+        run: gradle assemble allTests --stacktrace --warning-mode all
+
+  publish-snapshot:
+    name: Publish snapshot
+    needs: run-test
+    runs-on: macos-latest
     steps:
       # 检出仓库代码
       - name: Check out repo
@@ -50,14 +77,17 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 21
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
 
       # setup Gradle
       - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Gradle test and publish snapshot
-        run: gradle allTests publishToSonatype closeAndReleaseStagingRepositories --info --warning-mode all "-Porg.gradle.daemon=false" "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
+      - name: Publish snapshots
+        run: gradle publishToSonatype closeAndReleaseStagingRepositories --info --warning-mode all -x test "-Porg.gradle.jvmargs='-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'"
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
@@ -82,11 +112,14 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 21
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
 
       # setup Gradle
       - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
 
       - run: gradle dokkaHtmlMultiModule "-Porg.gradle.jvmargs='-Xmx4g -Xms4g -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8'" "-Porg.gradle.daemon=false" "-DisSnapshot=false" --info --warning-mode all -x test --build-cache
 
