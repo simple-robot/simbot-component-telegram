@@ -25,6 +25,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
@@ -81,6 +82,8 @@ private class IncludeMessageElementsProcessor(val environment: SymbolProcessorEn
             .filterIsInstance<KSClassDeclaration>()
             // 是一个可序列化的具体的类
             .filter { !it.isAbstract() }
+            // isAbstract 无法判断 sealed
+            .filter { Modifier.SEALED !in it.modifiers }
             // 是 BaseMessageElement 的子类
             .filter { baseDeclarationType.isAssignableFrom(it.asStarProjectedType()) }
             .onEach {

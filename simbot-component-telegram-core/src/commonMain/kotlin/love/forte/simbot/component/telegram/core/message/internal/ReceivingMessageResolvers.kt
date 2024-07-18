@@ -93,7 +93,7 @@ internal fun StdlibMessage.toMessages(): Messages {
                 else -> {
                     TelegramMessageEntity.Simple(
                         text = text.substring(entity),
-                        type = entity.type,
+                        typeValue = entity.type,
                         entity
                     )
                 }
