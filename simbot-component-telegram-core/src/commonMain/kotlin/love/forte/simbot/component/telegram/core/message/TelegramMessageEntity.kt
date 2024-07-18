@@ -158,9 +158,12 @@ public sealed class TelegramMessageEntity : TelegramMessageElement, PlainText {
     @SerialName("telegram.m.message_entity.simple")
     public class Simple internal constructor(
         override val text: String,
-        override val type: String,
+        private val typeValue: String,
         override val sourceEntity: MessageEntity?
-    ) : TelegramMessageEntity()
+    ) : TelegramMessageEntity() {
+        override val type: String
+            get() = typeValue
+    }
 
     /**
      * An implementation with type [MessageEntityType.TEXT_LINK]
