@@ -197,3 +197,22 @@ The configuration file `*.bot.json`
 }
 ```
 
+
+```json5
+{
+    "component": "simbot.telegram",
+    "ticket": {
+        "token": "Your Bot Token"
+    },
+    // config and its properties are optional and default to `null`.
+    "config": {
+        "server": null,
+        "proxy": null,
+        // config the `longPolling` to subscribe evnets
+        "longPolling": {
+            "limit": 100
+        }
+    }
+}
+```
+
