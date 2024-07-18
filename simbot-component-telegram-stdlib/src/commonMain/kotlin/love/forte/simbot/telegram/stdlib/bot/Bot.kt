@@ -322,8 +322,6 @@ public class BotConfiguration {
      */
     public var longPolling: LongPolling? = null
 
-    // TODO exception handler?
-
     public companion object {
         /**
          * Default value for long polling timeout: 30 minutes.

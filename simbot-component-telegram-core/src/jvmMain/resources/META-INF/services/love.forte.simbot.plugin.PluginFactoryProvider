@@ -1,1 +1,1 @@
-love.forte.simbot.component.telegram.bot.TelegramBotManagerFactoryProvider
+love.forte.simbot.component.telegram.core.bot.TelegramBotManagerFactoryProvider

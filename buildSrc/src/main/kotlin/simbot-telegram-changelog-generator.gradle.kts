@@ -42,7 +42,7 @@ tasks.create("createChangelog") {
                     appendLine(
                         """
                         > [!warning]
-                        > **目前版本处于 `dev` 阶段，代表此版本是一个开发预览版，可能不稳定、可能随时发生更改、且不保证可用性。**
+                        > **目前版本处于早期阶段，代表此版本是一个开发预览版，可能不稳定、可能随时发生更改、且不保证可用性。**
                         
                         
                     """.trimIndent()
@@ -63,43 +63,4 @@ tasks.create("createChangelog") {
             file.writeText(autoGenerateText)
         }
     }
-}
-
-tasks.create("updateWebsiteVersionJson") {
-    group = "documentation"
-    doFirst {
-        val version = P.ComponentTelegram.version.toString()
-
-        val websiteVersionJsonDir = rootProject.file("website/static")
-        if (!websiteVersionJsonDir.exists()) {
-            websiteVersionJsonDir.mkdirs()
-        }
-        val websiteVersionJsonFile = File(websiteVersionJsonDir, "version.json")
-        if (!websiteVersionJsonFile.exists()) {
-            websiteVersionJsonFile.createNewFile()
-        }
-
-        websiteVersionJsonFile.writeText(
-            """
-            {
-              "version": "$version"
-            }
-        """.trimIndent()
-        )
-    }
-}
-
-
-fun repoRow(moduleName: String, group: String, id: String, version: String): String {
-    return "| $moduleName | [$moduleName: v$version](https://repo1.maven.org/maven2/${
-        group.replace(
-            ".",
-            "/"
-        )
-    }/${
-        id.replace(
-            ".",
-            "/"
-        )
-    }/$version) | [$moduleName: v$version](https://search.maven.org/artifact/$group/$id/$version/jar)  |"
 }
