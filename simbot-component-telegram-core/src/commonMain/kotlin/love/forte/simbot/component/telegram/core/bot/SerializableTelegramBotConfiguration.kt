@@ -31,6 +31,10 @@ import love.forte.simbot.telegram.stdlib.bot.LongPolling
 
 
 /**
+ * A configuration type for a serializable bot config file.
+ *
+ * Only for deserialization use, it is not recommended to directly construct or use it,
+ * and the compatibility and stability of direct use are not guaranteed.
  *
  * @author ForteScarlet
  */
