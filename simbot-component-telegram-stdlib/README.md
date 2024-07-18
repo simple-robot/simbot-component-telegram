@@ -1,12 +1,13 @@
 # Stdlib module
 
 > [!caution]
-> WIP
+> WIP, and this module will remove
 
 ## Setup
 
 > [!note]
-> Version (`VERSION` below) goes to the [releases](https://github.com/simple-robot/simbot-component-telegram/releases) reference.
+> Version (`VERSION` below) goes to the [release](https://github.com/simple-robot/simbot-component-telegram/releases) 
+> reference.
 
 ### Gradle
 

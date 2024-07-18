@@ -119,7 +119,6 @@ runtimeOnly("io.ktor:ktor-client-java:$ktor_version")
 
 </details>
 
-
 ## Examples
 
 **simbot core**
@@ -220,7 +219,7 @@ The configuration file `*.bot.json`
 {
     "component": "simbot.telegram",
     "ticket": {
-        "token": "Your Bot Token"
+        "token": "Your FULL Bot Token, e.g. Bot123456789:aaaabbbbcccc"
     },
     // config and its properties are optional and default to `null`.
     "config": {
@@ -236,7 +235,7 @@ The configuration file `*.bot.json`
 {
     "component": "simbot.telegram",
     "ticket": {
-        "token": "Your Bot Token"
+        "token": "Your FULL Bot Token, e.g. Bot123456789:aaaabbbbcccc"
     },
     // config and its properties are optional and default to `null`.
     "config": {
