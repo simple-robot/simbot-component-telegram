@@ -26,7 +26,8 @@ import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.annotations.FragileSimbotAPI
 import love.forte.simbot.bot.JobBasedBot
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.literal
+import love.forte.simbot.common.id.StringID.Companion.ID
+import love.forte.simbot.common.id.toLongOrNull
 import love.forte.simbot.component.telegram.core.bot.StdlibBot
 import love.forte.simbot.component.telegram.core.bot.TelegramBot
 import love.forte.simbot.component.telegram.core.bot.TelegramBotConfiguration
@@ -71,6 +72,8 @@ internal class TelegramBotImpl(
     internal val logger = LoggerFactory.getLogger("love.forte.simbot.component.telegram.core.bot")
     internal val eventLogger = LoggerFactory.getLogger("love.forte.simbot.component.telegram.stdlib.bot.event")
 
+    override val id: ID = source.ticket.token.ID
+
     private var _userInfo: User? = null
 
     override val userInfo: User
@@ -83,10 +86,10 @@ internal class TelegramBotImpl(
     }
 
     override fun isMe(id: ID): Boolean {
-        // TODO
-        return source.ticket.token == id.literal
-    }
+        val ui = _userInfo ?: return this.id == id
 
+        return this.id == id || ui.id == id.toLongOrNull()
+    }
 
     private val startLock = Mutex()
 
@@ -99,6 +102,9 @@ internal class TelegramBotImpl(
             }
 
             source.start()
+            // init bot user info
+            queryUserInfo()
+
             subscribeInternalProcessor(this, source, eventDispatcher)
 
             // mark started

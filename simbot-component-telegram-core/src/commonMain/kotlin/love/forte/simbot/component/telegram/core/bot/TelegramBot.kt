@@ -64,14 +64,21 @@ public interface TelegramBot : Bot {
         get() = userInfo.username ?: userInfo.firstName
 
     /**
-     * The id of current bot.
+     * The id of [userInfo].
      *
-     * @throws IllegalStateException The bot has not been started, or has never been used [queryUserInfo].
-     * @see userInfo
+     * @throws IllegalStateException The bot has not be started,
+     * or has never been used [queryUserInfo]
+     */
+    public val userId: ID
+        get() = userInfo.id.ID
+
+    /**
+     * The bot token configured.
      *
+     * If you want to get the `user.id` of this bot,
+     * use [userId].
      */
     override val id: ID
-        get() = userInfo.id.ID
 
     /**
      * Query user info of the current bot.

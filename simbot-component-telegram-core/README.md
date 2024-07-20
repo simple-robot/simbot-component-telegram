@@ -86,6 +86,39 @@ dependencies {
 </dependencies>
 ```
 
+### Ktor client engine
+
+The Telegram component uses Ktor as the HTTP client implementation, 
+but does not rely on any specific engine by default.
+
+Therefore, you need to choose and use a Ktor Client engine implementation.
+
+You can go to the [Ktor documentation](https://ktor.io/docs/client-engines.html) 
+to select a suitable Client Engine for your platform.
+
+Take the JVM platform as an example:
+
+<details open><summary>Gradle</summary>
+
+```kotlin
+runtimeOnly("io.ktor:ktor-client-java:$ktor_version")
+```
+
+</details>
+
+<details ><summary>Maven</summary>
+
+```xml
+<dependency>
+    <groupId>io.ktor</groupId>
+    <artifactId>ktor-client-java-jvm</artifactId>
+    <version>${ktor_version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+</details>
+
 ## Examples
 
 **simbot core**
@@ -186,13 +219,32 @@ The configuration file `*.bot.json`
 {
     "component": "simbot.telegram",
     "ticket": {
-        "token": "Your Bot Token"
+        "token": "Your FULL Bot Token, e.g. Bot123456789:aaaabbbbcccc"
     },
     // config and its properties are optional and default to `null`.
     "config": {
         "server": null,
         "proxy": null,
         "longPolling": null
+    }
+}
+```
+
+
+```json5
+{
+    "component": "simbot.telegram",
+    "ticket": {
+        "token": "Your FULL Bot Token, e.g. Bot123456789:aaaabbbbcccc"
+    },
+    // config and its properties are optional and default to `null`.
+    "config": {
+        "server": null,
+        "proxy": null,
+        // config the `longPolling` to subscribe evnets
+        "longPolling": {
+            "limit": 100
+        }
     }
 }
 ```
