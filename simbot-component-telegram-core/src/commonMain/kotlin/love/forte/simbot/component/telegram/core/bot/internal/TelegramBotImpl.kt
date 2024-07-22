@@ -31,6 +31,10 @@ import love.forte.simbot.common.id.toLongOrNull
 import love.forte.simbot.component.telegram.core.bot.StdlibBot
 import love.forte.simbot.component.telegram.core.bot.TelegramBot
 import love.forte.simbot.component.telegram.core.bot.TelegramBotConfiguration
+import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommands
+import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommandsUpdater
+import love.forte.simbot.component.telegram.core.bot.internal.command.TelegramBotCommandsUpdaterImpl
+import love.forte.simbot.component.telegram.core.bot.internal.command.toTGCommands
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
 import love.forte.simbot.component.telegram.core.event.TelegramUnsupportedEvent
 import love.forte.simbot.component.telegram.core.event.internal.TelegramChannelMessageEventImpl
@@ -42,6 +46,7 @@ import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.onEachError
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.telegram.api.bot.GetMeApi
+import love.forte.simbot.telegram.api.bot.command.GetMyCommandsApi
 import love.forte.simbot.telegram.api.update.SuspendableUpdateDivider
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.stdlib.bot.SubscribeSequence
@@ -111,7 +116,30 @@ internal class TelegramBotImpl(
             isStarted = true
         }
     }
+
+    override suspend fun commands(scope: BotCommandScope?, languageCode: String?): TelegramBotCommands {
+        val commands = GetMyCommandsApi.create(
+            scope = scope,
+            languageCode = languageCode
+        ).requestDataBy(source)
+
+        return commands.toTGCommands(
+            bot = this,
+            scope = scope,
+            languageCode = languageCode
+        )
+    }
+
+    override val commandsUpdater: TelegramBotCommandsUpdater
+        get() = TelegramBotCommandsUpdaterImpl(
+            bot = this,
+            scope = null,
+            languageCode = null
+        )
 }
+
+
+
 
 
 @OptIn(FragileSimbotAPI::class)

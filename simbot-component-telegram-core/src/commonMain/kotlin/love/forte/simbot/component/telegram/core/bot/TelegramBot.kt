@@ -23,9 +23,12 @@ import love.forte.simbot.bot.GroupRelation
 import love.forte.simbot.bot.GuildRelation
 import love.forte.simbot.common.id.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
+import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommands
+import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommandsUpdater
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.telegram.api.update.Update
+import love.forte.simbot.telegram.type.BotCommandScope
 import love.forte.simbot.telegram.type.User
 import kotlin.coroutines.CoroutineContext
 
@@ -98,14 +101,45 @@ public interface TelegramBot : Bot {
         source.pushUpdate(update, raw)
     }
 
+    /**
+     * Fetches a [TelegramBotCommands] with [scope] and [languageCode].
+     *
+     * @param scope Scope of bot commands.
+     * @param languageCode A two-letter ISO 639-1 language code of commands.
+     */
+    @ST
+    public suspend fun commands(scope: BotCommandScope?, languageCode: String?): TelegramBotCommands
+
+    /**
+     * Fetches a [TelegramBotCommands].
+     */
+    @ST
+    public suspend fun commands(): TelegramBotCommands =
+        commands(scope = null, languageCode = null)
+
+    /**
+     * An updater for set commands.
+     *
+     * @see TelegramBotCommandsUpdater
+     */
+    public val commandsUpdater: TelegramBotCommandsUpdater
 
     override val groupRelation: GroupRelation?
-        get() = null // TODO?
+        get() = null
 
     override val guildRelation: GuildRelation?
-        get() = null // TODO?
+        get() = null
 
     override val contactRelation: ContactRelation?
-        get() = null // TODO?
+        get() = null
 
 }
+
+/**
+ * Update bot commands by [TelegramBot.commandsUpdater]
+ *
+ * @see TelegramBot.commandsUpdater
+ */
+public suspend inline fun TelegramBot.updateCommands(
+    block: TelegramBotCommandsUpdater.() -> Unit
+): TelegramBotCommands = commandsUpdater.also(block).update()
