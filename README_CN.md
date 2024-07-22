@@ -33,144 +33,26 @@ _中文_ | [English](README.md)
 > 或
 > [加入社群](https://simbot.forte.love/communities.html)~
 
-这是一个基于 [Kotlin coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-的 [**Telegram Bot**][telegram bot doc] API/SDK 
-Kotlin 多平台库，异步高效、Java友好。
+**Telegram组件**
+是一个 [Kotlin 多平台](https://kotlinlang.org/docs/multiplatform.html) 的 [**Telegram Bot API**][telegram bot doc] SDK实现库，
+也是 Simple Robot 标准API下实现的组件库，异步高效、Java友好！
 
-它同样是一个 [Simple Robot v4][simbot4 gh] (下文简称 simbot)
-的组件库，是 simbot 的子项目之一。
-借助 simbot 核心库提供的能力，它可以支持更多高级功能和封装，比如组件协同、Spring支持等。
+> 序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization)
+> 和 [Ktor](https://ktor.io/).
 
-它可以作为一个低级别的 API/SDK 辅助依赖库，
-也可在 simbot 核心库的支持下用作为一个轻量级的快速开发框架！ 
+> 序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization)
+> 和 [Ktor](https://ktor.io/).
 
-序列化和网络请求相关分别基于 [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization) 
-和 [Ktor](https://ktor.io/).
-
+ 
 ## 文档
 
-- **Telegram组件**手册：(待建设)
-- 了解simbot: [**Simple Robot 应用手册**](https://simbot.forte.love)
+- 手册: [**Simple Robot 应用手册**](https://simbot.forte.love) 及其中的 [**Telegram组件**](https://simbot.forte.love/component-telegram.html) 部分。
 - **API文档**: [**文档引导站点**](https://docs.simbot.forte.love) 中 Telegram 的 [**KDoc站点**](https://docs.simbot.forte.love/components/telegram)
 - [**社群**](https://simbot.forte.love/communities.html): 与我们和其他开发者愉快地交流！
 
-
 ## 安装
 
-To use the simbot component library, you first need to add the core implementation of simbot
-(such as the core library (`simbot-core`) or Spring Boot starter (`simbot-core-spring-boot-starter`)),
-and then add the component library dependencies of the Telegram (`simbot-component-telegram-core`).
-
-> [!note]
-> The version of the simbot core implementation library (`SIMBOT_VERSION` below)
-> goes [here](https://github.com/simple-robot/simpler-robot/releases) for reference;
->
-> Telegram Component library versions (`VERSION` below) go to the [release](https://github.com/simple-robot/simbot-component-telegram/releases) reference.
-
-**With simbot core**
-
-### Gradle
-
-`build.gradle.kts`
-
-```kotlin
-plugins {
-    kotlin("...") version "..."
-}
-
-dependencies {
-    implementation("love.forte.simbot:simbot-core:${SIMBOT_VERSION}")
-    implementation("love.forte.simbot.component:simbot-component-telegram-core:$VERSION")
-}
-```
-
-### Maven
-
-`pom.xml`
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>love.forte.simbot</groupId>
-        <artifactId>simbot-core-jvm</artifactId>
-        <version>${SIMBOT_VERSION}</version>
-    </dependency>
-    <dependency>
-        <groupId>love.forte.simbot.component</groupId>
-        <artifactId>simbot-component-telegram-core-jvm</artifactId>
-        <version>${VERSION}</version>
-    </dependency>
-</dependencies>
-```
-
-**With simbot spring boot starter**
-
-### Gradle
-
-`build.gradle.kts`
-
-```kotlin
-plugins {
-    kotlin("jvm") version "..."
-}
-
-dependencies {
-    implementation("love.forte.simbot:simbot-core-spring-boot-starter:${SIMBOT_VERSION}")
-    implementation("love.forte.simbot.component:simbot-component-telegram-core:$VERSION")
-}
-```
-
-### Maven
-
-`pom.xml`
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>love.forte.simbot</groupId>
-        <artifactId>simbot-core-spring-boot-starter</artifactId>
-        <version>${SIMBOT_VERSION}</version>
-    </dependency>
-    <dependency>
-        <groupId>love.forte.simbot.component</groupId>
-        <artifactId>simbot-component-telegram-core-jvm</artifactId>
-        <version>${VERSION}</version>
-    </dependency>
-</dependencies>
-```
-
-### Ktor client engine
-
-The Telegram component uses Ktor as the HTTP client implementation,
-but does not rely on any specific engine by default.
-
-Therefore, you need to choose and use a Ktor Client engine implementation.
-
-You can go to the [Ktor documentation](https://ktor.io/docs/client-engines.html)
-to select a suitable Client Engine for your platform.
-
-Take the JVM platform as an example:
-
-<details open><summary>Gradle</summary>
-
-```kotlin
-runtimeOnly("io.ktor:ktor-client-java:$ktor_version")
-```
-
-</details>
-
-<details ><summary>Maven</summary>
-
-```xml
-<dependency>
-    <groupId>io.ktor</groupId>
-    <artifactId>ktor-client-java-jvm</artifactId>
-    <version>${ktor_version}</version>
-    <scope>runtime</scope>
-</dependency>
-```
-
-</details>
+参考手册的 [**Telegram组件**](https://simbot.forte.love/component-telegram.html) 部分。
 
 ## Examples
 
