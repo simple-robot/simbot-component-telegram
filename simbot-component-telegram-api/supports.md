@@ -3,7 +3,9 @@
 - [bot](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot)
   -  [x] [CloseApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/CloseApi.kt)
   - [command](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/command)
+    -  [x] [DeleteMyCommandsApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/command/DeleteMyCommandsApi.kt)
     -  [x] [GetMyCommandsApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/command/GetMyCommandsApi.kt)
+    -  [x] [SetMyCommandsApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/command/SetMyCommandsApi.kt)
   -  [x] [GetChatMenuButtonApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/GetChatMenuButtonApi.kt)
   -  [x] [GetMeApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/GetMeApi.kt)
   -  [x] [GetMyDefaultAdministratorRightsApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/bot/GetMyDefaultAdministratorRightsApi.kt)
@@ -38,4 +40,4 @@
   -  [x] [SetWebhookApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/update/SetWebhookApi.kt)
 - [user](src/commonMain/kotlin/love/forte/simbot/telegram/api/user)
   -  [x] [GetUserProfilePhotosApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/user/GetUserProfilePhotosApi.kt)
-- [ ] **Others not listed**
+- [ ] **Others aren’t listed**
