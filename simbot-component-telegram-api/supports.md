@@ -40,4 +40,4 @@
   -  [x] [SetWebhookApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/update/SetWebhookApi.kt)
 - [user](src/commonMain/kotlin/love/forte/simbot/telegram/api/user)
   -  [x] [GetUserProfilePhotosApi](src/commonMain/kotlin/love/forte/simbot/telegram/api/user/GetUserProfilePhotosApi.kt)
-- [ ] **Others aren’t listed**
+- [ ] **Others not listed**
