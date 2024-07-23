@@ -32,11 +32,10 @@ import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
-// TODO JVM
-
 /**
  * Use [TelegramBot] to request the [TelegramApi] and get [HttpResponse].
  * @see TelegramApi.requestRawBy
+ * @see TelegramBot.executeRaw
  */
 @JvmSynthetic
 public suspend fun TelegramApi<*>.requestRawBy(bot: TelegramBot): HttpResponse =
@@ -45,6 +44,7 @@ public suspend fun TelegramApi<*>.requestRawBy(bot: TelegramBot): HttpResponse =
 /**
  * Use [TelegramBot] to request the [TelegramApi] and get [TelegramApiResult] with [R].
  * @see TelegramApi.requestResult
+ * @see TelegramBot.executeResult
  */
 @JvmSynthetic
 public suspend fun <R : Any> TelegramApi<R>.requestResultBy(bot: TelegramBot): TelegramApiResult<R> =
@@ -53,6 +53,7 @@ public suspend fun <R : Any> TelegramApi<R>.requestResultBy(bot: TelegramBot): T
 /**
  * Use [TelegramBot] to request the [TelegramApi] and get [R].
  * @see TelegramApi.requestData
+ * @see TelegramBot.execute
  */
 @JvmSynthetic
 public suspend fun <R : Any> TelegramApi<R>.requestDataBy(bot: TelegramBot): R =

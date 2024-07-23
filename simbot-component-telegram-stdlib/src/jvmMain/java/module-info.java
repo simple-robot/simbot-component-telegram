@@ -11,6 +11,7 @@ module simbot.component.telegram.stdlib {
 
     requires static kotlinx.coroutines.reactive;
     requires static org.reactivestreams;
+    requires io.ktor.client.core;
 
     exports love.forte.simbot.telegram.stdlib.bot;
     exports love.forte.simbot.telegram.stdlib.event;

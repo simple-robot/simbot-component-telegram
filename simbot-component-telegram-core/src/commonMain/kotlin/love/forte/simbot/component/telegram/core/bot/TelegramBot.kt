@@ -17,6 +17,7 @@
 
 package love.forte.simbot.component.telegram.core.bot
 
+import io.ktor.client.statement.*
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.ContactRelation
 import love.forte.simbot.bot.GroupRelation
@@ -27,6 +28,8 @@ import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommands
 import love.forte.simbot.component.telegram.core.bot.command.TelegramBotCommandsUpdater
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
 import love.forte.simbot.suspendrunner.ST
+import love.forte.simbot.telegram.api.TelegramApi
+import love.forte.simbot.telegram.api.TelegramApiResult
 import love.forte.simbot.telegram.api.update.Update
 import love.forte.simbot.telegram.type.BotCommandScope
 import love.forte.simbot.telegram.type.User
@@ -123,6 +126,42 @@ public interface TelegramBot : Bot {
      * @see TelegramBotCommandsUpdater
      */
     public val commandsUpdater: TelegramBotCommandsUpdater
+
+    /**
+     * Execute [TelegramApi] by this bot.
+     *
+     * @throws Exception Any exception that may occur during the API request process
+     *
+     * @see requestDataBy
+     */
+    @ST
+    public suspend fun <R : Any> execute(api: TelegramApi<R>): R =
+        api.requestDataBy(this)
+
+    /**
+     * Execute [TelegramApi] by this bot.
+     *
+     * @throws Exception Any exception that may occur during the API request process
+     *
+     * @return The raw [HttpResponse]
+     * @see requestRawBy
+     */
+    @ST
+    public suspend fun executeRaw(api: TelegramApi<*>): HttpResponse =
+        api.requestRawBy(this)
+
+    /**
+     * Execute [TelegramApi] by this bot.
+     *
+     * @throws Exception Any exception that may occur during the API request process
+     *
+     * @return The [TelegramApiResult]
+     * @see requestResultBy
+     */
+    @ST
+    public suspend fun <R : Any> executeResult(api: TelegramApi<R>): TelegramApiResult<R> =
+        api.requestResultBy(this)
+
 
     override val groupRelation: GroupRelation?
         get() = null

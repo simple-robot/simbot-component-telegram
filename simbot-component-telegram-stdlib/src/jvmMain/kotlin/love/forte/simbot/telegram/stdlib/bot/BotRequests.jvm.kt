@@ -23,65 +23,132 @@ package love.forte.simbot.telegram.stdlib.bot
 import io.ktor.client.statement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.reserve.SuspendReserve
+import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import love.forte.simbot.telegram.api.*
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * [requestRawBy] in async.
  * @see TelegramApi.requestRaw
  */
-@JvmSynthetic
 @JvmOverloads
-public fun TelegramApi<*>.requestByAsync(bot: Bot, scope: CoroutineScope = bot): CompletableFuture<HttpResponse> =
-    scope.future { requestRawBy(bot) }
+public fun TelegramApi<*>.requestByAsync(
+    bot: Bot,
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
+): CompletableFuture<HttpResponse> =
+    (scope ?: bot).future(context = context ?: EmptyCoroutineContext) { requestRawBy(bot) }
 
 
 /**
  * [requestResultBy] in async.
  * @see TelegramApi.requestResult
  */
-@JvmSynthetic
 @JvmOverloads
 public fun <R : Any> TelegramApi<R>.requestResultByAsync(
     bot: Bot,
-    scope: CoroutineScope = bot
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
 ): CompletableFuture<TelegramApiResult<R>> =
-    scope.future { requestResultBy(bot) }
+    (scope ?: bot).future(context = context ?: EmptyCoroutineContext) { requestResultBy(bot) }
 
 
 /**
  * [requestDataBy] in async.
  * @see TelegramApi.requestData
  */
-@JvmSynthetic
 @JvmOverloads
-public fun <R : Any> TelegramApi<R>.requestDataByAsync(bot: Bot, scope: CoroutineScope = bot): CompletableFuture<R> =
-    scope.future { requestDataBy(bot) }
+public fun <R : Any> TelegramApi<R>.requestDataByAsync(
+    bot: Bot,
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
+): CompletableFuture<R> =
+    (scope ?: bot).future(context = context ?: EmptyCoroutineContext) { requestDataBy(bot) }
 
 /**
  * [requestRawBy] in blocking.
  * @see requestRawBy
  */
-@JvmSynthetic
-public fun TelegramApi<*>.requestByBlocking(bot: Bot): HttpResponse =
-    runInNoScopeBlocking { requestRawBy(bot) }
+@JvmOverloads
+public fun TelegramApi<*>.requestByBlocking(
+    bot: Bot,
+    context: CoroutineContext? = null,
+): HttpResponse =
+    runInNoScopeBlocking(context = context ?: EmptyCoroutineContext) { requestRawBy(bot) }
 
 /**
  * [requestResultBy] in blocking.
  * @see requestResultBy
  */
-@JvmSynthetic
+@JvmOverloads
 public fun <R : Any> TelegramApi<R>.requestResultByBlocking(
-    bot: Bot
+    bot: Bot,
+    context: CoroutineContext? = null,
 ): TelegramApiResult<R> =
-    runInNoScopeBlocking { requestResultBy(bot) }
+    runInNoScopeBlocking(context = context ?: EmptyCoroutineContext) { requestResultBy(bot) }
 
 /**
  * [requestDataBy] in blocking.
  * @see requestDataBy
  */
-@JvmSynthetic
-public fun <R : Any> TelegramApi<R>.requestDataByBlocking(bot: Bot): R =
-    runInNoScopeBlocking { requestDataBy(bot) }
+@JvmOverloads
+public fun <R : Any> TelegramApi<R>.requestDataByBlocking(
+    bot: Bot,
+    context: CoroutineContext? = null,
+): R =
+    runInNoScopeBlocking(context = context ?: EmptyCoroutineContext) { requestDataBy(bot) }
+
+
+/**
+ * [requestRawBy] in blocking.
+ * @see requestRawBy
+ */
+@OptIn(InternalSimbotAPI::class)
+@JvmOverloads
+public fun TelegramApi<*>.requestByReserve(
+    bot: Bot,
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
+): SuspendReserve<HttpResponse> =
+    suspendReserve(
+        scope = scope ?: bot,
+        context = context ?: EmptyCoroutineContext,
+    ) { requestRawBy(bot) }
+
+/**
+ * [requestResultBy] in blocking.
+ * @see requestResultBy
+ */
+@OptIn(InternalSimbotAPI::class)
+@JvmOverloads
+public fun <R : Any> TelegramApi<R>.requestResultByReserve(
+    bot: Bot,
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
+): SuspendReserve<TelegramApiResult<R>> =
+    suspendReserve(
+        scope = scope ?: bot,
+        context = context ?: EmptyCoroutineContext,
+    ) { requestResultBy(bot) }
+
+/**
+ * [requestDataBy] in blocking.
+ * @see requestDataBy
+ */
+@OptIn(InternalSimbotAPI::class)
+@JvmOverloads
+public fun <R : Any> TelegramApi<R>.requestDataByReserve(
+    bot: Bot,
+    scope: CoroutineScope? = null,
+    context: CoroutineContext? = null,
+): SuspendReserve<R> =
+    suspendReserve(
+        scope = scope ?: bot,
+        context = context ?: EmptyCoroutineContext,
+    ) { requestDataBy(bot) }
 
