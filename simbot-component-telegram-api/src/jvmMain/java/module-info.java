@@ -3,6 +3,7 @@ module simbot.component.telegram.api {
     requires simbot.common.core;
     requires simbot.common.ktor.inputfile;
     requires transitive simbot.component.telegram.type;
+    requires io.ktor.client.core;
 
     exports love.forte.simbot.telegram.api;
     exports love.forte.simbot.telegram.api.bot;

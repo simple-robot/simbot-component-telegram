@@ -31,12 +31,24 @@ import love.forte.simbot.telegram.type.Message
 public typealias StdlibEvent = love.forte.simbot.telegram.stdlib.event.Event
 
 /**
+ * An telegram bot event.
+ *
+ * @see TelegramEvent
+ */
+public interface TelegramBotEvent : BotEvent {
+    /**
+     * The [TelegramBot].
+     */
+    override val bot: TelegramBot
+}
+
+/**
  * Is a Telegram simbot component event definition type.
  * Is an implementation of the event type in the simbot API.
  *
  * @author ForteScarlet
  */
-public interface TelegramEvent : BotEvent {
+public interface TelegramEvent : TelegramBotEvent {
     // 所有的 Telegram Event 都是建立在 Bot 之上的，
     // 因此所有 TelegramEvent 都实现 BotEvent
 

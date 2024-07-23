@@ -28,23 +28,30 @@ repositories {
     mavenCentral()
 }
 
-fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
-    moduleName.set("Simple Robot 组件 | Telegram")
-    outputDirectory.set(rootProject.file("build/dokka/$format"))
-}
-
 tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
-    configOutput("html")
+    moduleName.set("Simple Robot 组件 | Telegram")
+    outputDirectory.set(rootProject.file("build/dokka/html"))
 
-    // rootProject.file("README.md").takeIf { it.exists() }?.also {
-    //     includes.from(it)
-    // }
+    if (isSimbotLocal()) {
+        logger.info("Is 'SIMBOT_LOCAL', offline")
+        offlineMode.set(true)
+    }
 
+    @Suppress("MaxLineLength")
     pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        customAssets = listOf(rootProject.file(".simbot/dokka-assets/logo-icon.svg"))
+        customAssets = listOf(
+            rootProject.file(".simbot/dokka-assets/logo-icon.svg"),
+            rootProject.file(".simbot/dokka-assets/logo-icon-light.svg"),
+        )
         customStyleSheets = listOf(rootProject.file(".simbot/dokka-assets/css/kdoc-style.css"))
-        footerMessage = "© 2023-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>, <a href='https://github.com/ForteScarlet'>ForteScarlet</a>. All rights reserved."
+        if (!isSimbotLocal()) {
+            templatesDir = rootProject.file(".simbot/dokka-templates")
+        }
+        footerMessage =
+            "© 2023-${Year.now().value} <a href='https://github.com/simple-robot'>Simple Robot</a>. All rights reserved."
         separateInheritedMembers = true
+        mergeImplicitExpectActualDeclarations = true
+        homepageLink = P.ComponentTelegram.HOMEPAGE
     }
 }
 
