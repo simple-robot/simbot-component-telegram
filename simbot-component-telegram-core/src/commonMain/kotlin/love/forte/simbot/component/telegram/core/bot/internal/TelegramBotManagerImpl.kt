@@ -18,6 +18,7 @@
 package love.forte.simbot.component.telegram.core.bot.internal
 
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
 import love.forte.simbot.bot.ConflictBotException
 import love.forte.simbot.bot.JobBasedBotManager
 import love.forte.simbot.common.collection.computeValue
@@ -25,13 +26,13 @@ import love.forte.simbot.common.collection.concurrentMutableMap
 import love.forte.simbot.common.collection.removeValue
 import love.forte.simbot.common.coroutines.mergeWith
 import love.forte.simbot.common.id.ID
-import love.forte.simbot.common.id.NumericalID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.component.telegram.core.bot.TelegramBot
 import love.forte.simbot.component.telegram.core.bot.TelegramBotConfiguration
 import love.forte.simbot.component.telegram.core.bot.TelegramBotManager
 import love.forte.simbot.component.telegram.core.bot.TelegramBotManagerConfiguration
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
+import love.forte.simbot.component.telegram.core.event.internal.TelegramBotRegisteredEventImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.telegram.stdlib.bot.Bot
 import love.forte.simbot.telegram.stdlib.bot.BotFactory
@@ -53,7 +54,7 @@ internal class TelegramBotManagerImpl(
     private val botsWithTokenKey = concurrentMutableMap<String, TelegramBotImpl>()
 
     // id token cache
-    private val idTokenMap = concurrentMutableMap<Long, String>()
+    // private val idTokenMap = concurrentMutableMap<Long, String>()
 
     override fun register(ticket: Bot.Ticket, configuration: TelegramBotConfiguration): TelegramBot {
         val token = ticket.token
@@ -78,11 +79,11 @@ internal class TelegramBotManagerImpl(
             createBot()
         }!!
 
-        // TODO register update idTokenMap
-
         newBot.onCompletion {
             botsWithTokenKey.removeValue(token) { newBot }
         }
+
+        eventDispatcher.pushRegisteredEvent(newBot)
 
         return newBot
     }
@@ -91,17 +92,14 @@ internal class TelegramBotManagerImpl(
         botsWithTokenKey.values.asSequence()
 
     override fun find(id: ID): TelegramBot? {
-        fun findByLongId(lid: Long): TelegramBot? =
-            idTokenMap[lid]?.let { token -> botsWithTokenKey[token] }?.takeIf { it.isActive }
-
-        if (id is NumericalID) {
-            return findByLongId(id.toLong())
-        }
-
         val token = id.literal
-        val foundByToken = botsWithTokenKey[token]
-        if (foundByToken != null) return foundByToken
-
-        return token.toLongOrNull()?.let { longId -> findByLongId(longId) }
+        return botsWithTokenKey[token]
     }
+}
+
+internal fun EventDispatcher.pushRegisteredEvent(
+    bot: TelegramBotImpl
+): Job {
+    val e = TelegramBotRegisteredEventImpl(bot)
+    return pushEventWithBot(e, bot).launchIn(bot)
 }

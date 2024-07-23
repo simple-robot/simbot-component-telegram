@@ -19,7 +19,9 @@ package love.forte.simbot.component.telegram.core.bot.internal
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -37,12 +39,10 @@ import love.forte.simbot.component.telegram.core.bot.internal.command.TelegramBo
 import love.forte.simbot.component.telegram.core.bot.internal.command.toTGCommands
 import love.forte.simbot.component.telegram.core.component.TelegramComponent
 import love.forte.simbot.component.telegram.core.event.TelegramUnsupportedEvent
-import love.forte.simbot.component.telegram.core.event.internal.TelegramChannelMessageEventImpl
-import love.forte.simbot.component.telegram.core.event.internal.TelegramChatGroupMessageEventImpl
-import love.forte.simbot.component.telegram.core.event.internal.TelegramPrivateMessageEventImpl
-import love.forte.simbot.component.telegram.core.event.internal.TelegramSuperGroupMessageEventImpl
+import love.forte.simbot.component.telegram.core.event.internal.*
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.onEachError
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.telegram.api.bot.GetMeApi
@@ -114,6 +114,9 @@ internal class TelegramBotImpl(
 
             // mark started
             isStarted = true
+            // push start event
+            eventDispatcher.pushEventWithBot(TelegramBotStartedEventImpl(this), this)
+                .launchIn(this)
         }
     }
 
@@ -139,9 +142,6 @@ internal class TelegramBotImpl(
 }
 
 
-
-
-
 @OptIn(FragileSimbotAPI::class)
 internal fun subscribeInternalProcessor(
     bot: TelegramBotImpl,
@@ -151,14 +151,11 @@ internal fun subscribeInternalProcessor(
     val divider = object : SuspendableUpdateDivider<StdlibEvent>() {
         private suspend fun pushEvent(event: Event) {
             bot.logger.debug("Bot {} on event: {}", bot, event)
-            eventDispatcher.push(event)
-                .onEachError { result ->
-                    bot.eventLogger.error("Bot {} on event dispatch error result: {}", bot, result, result.content)
-                }
-                .onCompletion {
+            eventDispatcher.pushEventWithBot(event, bot) { flow ->
+                flow.onCompletion {
                     bot.eventLogger.trace("Bot {} event publish completed", bot)
                 }
-                .collect()
+            }.collect()
         }
 
         override suspend fun onMismatchUpdateEvent(name: String, value: Any, update: Update?, context: StdlibEvent) {
@@ -379,3 +376,15 @@ internal fun subscribeInternalProcessor(
     }
 }
 
+
+internal inline fun EventDispatcher.pushEventWithBot(
+    event: Event,
+    bot: TelegramBotImpl,
+    block: (Flow<EventResult>) -> Flow<EventResult> = { it }
+): Flow<EventResult> {
+    return push(event)
+        .onEachError { result ->
+            bot.eventLogger.error("Bot {} on event dispatch error result: {}", bot, result, result.content)
+        }
+        .let(block)
+}
