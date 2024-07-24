@@ -60,6 +60,7 @@ internal abstract class AbstractTelegramChatGroupActor : TelegramChatGroupActor 
             is ChatMemberLeft -> chatMember.user.toTelegramMember(bot, chatMember)
             is ChatMemberOwner -> chatMember.user.toTelegramMember(bot, chatMember)
             is ChatMemberRestricted -> chatMember.user.toTelegramMember(bot, chatMember)
+            is ChatMemberMember -> chatMember.user.toTelegramMember(bot, chatMember)
         }
     }
 
