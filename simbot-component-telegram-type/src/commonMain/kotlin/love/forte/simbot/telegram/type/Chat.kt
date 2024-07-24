@@ -1209,7 +1209,7 @@ public data class ChatMemberMember(
      * type: `User`
      */
     public val user: User,
-)
+) : ChatMember()
 
 /**
  * [ChatMemberOwner](https://core.telegram.org/bots/api#chatmemberowner)
