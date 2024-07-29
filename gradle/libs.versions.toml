@@ -20,7 +20,7 @@ kotlinPoet = "1.17.0"
 # https://mockk.io/
 mockk = "1.13.10"
 # https://detekt.dev/docs/intro
-detekt = "1.23.3"
+detekt = "1.23.6"
 
 [libraries]
 # simbot
