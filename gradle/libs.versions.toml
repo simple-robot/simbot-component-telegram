@@ -6,7 +6,7 @@ kotlinx-datetime = "0.6.0"
 dokka = "1.9.20"
 okio = "3.3.0"
 ktor = "2.3.12"
-openjdk-jmh = "1.35"
+openjdk-jmh = "1.37"
 log4j = "2.23.1"
 reactor = "3.6.2"
 # simbot
