@@ -59,6 +59,11 @@ internal class TelegramBotManagerImpl(
     override fun register(ticket: Bot.Ticket, configuration: TelegramBotConfiguration): TelegramBot {
         val token = ticket.token
 
+        @Suppress("ControlFlowWithEmptyBody")
+        if (token.startsWith("bot")) {
+            // TODO 不需要手动写 `bot`, 如果写了，移除它，并有一个警告
+        }
+
         fun createBot(): TelegramBotImpl {
             val context = configuration.coroutineContext.mergeWith(coroutineContext)
             val job = context[Job]!!
