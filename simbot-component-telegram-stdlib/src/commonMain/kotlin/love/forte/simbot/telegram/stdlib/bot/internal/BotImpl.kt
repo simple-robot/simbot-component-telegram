@@ -375,11 +375,11 @@ internal class BotImpl(
                                 delay,
                                 error
                             )
+                            delay(delay)
                         }
                     }
                 }
 
-                delay(delay)
                 emptyList()
             }
         ) { api ->
