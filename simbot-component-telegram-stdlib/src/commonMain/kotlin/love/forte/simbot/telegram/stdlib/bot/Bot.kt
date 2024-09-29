@@ -358,6 +358,12 @@ public enum class SubscribeSequence {
  * The difference is that [timeout] defaults to [DefaultLongPollingTimeout]
  * instead of `null`.
  *
+ * @property retry Retry config. [retry] is based on the Ktor plugin
+ * [HttpTimeout][io.ktor.client.plugins.HttpRequestRetry] implementation.
+ *
+ * @property handleRetry Retry configuration for exception handling for long polling flow.
+ * Unlike [retry], [handleRetry] is based on `onError` in [getUpdateFlow].
+ *
  * @see getUpdateFlow
  */
 @OptIn(InternalSimbotAPI::class)
@@ -366,8 +372,9 @@ public data class LongPolling(
     val timeout: Int? = DefaultLongPollingTimeout.inWholeSeconds.toInt(),
     val allowedUpdates: Collection<String>? = null,
     // retry times on error
-    val retry: Retry? = null
+    val retry: Retry? = null,
 ) {
+    var handleRetry: HandleRetry = HandleRetry.DEFAULT
 
     @Serializable
     public data class Retry(
@@ -375,6 +382,35 @@ public data class LongPolling(
         val delayMillis: Long = 5000,
         val isDelayMillisMultiplyByRetryTimes: Boolean = false
     )
+
+    @Serializable
+    public data class HandleRetry(
+        val strategy: HandleRetryStrategy = HandleRetryStrategy.TIMEOUT_ONLY,
+        val delayMillis: Long = 5000,
+    ) {
+        public companion object {
+            internal val DEFAULT: HandleRetry = HandleRetry()
+        }
+    }
+
+
+    public enum class HandleRetryStrategy {
+        /**
+         * Throw every exception, no retry.
+         */
+        NONE,
+
+        /**
+         * Catch [io.ktor.client.plugins.HttpRequestTimeoutException] only.
+         */
+        TIMEOUT_ONLY,
+
+        /**
+         * Always retry (except [CancellationException]).
+         */
+        ALL,
+    }
+
     // multiplyBy
 }
 
