@@ -54,7 +54,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 @OptIn(ExperimentalSimbotCollectionApi::class)
 internal class BotImpl(
-    override val ticket: Bot.Ticket,
+    ticket: Bot.Ticket,
     private val configuration: BotConfiguration,
 ) : Bot {
     private val logger = LoggerFactory.getLogger("love.forte.simbot.telegram.stdlib.bot")
@@ -74,6 +74,15 @@ internal class BotImpl(
         val apiClient = resolveHttpClient()
         job.invokeOnCompletion { apiClient.close() }
         this.apiClient = apiClient
+    }
+
+    override val ticket: Bot.Ticket = with(ticket) {
+        if (token.startsWith("bot")) {
+            this
+        } else {
+            logger.debug("Append prefix 'bot' for ticket.token.")
+            copy(token = "bot$token")
+        }
     }
 
     private inline fun resolveHttpClient(crossinline block: HttpClientConfig<*>.() -> Unit = {}): HttpClient {
