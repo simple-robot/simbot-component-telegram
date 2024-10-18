@@ -34,7 +34,6 @@ plugins {
 
 setup(P.ComponentTelegram)
 
-useK2()
 configJavaCompileWithModule("simbot.component.telegram.api")
 
 // configJsTestTasks()

@@ -235,7 +235,8 @@ public interface Bot : CoroutineScope {
     /**
      * Bot ticket.
      *
-     * @property token Bot full token. e.g.: `bot123456.aaabbbccc`
+     * @property token Bot full token. e.g.: `bot123456.aaabbbccc`,
+     * it should have a `"bot"` prefix.
      */
     public data class Ticket(val token: String)
 }
