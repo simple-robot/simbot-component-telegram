@@ -16,3 +16,6 @@ misc.xml
 vcs.xml
 modules.xml
 artifacts
+
+###
+git_toolbox_blame.xml
