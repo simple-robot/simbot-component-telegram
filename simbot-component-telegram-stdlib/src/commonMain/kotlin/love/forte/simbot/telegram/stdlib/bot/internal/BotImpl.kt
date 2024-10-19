@@ -303,6 +303,7 @@ internal class BotImpl(
         }
     }
 
+    @Suppress("ThrowsCount")
     private suspend fun HttpClient.longPolling(
         token: String,
         server: Url?,
@@ -318,22 +319,73 @@ internal class BotImpl(
             eachLimit = limit,
             allowedUpdates = allowedUpdates,
             onError = { error ->
-                when (error) {
-                    is CancellationException -> {
-                        eventLogger.trace("Handle an cancellation error on long polling task: {}", error.message, error)
-                        // throw, and stop the job.
-                        throw error
-                    }
+                if (error is CancellationException) {
+                    eventLogger.trace("Handle an cancellation error on long polling task: {}", error.message, error)
+                    // throw, and stop the job.
+                    throw error
+                }
 
-                    is HttpRequestTimeoutException -> {
-                        eventLogger.trace("Handle an timeout error on long polling task: {}", error.message, error)
-                    }
+                val handleRetry = longPolling?.handleRetry ?: LongPolling.HandleRetry.DEFAULT
+                val strategy = handleRetry.strategy
+                val delay = handleRetry.delayMillis
 
-                    else -> {
-                        eventLogger.error("Handle an error on long polling task: {}", error.message, error)
-                        // throw to Bot
+                when (strategy) {
+                    LongPolling.HandleRetryStrategy.NONE -> {
+                        eventLogger.error(
+                            "Handle an error on long polling task " +
+                                "with handle retry strategy {}: {}, " +
+                                "bot will be shutdown.",
+                            strategy,
+                            error.message,
+                            error
+                        )
                         job.cancel(CancellationException("LongPolling on failure", error))
                         throw error
+                    }
+
+                    LongPolling.HandleRetryStrategy.TIMEOUT_ONLY -> {
+                        if (error is HttpRequestTimeoutException) {
+                            eventLogger.debug(
+                                "Handle an timeout error " +
+                                    "on long polling task: {}, just re-poll.",
+                                error.message,
+                                error
+                            )
+                        } else {
+                            eventLogger.error(
+                                "Handle an error on long polling task " +
+                                    "with handle retry strategy {}: {}, " +
+                                    "bot will be shutdown.",
+                                strategy,
+                                error.message,
+                                error
+                            )
+                            // throw to Bot
+                            job.cancel(CancellationException("LongPolling on failure", error))
+                            throw error
+                        }
+                    }
+
+                    LongPolling.HandleRetryStrategy.ALL -> {
+                        if (error is HttpRequestTimeoutException) {
+                            eventLogger.debug(
+                                "Handle an timeout error " +
+                                    "on long polling task: {}, just re-poll.",
+                                error.message,
+                                error
+                            )
+                        } else {
+                            eventLogger.debug(
+                                "Handle an error on long polling task " +
+                                    "with handle retry strategy {}: {}, " +
+                                    "retry in {} ms",
+                                strategy,
+                                error.message,
+                                delay,
+                                error
+                            )
+                            delay(delay)
+                        }
                     }
                 }
 
