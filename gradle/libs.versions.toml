@@ -7,7 +7,7 @@ dokka = "1.9.20"
 ktor = "2.3.12"
 openjdk-jmh = "1.37"
 log4j = "2.24.1"
-reactor = "3.6.9"
+reactor = "3.6.11"
 # simbot
 simbot = "4.6.0"
 suspendTransform = "2.0.20-0.9.3"
