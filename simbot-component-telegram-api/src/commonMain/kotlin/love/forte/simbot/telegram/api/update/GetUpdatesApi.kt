@@ -151,7 +151,7 @@ public inline fun getUpdateFlow(
     eachLimit: Int? = null,
     allowedUpdates: Collection<String>? = null,
     crossinline onEachResult: (List<Update>) -> List<Update> = { it },
-    crossinline onError: (Throwable) -> List<Update> = {
+    crossinline onError: suspend (Throwable) -> List<Update> = {
         if (it is HttpRequestTimeoutException) emptyList() else throw it
     },
     crossinline requestor: suspend (GetUpdatesApi) -> List<Update>

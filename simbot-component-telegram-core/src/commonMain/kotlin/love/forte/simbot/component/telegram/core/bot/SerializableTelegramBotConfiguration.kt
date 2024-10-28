@@ -68,12 +68,17 @@ public data class SerializableTelegramBotConfiguration(
         val limit: Int? = null,
         val timeout: Int? = BotConfiguration.DefaultLongPollingTimeout.inWholeSeconds.toInt(),
         val allowedUpdates: Collection<String>? = null,
+        val retry: LongPolling.Retry? = null,
+        val handleRetry: LongPolling.HandleRetry? = null,
     ) {
         public fun toBotLongPolling(): LongPolling = LongPolling(
             limit = limit,
             timeout = timeout,
             allowedUpdates = allowedUpdates,
-        )
+            retry = retry,
+        ).also {
+            this.handleRetry?.also { thisHr -> it.handleRetry = thisHr }
+        }
     }
 
     public fun toBotConfiguration(): TelegramBotConfiguration {
