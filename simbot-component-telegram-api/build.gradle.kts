@@ -21,6 +21,7 @@ import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.writeText
 
@@ -41,6 +42,11 @@ configJavaCompileWithModule("simbot.component.telegram.api")
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
+    }
 
     configKotlinJvm()
 
