@@ -19,7 +19,6 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.gradle.common.kotlin.multiplatform.applyTier1
 import love.forte.gradle.common.kotlin.multiplatform.applyTier2
 import love.forte.gradle.common.kotlin.multiplatform.applyTier3
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -29,7 +28,6 @@ plugins {
 
 setup(P.ComponentTelegram)
 
-useK2()
 configJavaCompileWithModule("simbot.component.telegram.type")
 apply(plugin = "simbot-telegram-multiplatform-maven-publish")
 
@@ -49,7 +47,7 @@ kotlin {
     applyTier2()
     applyTier3()
 
-    @OptIn(ExperimentalWasmDsl::class)
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         configWasmJs()
     }

@@ -3,6 +3,9 @@
 > [!caution]
 > WIP, and this module will remove
 
+> [!caution]
+> This module may be deprecated, refactored, hidden or reorganised.
+
 ## Setup
 
 > [!note]
