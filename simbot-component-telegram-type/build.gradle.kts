@@ -65,7 +65,7 @@ kotlin {
         jvmTest.dependencies {
             // for gen
             // https://jsoup.org/download
-            implementation("org.jsoup:jsoup:1.18.1")
+            implementation("org.jsoup:jsoup:1.18.3")
             // poet
             // https://square.github.io/kotlinpoet/
             implementation(libs.kotlinPoet)
