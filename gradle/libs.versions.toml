@@ -18,7 +18,7 @@ ksp = "2.0.20-1.0.25"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "2.0.0"
 # https://mockk.io/
-mockk = "1.13.13"
+mockk = "1.13.14"
 # https://detekt.dev/docs/intro
 detekt = "1.23.7"
 
